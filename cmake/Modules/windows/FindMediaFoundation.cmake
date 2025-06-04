@@ -11,8 +11,6 @@ if (WIN32)
             mf.lib
             mfplat.lib
             mfreadwrite.lib
-            mfuuid.lib
-            strmiids.lib
     )
     add_library(MediaFoundation::MediaFoundation ALIAS MediaFoundation-lib)
     set(MediaFoundation_FOUND TRUE)

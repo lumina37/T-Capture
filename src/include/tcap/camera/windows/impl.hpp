@@ -1,8 +1,8 @@
 #pragma once
 
-namespace  tcap {
+namespace tcap {
 
-void hello();
+void EnumerateCaptureDevices();
 
 }
 

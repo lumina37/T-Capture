@@ -1,3 +1,5 @@
 #pragma once
 
-#include "tcap/camera/windows.hpp"
+#ifdef _WIN32
+#    include "tcap/camera/windows.hpp"
+#endif
