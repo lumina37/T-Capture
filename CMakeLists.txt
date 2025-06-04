@@ -6,11 +6,25 @@ project(tcap
         LANGUAGES CXX
 )
 
+set(TCAP_VERSION_BETA_SUFFIX "alpha.0")
+if (NOT TCAP_VERSION_BETA_SUFFIX)
+    set(TCAP_VERSION ${PROJECT_VERSION})
+else ()
+    set(TCAP_VERSION ${PROJECT_VERSION}-${TCAP_VERSION_BETA_SUFFIX})
+endif ()
+
 # Options
 option(TCAP_ENABLE_TESTS "Enable tests" OFF)
 option(TCAP_VERBOSE_WARNING "Show verbose compiler warnings" OFF)
 
 # Dependencies
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
+if (WIN32)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/windows")
+    find_package(MediaFoundation)
+endif ()
+
 include(FetchContent)
 
 if (TCAP_ENABLE_TESTS)
@@ -35,7 +49,7 @@ endfunction()
 
 # Sources
 add_subdirectory(src)
-add_subdirectory(bin)
+add_subdirectory(samples)
 
 if (TCAP_ENABLE_TESTS)
     add_subdirectory(tests)
