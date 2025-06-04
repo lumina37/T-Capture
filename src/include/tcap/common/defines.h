@@ -21,3 +21,9 @@
 #        define TCAP_API
 #    endif
 #endif
+
+#ifdef _WIN32
+#    define TCAP_ENABLE_MEDIA_FOUNDATION 1
+#else
+#    define TCAP_ENABLE_MEDIA_FOUNDATION 0
+#endif

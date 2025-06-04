@@ -1,0 +1,14 @@
+#pragma once
+
+#include <expected>
+
+#include "tcap/common/defines.h"
+#include "tcap/helper/error.hpp"
+
+namespace tcap::mf {
+
+[[nodiscard]] TCAP_API std::expected<void, Error> globalInit() noexcept;
+
+TCAP_API void globalDestroy() noexcept;
+
+}  // namespace tcap::mf
