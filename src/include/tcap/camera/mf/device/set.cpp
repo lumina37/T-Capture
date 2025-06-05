@@ -1,8 +1,9 @@
-﻿#include <print>
+﻿#include <format>
+#include <memory>
+#include <string>
 
 #include <mfidl.h>
 #include <mfobjects.h>
-#include <string>
 
 #include "tcap/camera/mf/device/box.hpp"
 #include "tcap/helper/mf/attributes.hpp"
@@ -13,17 +14,7 @@
 
 namespace tcap::mf {
 
-DeviceSet::DeviceSet(IMFActivate** pDevices, std::vector<DeviceBox>&& devices) noexcept
-    : pDevices_(pDevices), devices_(std::move(devices)) {}
-
-DeviceSet::DeviceSet(DeviceSet&& rhs) noexcept
-    : pDevices_(std::exchange(rhs.pDevices_, nullptr)), devices_(std::move(rhs.devices_)) {}
-
-DeviceSet::~DeviceSet() noexcept {
-    if (pDevices_ == nullptr) return;
-    CoTaskMemFree(pDevices_);
-    pDevices_ = nullptr;
-}
+DeviceSet::DeviceSet(std::vector<std::shared_ptr<DeviceBox>>&& devices) noexcept : pDevices_(std::move(devices)) {}
 
 std::expected<DeviceSet, Error> DeviceSet::create() noexcept {
     IMFActivate** pDevices;
@@ -42,15 +33,18 @@ std::expected<DeviceSet, Error> DeviceSet::create() noexcept {
         return std::unexpected{Error{hr, std::move(errMsg)}};
     }
 
-    std::vector<DeviceBox> devices;
+    std::vector<std::shared_ptr<DeviceBox>> devices;
     devices.reserve(deviceCount);
     for (UINT32 i = 0; i < deviceCount; i++) {
         auto deviceRes = DeviceBox::create(pDevices[i]);
         if (!deviceRes) return std::unexpected{std::move(deviceRes.error())};
-        devices.push_back(std::move(deviceRes.value()));
+        auto pDevice = std::make_shared<DeviceBox>(std::move(deviceRes.value()));
+        devices.push_back(std::move(pDevice));
     }
 
-    return DeviceSet{pDevices, std::move(devices)};
+    CoTaskMemFree(pDevices);
+
+    return DeviceSet{std::move(devices)};
 }
 
 }  // namespace tcap::mf

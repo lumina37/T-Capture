@@ -22,6 +22,7 @@ public:
 
     [[nodiscard]] TCAP_API static std::expected<DeviceBox, Error> create(IMFActivate* pDevice) noexcept;
 
+    [[nodiscard]] TCAP_API IMFActivate* getPDevice() const noexcept { return pDevice_; }
     [[nodiscard]] TCAP_API WStringBox& getUuidBox() noexcept { return uuidBox_; }
     [[nodiscard]] TCAP_API const WStringBox& getUuidBox() const noexcept { return uuidBox_; }
     [[nodiscard]] TCAP_API std::string_view getName() const noexcept { return name_; }

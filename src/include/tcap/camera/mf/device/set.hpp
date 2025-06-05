@@ -1,10 +1,8 @@
 #pragma once
 
 #include <expected>
-#include <span>
+#include <memory>
 #include <vector>
-
-#include <mfobjects.h>
 
 #include "tcap/camera/mf/device/box.hpp"
 #include "tcap/common/defines.h"
@@ -13,20 +11,28 @@
 namespace tcap::mf {
 
 class DeviceSet {
-    DeviceSet(IMFActivate** pDevices, std::vector<DeviceBox>&& devices) noexcept;
+    DeviceSet(std::vector<std::shared_ptr<DeviceBox>>&& devices) noexcept;
 
 public:
-    TCAP_API DeviceSet(DeviceSet&& rhs) noexcept;
-    TCAP_API ~DeviceSet() noexcept;
-
     [[nodiscard]] TCAP_API static std::expected<DeviceSet, Error> create() noexcept;
 
-    [[nodiscard]] TCAP_API std::span<const DeviceBox> getDevices() const noexcept { return devices_; }
+    [[nodiscard]] TCAP_API int getDeviceCount() const noexcept { return (int)pDevices_.size(); }
+    [[nodiscard]] TCAP_API std::shared_ptr<DeviceBox> getDevice(const int index) const noexcept {
+        return pDevices_[index];
+    }
+    [[nodiscard]] TCAP_API std::shared_ptr<DeviceBox>& unsafeGetDevice(const int index) noexcept {
+        return pDevices_[index];
+    }
+    [[nodiscard]] TCAP_API const std::shared_ptr<DeviceBox>& unsafeGetDevice(const int index) const noexcept {
+        return pDevices_[index];
+    }
+    [[nodiscard]] TCAP_API const std::vector<std::shared_ptr<DeviceBox>>& getPDevices() const noexcept {
+        return pDevices_;
+    }
+    [[nodiscard]] TCAP_API std::vector<std::shared_ptr<DeviceBox>>& getPDevices() noexcept { return pDevices_; }
 
 private:
-    IMFActivate** pDevices_;
-
-    std::vector<DeviceBox> devices_;
+    std::vector<std::shared_ptr<DeviceBox>> pDevices_;
 };
 
 }  // namespace tcap::mf
