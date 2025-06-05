@@ -6,8 +6,10 @@
 #include <mfapi.h>
 #include <mfidl.h>
 
+#include "tcap/helper/error.hpp"
+
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/call_once/mf/detail.hpp"
+#    include "tcap/utils/call_once/mf/detail.hpp"
 #endif
 
 namespace tcap::mf {

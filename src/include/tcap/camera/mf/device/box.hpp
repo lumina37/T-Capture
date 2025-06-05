@@ -7,11 +7,14 @@
 
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
+#include "tcap/helper/mf/wstring.hpp"
 
 namespace tcap::mf {
 
 class DeviceBox {
-    DeviceBox(IMFActivate* pDevice, std::string&& name) noexcept;
+    DeviceBox(IMFActivate* pDevice, WStringBox&& uuidBox, std::string&& name) noexcept;
+
+    [[nodiscard]] static std::expected<WStringBox, Error> query(IMFActivate* pDevice, const IID& key) noexcept;
 
 public:
     TCAP_API DeviceBox(DeviceBox&& rhs) noexcept;
@@ -19,11 +22,14 @@ public:
 
     [[nodiscard]] TCAP_API static std::expected<DeviceBox, Error> create(IMFActivate* pDevice) noexcept;
 
+    [[nodiscard]] TCAP_API WStringBox& getUuidBox() noexcept { return uuidBox_; }
+    [[nodiscard]] TCAP_API const WStringBox& getUuidBox() const noexcept { return uuidBox_; }
     [[nodiscard]] TCAP_API std::string_view getName() const noexcept { return name_; }
 
 private:
     IMFActivate* pDevice_;
 
+    WStringBox uuidBox_;
     std::string name_;  // utf-8
 };
 

@@ -1,11 +1,11 @@
 ﻿#include <print>
 
-#include <mfapi.h>
 #include <mfidl.h>
 #include <mfobjects.h>
 #include <string>
 
 #include "tcap/camera/mf/device/box.hpp"
+#include "tcap/helper/mf/attributes.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/device/set.hpp"
@@ -26,32 +26,21 @@ DeviceSet::~DeviceSet() noexcept {
 }
 
 std::expected<DeviceSet, Error> DeviceSet::create() noexcept {
-    IMFAttributes* pAttributes;
-    IMFActivate** pDevices = nullptr;
-    HRESULT hr;
+    IMFActivate** pDevices;
 
-    hr = MFCreateAttributes(&pAttributes, 1);
-    if (FAILED(hr)) {
-        auto errMsg = std::format("MFCreateAttributes failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
-    }
+    auto attrsBoxRes = AttributesBox::create(1);
+    if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
+    auto& attrsBox = attrsBoxRes.value();
 
-    hr = pAttributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID);
-
-    if (FAILED(hr)) {
-        pAttributes->Release();  // TODO: wrap IMFAttributes into RAII
-        auto errMsg = std::format("pAttributes->SetGUID failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
-    }
+    auto setRes = attrsBox.set(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID);
+    if (!setRes) return std::unexpected{std::move(setRes.error())};
 
     UINT32 deviceCount = 0;
-    hr = MFEnumDeviceSources(pAttributes, &pDevices, &deviceCount);
+    HRESULT hr = MFEnumDeviceSources(attrsBox.getPAttributes(), &pDevices, &deviceCount);
     if (FAILED(hr)) {
-        pAttributes->Release();
         auto errMsg = std::format("MFEnumDeviceSources failed");
         return std::unexpected{Error{hr, std::move(errMsg)}};
     }
-    pAttributes->Release();
 
     std::vector<DeviceBox> devices;
     devices.reserve(deviceCount);
