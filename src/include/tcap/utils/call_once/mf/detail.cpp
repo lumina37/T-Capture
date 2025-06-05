@@ -1,8 +1,5 @@
 #include <expected>
-#include <format>
 
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
 #include <mfapi.h>
 #include <mfidl.h>
 
@@ -17,8 +14,7 @@ namespace tcap::mf {
 std::expected<void, Error> initCOM() noexcept {
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     if (FAILED(hr)) {
-        auto errMsg = std::format("CoInitializeEx failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "CoInitializeEx failed"}};
     }
     return {};
 }
@@ -26,8 +22,7 @@ std::expected<void, Error> initCOM() noexcept {
 std::expected<void, Error> initMF() noexcept {
     HRESULT hr = MFStartup(MF_VERSION);
     if (FAILED(hr)) {
-        auto errMsg = std::format("MFStartup failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "MFStartup failed"}};
     }
     return {};
 }

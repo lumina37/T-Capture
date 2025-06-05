@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <mfobjects.h>
 
 namespace tcap::mf {

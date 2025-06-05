@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "device.hpp"
+#include "tcap/camera/mf/device.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 

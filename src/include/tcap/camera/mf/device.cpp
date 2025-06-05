@@ -1,10 +1,10 @@
 #include <expected>
-#include <format>
 
 #include <mfidl.h>
 #include <mfobjects.h>
 
 #include "tcap/helper/charset.hpp"
+#include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/wstring.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
@@ -21,8 +21,7 @@ std::expected<WStringBox, Error> DeviceBox::query(IMFActivate* pDevice, const II
     UINT32 len;
     const HRESULT hr = pDevice->GetAllocatedString(key, &pWString, &len);
     if (FAILED(hr)) {
-        auto errMsg = std::format("pDevice_->GetAllocatedString failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "pDevice_->GetAllocatedString failed"}};
     }
 
     return WStringBox{pWString, len};

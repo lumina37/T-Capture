@@ -5,7 +5,7 @@
 
 #include <mfidl.h>
 
-#include "device.hpp"
+#include "tcap/camera/mf/device.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
@@ -20,6 +20,8 @@ public:
 
     [[nodiscard]] TCAP_API static std::expected<SourceBox, Error> create(
         std::shared_ptr<DeviceBox> pDeviceBox) noexcept;
+
+    [[nodiscard]] TCAP_API IMFMediaSource* getPSource() const noexcept { return pSource_; }
 
 private:
     std::shared_ptr<DeviceBox> pDeviceBox_;

@@ -1,5 +1,4 @@
 #include <expected>
-#include <format>
 
 #include <mfapi.h>
 #include <mfobjects.h>
@@ -24,8 +23,7 @@ std::expected<AttributesBox, Error> AttributesBox::create(int size) noexcept {
     IMFAttributes* pAttributes;
     HRESULT hr = MFCreateAttributes(&pAttributes, size);
     if (FAILED(hr)) {
-        auto errMsg = std::format("MFCreateAttributes failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "MFCreateAttributes failed"}};
     }
 
     return AttributesBox{pAttributes};
@@ -34,8 +32,7 @@ std::expected<AttributesBox, Error> AttributesBox::create(int size) noexcept {
 std::expected<void, Error> AttributesBox::set(const IID& key, const IID& value) noexcept {
     HRESULT hr = pAttributes_->SetGUID(key, value);
     if (FAILED(hr)) {
-        auto errMsg = std::format("pAttributes_->SetGUID failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "pAttributes_->SetGUID failed"}};
     }
     return {};
 }

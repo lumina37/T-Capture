@@ -1,11 +1,11 @@
-﻿#include <format>
-#include <memory>
+﻿#include <memory>
 
 #include <combaseapi.h>
 #include <mfidl.h>
 #include <mfobjects.h>
 
-#include "device.hpp"
+#include "tcap/camera/mf/device.hpp"
+#include "tcap/helper/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/source.hpp"
@@ -32,8 +32,7 @@ std::expected<SourceBox, Error> SourceBox::create(std::shared_ptr<DeviceBox> pDe
     auto pDevice = pDeviceBox->getPDevice();
     HRESULT hr = pDevice->ActivateObject(IID_PPV_ARGS(&pSource));
     if (FAILED(hr)) {
-        auto errMsg = std::format("pDevice->ActivateObject failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "pDevice->ActivateObject failed"}};
     }
 
     return SourceBox{std::move(pDeviceBox), pSource};

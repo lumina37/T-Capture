@@ -1,11 +1,10 @@
-﻿#include <format>
-#include <memory>
-#include <string>
+﻿#include <memory>
 
 #include <mfidl.h>
 #include <mfobjects.h>
 
 #include "tcap/camera/mf/device.hpp"
+#include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
@@ -30,8 +29,7 @@ std::expected<DeviceBoxes, Error> DeviceBoxes::create() noexcept {
     UINT32 deviceCount = 0;
     HRESULT hr = MFEnumDeviceSources(attrsBox.getPAttributes(), &pDevices, &deviceCount);
     if (FAILED(hr)) {
-        auto errMsg = std::format("MFEnumDeviceSources failed");
-        return std::unexpected{Error{hr, std::move(errMsg)}};
+        return std::unexpected{Error{hr, "MFEnumDeviceSources failed"}};
     }
 
     std::vector<std::shared_ptr<DeviceBox>> deviceBoxes;
