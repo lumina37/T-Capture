@@ -4,12 +4,15 @@
 int main() {
     tcap::mf::globalInit() | unwrap;
 
-    tcap::mf::DeviceSet deviceSet = tcap::mf::DeviceSet::create() | unwrap;
-    for (const auto& pDevice : deviceSet.getPDeviceBoxes()) {
-        auto source = tcap::mf::SourceBox::create(pDevice) | unwrap;
-        std::println("Device name: {}", pDevice->getName());
-        std::println("Device ptr: 0x{:x}", (size_t)pDevice->getPDevice());
+    tcap::mf::DeviceBoxes deviceBoxes = tcap::mf::DeviceBoxes::create() | unwrap;
+    if (deviceBoxes.empty()) return 1;
+
+    for (const auto& pDeviceBox : deviceBoxes.getPDeviceBoxes()) {
+        std::println("Device name: {}", pDeviceBox->getName());
+        std::println("Device ptr: 0x{:x}", (size_t)pDeviceBox->getPDevice());
     }
+
+    auto source = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
 
     tcap::mf::globalDestroy();
 }

@@ -4,6 +4,6 @@
 
 #include "tcap/common/defines.h"
 
-#if TCAP_ENABLE_MEDIA_FOUNDATION
+#ifdef TCAP_ENABLE_MEDIA_FOUNDATION
 #    include "tcap/camera/mf.hpp"
 #endif

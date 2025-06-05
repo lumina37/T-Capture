@@ -3,4 +3,5 @@
 #pragma once
 
 #include "tcap/camera/mf/device.hpp"
+#include "tcap/camera/mf/devices.hpp"
 #include "tcap/camera/mf/source.hpp"

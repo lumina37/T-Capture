@@ -4,17 +4,17 @@
 #include <memory>
 #include <vector>
 
-#include "tcap/camera/mf/device/box.hpp"
+#include "device.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
 namespace tcap::mf {
 
-class DeviceSet {
-    DeviceSet(std::vector<std::shared_ptr<DeviceBox>>&& devices) noexcept;
+class DeviceBoxes {
+    DeviceBoxes(std::vector<std::shared_ptr<DeviceBox>>&& deviceBoxes) noexcept;
 
 public:
-    [[nodiscard]] TCAP_API static std::expected<DeviceSet, Error> create() noexcept;
+    [[nodiscard]] TCAP_API static std::expected<DeviceBoxes, Error> create() noexcept;
 
     [[nodiscard]] TCAP_API int size() const noexcept { return (int)pDeviceBoxes_.size(); }
     [[nodiscard]] TCAP_API bool empty() const noexcept { return pDeviceBoxes_.empty(); }
@@ -39,5 +39,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/device/set.cpp"
+#    include "tcap/camera/mf/devices.cpp"
 #endif

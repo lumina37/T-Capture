@@ -2,6 +2,6 @@
 
 #include "tcap/common/defines.h"
 
-#if TCAP_ENABLE_MEDIA_FOUNDATION
+#ifdef TCAP_ENABLE_MEDIA_FOUNDATION
 #    include "tcap/utils/call_once/mf.hpp"
 #endif
