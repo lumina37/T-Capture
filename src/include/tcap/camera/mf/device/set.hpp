@@ -6,14 +6,14 @@
 
 #include <mfobjects.h>
 
-#include "tcap/camera/mf/device.hpp"
+#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
 namespace tcap::mf {
 
 class DeviceSet {
-    DeviceSet(IMFActivate** pDevices, std::vector<Device>&& devices) noexcept;
+    DeviceSet(IMFActivate** pDevices, std::vector<DeviceBox>&& devices) noexcept;
 
 public:
     TCAP_API DeviceSet(DeviceSet&& rhs) noexcept;
@@ -21,16 +21,16 @@ public:
 
     [[nodiscard]] TCAP_API static std::expected<DeviceSet, Error> create() noexcept;
 
-    [[nodiscard]] TCAP_API std::span<const Device> getDevices() const noexcept { return devices_; }
+    [[nodiscard]] TCAP_API std::span<const DeviceBox> getDevices() const noexcept { return devices_; }
 
 private:
     IMFActivate** pDevices_;
 
-    std::vector<Device> devices_;
+    std::vector<DeviceBox> devices_;
 };
 
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/set.cpp"
+#    include "tcap/camera/mf/device/set.cpp"
 #endif

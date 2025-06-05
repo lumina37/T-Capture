@@ -5,13 +5,15 @@
 #include <mfobjects.h>
 #include <string>
 
+#include "tcap/camera/mf/device/box.hpp"
+
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/set.hpp"
+#    include "tcap/camera/mf/device/set.hpp"
 #endif
 
 namespace tcap::mf {
 
-DeviceSet::DeviceSet(IMFActivate** pDevices, std::vector<Device>&& devices) noexcept
+DeviceSet::DeviceSet(IMFActivate** pDevices, std::vector<DeviceBox>&& devices) noexcept
     : pDevices_(pDevices), devices_(std::move(devices)) {}
 
 DeviceSet::DeviceSet(DeviceSet&& rhs) noexcept
@@ -51,10 +53,10 @@ std::expected<DeviceSet, Error> DeviceSet::create() noexcept {
     }
     pAttributes->Release();
 
-    std::vector<Device> devices;
+    std::vector<DeviceBox> devices;
     devices.reserve(deviceCount);
     for (UINT32 i = 0; i < deviceCount; i++) {
-        auto deviceRes = Device::create(pDevices[i]);
+        auto deviceRes = DeviceBox::create(pDevices[i]);
         if (!deviceRes) return std::unexpected{std::move(deviceRes.error())};
         devices.push_back(std::move(deviceRes.value()));
     }

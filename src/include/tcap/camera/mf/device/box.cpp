@@ -7,22 +7,23 @@
 #include "tcap/helper/charset.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/device.hpp"
+#    include "tcap/camera/mf/device/box.hpp"
 #endif
 
 namespace tcap::mf {
 
-Device::Device(IMFActivate* pDevice, std::string&& name) noexcept : pDevice_(pDevice), name_(std::move(name)) {}
+DeviceBox::DeviceBox(IMFActivate* pDevice, std::string&& name) noexcept : pDevice_(pDevice), name_(std::move(name)) {}
 
-Device::Device(Device&& rhs) noexcept : pDevice_(std::exchange(rhs.pDevice_, nullptr)), name_(std::move(rhs.name_)) {}
+DeviceBox::DeviceBox(DeviceBox&& rhs) noexcept
+    : pDevice_(std::exchange(rhs.pDevice_, nullptr)), name_(std::move(rhs.name_)) {}
 
-Device::~Device() noexcept {
+DeviceBox::~DeviceBox() noexcept {
     if (pDevice_ == nullptr) return;
     pDevice_->Release();
     pDevice_ = nullptr;
 }
 
-std::expected<Device, Error> Device::create(IMFActivate* pDevice) noexcept {
+std::expected<DeviceBox, Error> DeviceBox::create(IMFActivate* pDevice) noexcept {
     WCHAR* pName;
     UINT32 nameLen;
     HRESULT hr = pDevice->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME, &pName, &nameLen);
@@ -36,7 +37,9 @@ std::expected<Device, Error> Device::create(IMFActivate* pDevice) noexcept {
     if (!nameRes) return std::unexpected{Error{std::move(nameRes.error())}};
     auto& name = nameRes.value();
 
-    return Device{pDevice, std::move(name)};
+    CoTaskMemFree(pName);
+
+    return DeviceBox{pDevice, std::move(name)};
 }
 
 }  // namespace tcap::mf
