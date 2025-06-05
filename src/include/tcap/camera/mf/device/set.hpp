@@ -16,23 +16,24 @@ class DeviceSet {
 public:
     [[nodiscard]] TCAP_API static std::expected<DeviceSet, Error> create() noexcept;
 
-    [[nodiscard]] TCAP_API int getDeviceCount() const noexcept { return (int)pDevices_.size(); }
-    [[nodiscard]] TCAP_API std::shared_ptr<DeviceBox> getDevice(const int index) const noexcept {
-        return pDevices_[index];
+    [[nodiscard]] TCAP_API int size() const noexcept { return (int)pDeviceBoxes_.size(); }
+    [[nodiscard]] TCAP_API bool empty() const noexcept { return pDeviceBoxes_.empty(); }
+    [[nodiscard]] TCAP_API std::shared_ptr<DeviceBox> getPDeviceBox(const int index) const noexcept {
+        return pDeviceBoxes_[index];
     }
-    [[nodiscard]] TCAP_API std::shared_ptr<DeviceBox>& unsafeGetDevice(const int index) noexcept {
-        return pDevices_[index];
+    [[nodiscard]] TCAP_API std::shared_ptr<DeviceBox>& unsafeGetPDeviceBox(const int index) noexcept {
+        return pDeviceBoxes_[index];
     }
-    [[nodiscard]] TCAP_API const std::shared_ptr<DeviceBox>& unsafeGetDevice(const int index) const noexcept {
-        return pDevices_[index];
+    [[nodiscard]] TCAP_API const std::shared_ptr<DeviceBox>& unsafeGetPDeviceBox(const int index) const noexcept {
+        return pDeviceBoxes_[index];
     }
-    [[nodiscard]] TCAP_API const std::vector<std::shared_ptr<DeviceBox>>& getPDevices() const noexcept {
-        return pDevices_;
+    [[nodiscard]] TCAP_API const std::vector<std::shared_ptr<DeviceBox>>& getPDeviceBoxes() const noexcept {
+        return pDeviceBoxes_;
     }
-    [[nodiscard]] TCAP_API std::vector<std::shared_ptr<DeviceBox>>& getPDevices() noexcept { return pDevices_; }
+    [[nodiscard]] TCAP_API std::vector<std::shared_ptr<DeviceBox>>& getPDeviceBoxes() noexcept { return pDeviceBoxes_; }
 
 private:
-    std::vector<std::shared_ptr<DeviceBox>> pDevices_;
+    std::vector<std::shared_ptr<DeviceBox>> pDeviceBoxes_;
 };
 
 }  // namespace tcap::mf

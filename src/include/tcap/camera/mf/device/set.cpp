@@ -14,7 +14,7 @@
 
 namespace tcap::mf {
 
-DeviceSet::DeviceSet(std::vector<std::shared_ptr<DeviceBox>>&& devices) noexcept : pDevices_(std::move(devices)) {}
+DeviceSet::DeviceSet(std::vector<std::shared_ptr<DeviceBox>>&& devices) noexcept : pDeviceBoxes_(std::move(devices)) {}
 
 std::expected<DeviceSet, Error> DeviceSet::create() noexcept {
     IMFActivate** pDevices;
