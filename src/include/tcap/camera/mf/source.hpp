@@ -5,7 +5,7 @@
 
 #include <mfidl.h>
 
-#include "tcap/camera/mf/device.hpp"
+#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 

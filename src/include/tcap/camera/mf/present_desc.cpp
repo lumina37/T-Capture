@@ -9,10 +9,12 @@
 
 namespace tcap::mf {
 
-PresentDescBox::PresentDescBox(IMFPresentationDescriptor* pPresentDesc) noexcept : pPresentDesc_(pPresentDesc) {}
+PresentDescBox::PresentDescBox(IMFPresentationDescriptor* pPresentDesc,
+                               std::vector<StreamDescBox>&& streamDescBoxes) noexcept
+    : pPresentDesc_(pPresentDesc), streamDescBoxes_(std::move(streamDescBoxes)) {}
 
 PresentDescBox::PresentDescBox(PresentDescBox&& rhs) noexcept
-    : pPresentDesc_(std::exchange(rhs.pPresentDesc_, nullptr)) {}
+    : pPresentDesc_(std::exchange(rhs.pPresentDesc_, nullptr)), streamDescBoxes_(std::move(rhs.streamDescBoxes_)) {}
 
 PresentDescBox::~PresentDescBox() noexcept {
     if (pPresentDesc_ == nullptr) return;
@@ -29,7 +31,25 @@ std::expected<PresentDescBox, Error> PresentDescBox::create(const SourceBox& sou
         return std::unexpected{Error{hr, "pSource->CreatePresentationDescriptor failed"}};
     }
 
-    return PresentDescBox{pPresentDesc};
+    DWORD streamDescCount;
+    pPresentDesc->GetStreamDescriptorCount(&streamDescCount);
+
+    std::vector<StreamDescBox> streamDescBoxes;
+    streamDescBoxes.reserve(streamDescCount);
+    for (DWORD i = 0; i < streamDescCount; i++) {
+        IMFStreamDescriptor* pStreamDesc;
+        [[maybe_unused]] BOOL selected;
+        hr = pPresentDesc->GetStreamDescriptorByIndex(i, &selected, &pStreamDesc);
+        if (FAILED(hr)) {
+            return std::unexpected{Error{hr, "pPresentDesc->GetStreamDescriptorByIndex failed"}};
+        }
+
+        auto streamDescBoxRes = StreamDescBox::create(pStreamDesc);
+        if (!streamDescBoxRes) return std::unexpected{std::move(streamDescBoxRes.error())};
+        streamDescBoxes.push_back(std::move(streamDescBoxRes.value()));
+    }
+
+    return PresentDescBox{pPresentDesc, std::move(streamDescBoxes)};
 }
 
 }  // namespace tcap::mf

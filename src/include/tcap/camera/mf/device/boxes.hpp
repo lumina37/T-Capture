@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "tcap/camera/mf/device.hpp"
+#include "box.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
@@ -39,5 +39,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/devices.cpp"
+#    include "tcap/camera/mf/device/boxes.cpp"
 #endif

@@ -8,7 +8,7 @@
 #include "tcap/helper/mf/wstring.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/device.hpp"
+#    include "tcap/camera/mf/device/box.hpp"
 #endif
 
 namespace tcap::mf {
@@ -16,7 +16,7 @@ namespace tcap::mf {
 DeviceBox::DeviceBox(IMFActivate* pDevice, WStringBox&& uuidBox, std::string&& name) noexcept
     : pDevice_(pDevice), uuidBox_(std::move(uuidBox)), name_(std::move(name)) {}
 
-std::expected<WStringBox, Error> DeviceBox::query(IMFActivate* pDevice, const IID& key) noexcept {
+std::expected<WStringBox, Error> DeviceBox::query(IMFActivate* pDevice, const GUID& key) noexcept {
     WCHAR* pWString;
     UINT32 len;
     const HRESULT hr = pDevice->GetAllocatedString(key, &pWString, &len);

@@ -12,7 +12,13 @@ int main() {
         std::println("Device ptr: 0x{:x}", (size_t)pDeviceBox->getPDevice());
     }
 
-    auto source = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
+    auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
+    auto presentDescBox = tcap::mf::PresentDescBox::create(sourceBox) | unwrap;
+    for (auto& streamDesc : presentDescBox.getStreamDescBoxes()) {
+        for (auto& mediaTypeBox : streamDesc.getMediaTypeBoxes()) {
+            std::println("Fps: {}", mediaTypeBox.getApproxFps());
+        }
+    }
 
     tcap::mf::globalDestroy();
 }

@@ -3,6 +3,8 @@
 #include <mfapi.h>
 #include <mfobjects.h>
 
+#include "tcap/helper/error.hpp"
+
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/helper/mf/attributes.hpp"
 #endif
@@ -29,7 +31,7 @@ std::expected<AttributesBox, Error> AttributesBox::create(int size) noexcept {
     return AttributesBox{pAttributes};
 }
 
-std::expected<void, Error> AttributesBox::set(const IID& key, const IID& value) noexcept {
+std::expected<void, Error> AttributesBox::set(const GUID& key, const GUID& value) noexcept {
     HRESULT hr = pAttributes_->SetGUID(key, value);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pAttributes_->SetGUID failed"}};
