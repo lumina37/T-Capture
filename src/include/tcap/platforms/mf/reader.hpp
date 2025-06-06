@@ -18,7 +18,7 @@ public:
     ReaderBox(ReaderBox&& rhs) noexcept;
     ~ReaderBox() noexcept;
 
-    [[nodiscard]] TCAP_API static std::expected<ReaderBox, Error> create(SourceBox& sourceBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<ReaderBox, Error> create(const SourceBox& sourceBox) noexcept;
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 

@@ -1,9 +1,7 @@
-﻿#include <mferror.h>
-#include <mfidl.h>
+﻿#include <mfidl.h>
 #include <mfreadwrite.h>
 
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/media_type.hpp"
 #include "tcap/platforms/mf/source.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
@@ -22,7 +20,7 @@ ReaderBox::~ReaderBox() noexcept {
     pReader_ = nullptr;
 }
 
-std::expected<ReaderBox, Error> ReaderBox::create(SourceBox& sourceBox) noexcept {
+std::expected<ReaderBox, Error> ReaderBox::create(const SourceBox& sourceBox) noexcept {
     IMFSourceReader* pReader;
     auto pSource = sourceBox.getPSource();
     const HRESULT hr = MFCreateSourceReaderFromMediaSource(pSource, nullptr, &pReader);
