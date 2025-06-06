@@ -10,14 +10,38 @@
 
 namespace tcap::mf {
 
-MediaTypeBox::MediaTypeBox(GUID subTypeGuid, int width, int height, int fpsNumerator, int fpsDenominator) noexcept
-    : subTypeGuid_(subTypeGuid),
+StreamSubType mapGuidToStreamSubType(const GUID& guid) {
+    if (guid == MFVideoFormat_I420) return StreamSubType::eI420;
+    if (guid == MFVideoFormat_NV12) return StreamSubType::eNV12;
+    return StreamSubType::eUnknown;
+}
+
+MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
+                           int fpsDenominator) noexcept
+    : pMediaType_(pMediaType),
+      subTypeGuid_(subTypeGuid),
       subType_(mapGuidToStreamSubType(subTypeGuid)),
       width_(width),
       height_(height),
       fpsNumerator_(fpsNumerator),
       fpsDenominator_(fpsDenominator),
       approxFps_((float)fpsNumerator / (float)fpsDenominator) {}
+
+MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
+    : pMediaType_(std::exchange(rhs.pMediaType_, nullptr)),
+      subTypeGuid_(rhs.subTypeGuid_),
+      subType_(rhs.subType_),
+      width_(rhs.width_),
+      height_(rhs.height_),
+      fpsNumerator_(rhs.fpsNumerator_),
+      fpsDenominator_(rhs.fpsDenominator_),
+      approxFps_(rhs.approxFps_) {}
+
+MediaTypeBox::~MediaTypeBox() noexcept {
+    if (pMediaType_ == nullptr) return;
+    pMediaType_->Release();
+    pMediaType_ = nullptr;
+}
 
 std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType) noexcept {
     HRESULT hr;
@@ -43,7 +67,7 @@ std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType
         return std::unexpected{Error{hr, "fpsDenominator is 0"}};
     }
 
-    return MediaTypeBox{subTypeGuid, (int)width, (int)height, (int)fpsNumerator, (int)fpsDenominator};
+    return MediaTypeBox{pMediaType, subTypeGuid, (int)width, (int)height, (int)fpsNumerator, (int)fpsDenominator};
 }
 
 }  // namespace tcap::mf

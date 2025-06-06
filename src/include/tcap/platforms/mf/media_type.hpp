@@ -15,16 +15,17 @@ enum class StreamSubType {
     eNV12,
 };
 
-static StreamSubType mapGuidToStreamSubType(const GUID& guid) {
-    if (guid == MFVideoFormat_I420) return StreamSubType::eI420;
-    if (guid == MFVideoFormat_NV12) return StreamSubType::eNV12;
-    return StreamSubType::eUnknown;
-}
+StreamSubType mapGuidToStreamSubType(const GUID& guid);
 
 class MediaTypeBox {
-    MediaTypeBox(GUID subTypeGuid, int width, int height, int fpsNumerator, int fpsDenominator) noexcept;
+    MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
+                 int fpsDenominator) noexcept;
 
 public:
+    MediaTypeBox(MediaTypeBox&& rhs) noexcept;
+    ~MediaTypeBox() noexcept;
+
+    // this will take the lifetime of the `IMFMediaType*`
     [[nodiscard]] TCAP_API static std::expected<MediaTypeBox, Error> create(IMFMediaType* pMediaType) noexcept;
 
     [[nodiscard]] TCAP_API GUID getSubTypeGuid() const noexcept { return subTypeGuid_; }
@@ -34,6 +35,7 @@ public:
     [[nodiscard]] TCAP_API float getApproxFps() const noexcept { return approxFps_; }
 
 private:
+    IMFMediaType* pMediaType_;
     GUID subTypeGuid_;
     StreamSubType subType_;
     int width_;

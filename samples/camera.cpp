@@ -13,14 +13,13 @@ int main() {
     }
 
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
-    auto presentDescBox = tcap::mf::PresentDescBox::create(sourceBox) | unwrap;
-    for (auto& streamDescBox : presentDescBox.getStreamDescBoxes()) {
-        std::println("stream desc major type={}", (int)streamDescBox.getMajorType());
-        for (auto& mediaTypeBox : streamDescBox.getMediaTypeBoxes()) {
-            std::println("sub type={}", (int)mediaTypeBox.getSubType());
-            std::println("fps={}", mediaTypeBox.getApproxFps());
-            std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
-        }
+    auto readerBox = tcap::mf::ReaderBox::create(sourceBox) | unwrap;
+
+    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
+    for (auto& mediaTypeBox : readerTypeBox.getStreamNativeMediaTypeBoxes(0)) {
+        std::println("sub type={}", (int)mediaTypeBox.getSubType());
+        std::println("fps={}", mediaTypeBox.getApproxFps());
+        std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
     }
 
     tcap::mf::globalDestroy();
