@@ -3,12 +3,12 @@
 #include <mfidl.h>
 #include <mfobjects.h>
 
-#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
+#include "tcap/platforms/mf/device/box.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/device/boxes.hpp"
+#    include "tcap/platforms/mf/device/boxes.hpp"
 #endif
 
 namespace tcap::mf {

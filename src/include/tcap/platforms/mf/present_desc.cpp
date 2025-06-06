@@ -1,10 +1,10 @@
 ﻿#include <mfidl.h>
 
-#include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
+#include "tcap/platforms/mf/source.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/present_desc.hpp"
+#    include "tcap/platforms/mf/present_desc.hpp"
 #endif
 
 namespace tcap::mf {

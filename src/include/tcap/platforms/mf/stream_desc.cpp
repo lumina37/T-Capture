@@ -1,19 +1,25 @@
 ﻿#include <mfidl.h>
 
-#include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
+#include "tcap/platforms/mf/source.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/stream_desc.hpp"
+#    include "tcap/platforms/mf/stream_desc.hpp"
 #endif
 
 namespace tcap::mf {
 
-StreamDescBox::StreamDescBox(IMFStreamDescriptor* pStreamDesc, std::vector<MediaTypeBox>&& mediaTypeBoxes) noexcept
-    : pStreamDesc_(pStreamDesc), mediaTypeBoxes_(std::move(mediaTypeBoxes)) {}
+StreamDescBox::StreamDescBox(IMFStreamDescriptor* pStreamDesc, GUID majorTypeGuid,
+                             std::vector<MediaTypeBox>&& mediaTypeBoxes) noexcept
+    : pStreamDesc_(pStreamDesc),
+      majorTypeGuid_(majorTypeGuid),
+      majorType_(mapGuidToStreamMajorType(majorTypeGuid)),
+      mediaTypeBoxes_(std::move(mediaTypeBoxes)) {}
 
 StreamDescBox::StreamDescBox(StreamDescBox&& rhs) noexcept
-    : pStreamDesc_(std::exchange(rhs.pStreamDesc_, nullptr)), mediaTypeBoxes_(std::move(rhs.mediaTypeBoxes_)) {}
+    : pStreamDesc_(std::exchange(rhs.pStreamDesc_, nullptr)),
+      majorType_(rhs.majorType_),
+      mediaTypeBoxes_(std::move(rhs.mediaTypeBoxes_)) {}
 
 StreamDescBox::~StreamDescBox() noexcept {
     if (pStreamDesc_ == nullptr) return;
@@ -33,8 +39,15 @@ std::expected<StreamDescBox, Error> StreamDescBox::create(IMFStreamDescriptor* p
     DWORD mediaTypeCount;
     hr = pMediaTypeHandler->GetMediaTypeCount(&mediaTypeCount);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pMediaTypeHandler->GetMediaTypeCount"}};
+        return std::unexpected{Error{hr, "pMediaTypeHandler->GetMediaTypeCount failed"}};
     }
+
+    GUID majorTypeGuid;
+    hr = pMediaTypeHandler->GetMajorType(&majorTypeGuid);
+    if (FAILED(hr)) {
+        return std::unexpected{Error{hr, "pMediaTypeHandler->GetMajorType failed"}};
+    }
+    const StreamMajorType majorType = mapGuidToStreamMajorType(majorTypeGuid);
 
     std::vector<MediaTypeBox> mediaTypeBoxes;
     mediaTypeBoxes.reserve(mediaTypeCount);
@@ -42,7 +55,7 @@ std::expected<StreamDescBox, Error> StreamDescBox::create(IMFStreamDescriptor* p
         IMFMediaType* pMediaType;
         hr = pMediaTypeHandler->GetMediaTypeByIndex(i, &pMediaType);
         if (FAILED(hr)) {
-            return std::unexpected{Error{hr, "pMediaTypeHandler->GetMediaTypeCount"}};
+            return std::unexpected{Error{hr, "pMediaTypeHandler->GetMediaTypeByIndex failed"}};
         }
 
         auto mediaTypeBoxRes = MediaTypeBox::create(pMediaType);
@@ -50,7 +63,7 @@ std::expected<StreamDescBox, Error> StreamDescBox::create(IMFStreamDescriptor* p
         mediaTypeBoxes.push_back(std::move(mediaTypeBoxRes.value()));
     }
 
-    return StreamDescBox{pStreamDesc, std::move(mediaTypeBoxes)};
+    return StreamDescBox{pStreamDesc, majorTypeGuid, std::move(mediaTypeBoxes)};
 }
 
 }  // namespace tcap::mf

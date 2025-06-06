@@ -1,5 +1,6 @@
 #include "sample_helper.hpp"
 #include "tcap.hpp"
+#include "tcap/helper/charset.hpp"
 
 int main() {
     tcap::mf::globalInit() | unwrap;
@@ -9,14 +10,16 @@ int main() {
 
     for (const auto& pDeviceBox : deviceBoxes.getPDeviceBoxes()) {
         std::println("Device name: {}", pDeviceBox->getName());
-        std::println("Device ptr: 0x{:x}", (size_t)pDeviceBox->getPDevice());
     }
 
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
     auto presentDescBox = tcap::mf::PresentDescBox::create(sourceBox) | unwrap;
-    for (auto& streamDesc : presentDescBox.getStreamDescBoxes()) {
-        for (auto& mediaTypeBox : streamDesc.getMediaTypeBoxes()) {
-            std::println("Fps: {}", mediaTypeBox.getApproxFps());
+    for (auto& streamDescBox : presentDescBox.getStreamDescBoxes()) {
+        std::println("stream desc major type={}", (int)streamDescBox.getMajorType());
+        for (auto& mediaTypeBox : streamDescBox.getMediaTypeBoxes()) {
+            std::println("sub type={}", (int)mediaTypeBox.getSubType());
+            std::println("fps={}", mediaTypeBox.getApproxFps());
+            std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
         }
     }
 

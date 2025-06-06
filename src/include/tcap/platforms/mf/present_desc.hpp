@@ -5,10 +5,10 @@
 
 #include <mfidl.h>
 
-#include "tcap/camera/mf/source.hpp"
-#include "tcap/camera/mf/stream_desc.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
+#include "tcap/platforms/mf/source.hpp"
+#include "tcap/platforms/mf/stream_desc.hpp"
 
 namespace tcap::mf {
 
@@ -39,5 +39,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/present_desc.cpp"
+#    include "tcap/platforms/mf/present_desc.cpp"
 #endif
