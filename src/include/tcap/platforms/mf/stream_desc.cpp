@@ -18,6 +18,7 @@ StreamDescBox::StreamDescBox(IMFStreamDescriptor* pStreamDesc, GUID majorTypeGui
 
 StreamDescBox::StreamDescBox(StreamDescBox&& rhs) noexcept
     : pStreamDesc_(std::exchange(rhs.pStreamDesc_, nullptr)),
+      majorTypeGuid_(rhs.majorTypeGuid_),
       majorType_(rhs.majorType_),
       mediaTypeBoxes_(std::move(rhs.mediaTypeBoxes_)) {}
 
@@ -47,7 +48,6 @@ std::expected<StreamDescBox, Error> StreamDescBox::create(IMFStreamDescriptor* p
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pMediaTypeHandler->GetMajorType failed"}};
     }
-    const StreamMajorType majorType = mapGuidToStreamMajorType(majorTypeGuid);
 
     std::vector<MediaTypeBox> mediaTypeBoxes;
     mediaTypeBoxes.reserve(mediaTypeCount);
