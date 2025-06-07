@@ -1,3 +1,6 @@
+#include <fstream>
+#include <thread>
+
 #include "sample_helper.hpp"
 #include "tcap.hpp"
 #include "tcap/helper/charset.hpp"
@@ -16,11 +19,26 @@ int main() {
     auto readerBox = tcap::mf::ReaderBox::create(sourceBox) | unwrap;
 
     auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
-    for (auto& mediaTypeBox : readerTypeBox.getStreamNativeMediaTypeBoxes(0)) {
-        std::println("sub type={}", (int)mediaTypeBox.getSubType());
-        std::println("fps={}", mediaTypeBox.getApproxFps());
-        std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
+    const auto& mediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
+    std::println("sub type={}", (int)mediaTypeBox.getSubType());
+    std::println("fps={}", mediaTypeBox.getApproxFps());
+    std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
+
+    std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);
+
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        auto sampleBoxRes = readerBox.blockingSample();
+        if (!sampleBoxRes) continue;
+        auto sampleBox = std::move(sampleBoxRes.value());
+        auto bufferBox = tcap::mf::BufferBox::create(sampleBox) | unwrap;
+        bufferBox.copyTo(frameData.data()) | unwrap;
+        break;
     }
+
+    std::ofstream outFStream{"out.yuv"};
+    outFStream.write((char*)frameData.data(), frameData.size());
+    outFStream.close();
 
     tcap::mf::globalDestroy();
 }

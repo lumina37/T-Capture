@@ -11,19 +11,19 @@
 namespace tcap::mf {
 
 class ReaderTypeBox {
-    ReaderTypeBox(std::vector<std::vector<MediaTypeBox>>&& mediaTypeBoxesForStreams) noexcept;
+    ReaderTypeBox(MediaTypeBox&& currentMediaTypeBox, std::vector<MediaTypeBox>&& nativeMediaTypeBoxes) noexcept;
 
 public:
     [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const ReaderBox& readerBox) noexcept;
 
-    [[nodiscard]] TCAP_API int getStreamCount() const noexcept { return (int)nativeMediaTypeBoxes_.size(); }
-    [[nodiscard]] TCAP_API const std::vector<MediaTypeBox>& getStreamNativeMediaTypeBoxes(
-        const int streamIdx) const noexcept {
-        return nativeMediaTypeBoxes_[streamIdx];
+    [[nodiscard]] TCAP_API const std::vector<MediaTypeBox>& getNativeMediaTypeBoxes() const noexcept {
+        return nativeMediaTypeBoxes_;
     }
+    [[nodiscard]] TCAP_API const MediaTypeBox& getCurrentMediaTypeBox() const noexcept { return currentMediaTypeBox_; }
 
 private:
-    std::vector<std::vector<MediaTypeBox>> nativeMediaTypeBoxes_;
+    MediaTypeBox currentMediaTypeBox_;
+    std::vector<MediaTypeBox> nativeMediaTypeBoxes_;
 };
 
 }  // namespace tcap::mf

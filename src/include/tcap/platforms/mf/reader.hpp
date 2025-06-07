@@ -7,6 +7,7 @@
 
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
+#include "tcap/platforms/mf/sample.hpp"
 #include "tcap/platforms/mf/source.hpp"
 
 namespace tcap::mf {
@@ -21,6 +22,8 @@ public:
     [[nodiscard]] TCAP_API static std::expected<ReaderBox, Error> create(const SourceBox& sourceBox) noexcept;
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
+
+    [[nodiscard]] TCAP_API std::expected<SampleBox, Error> blockingSample() noexcept;
 
 private:
     IMFSourceReader* pReader_;
