@@ -1,11 +1,11 @@
 ﻿#include <mfapi.h>
 #include <mfidl.h>
 
+#include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/source.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/media_type.hpp"
+#    include "tcap/camera/mf/media_type.hpp"
 #endif
 
 namespace tcap::mf {

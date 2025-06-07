@@ -19,7 +19,8 @@ public:
 
     [[nodiscard]] IMFAttributes* getPAttributes() const noexcept { return pAttributes_; }
 
-    [[nodiscard]] std::expected<void, Error> set(const GUID& key, const GUID& value) noexcept;
+    [[nodiscard]] std::expected<void, Error> setGuid(const GUID& key, const GUID& value) noexcept;
+    [[nodiscard]] std::expected<void, Error> setUnknown(const GUID& key, IUnknown* pUnknown) noexcept;
 
 private:
     IMFAttributes* pAttributes_;

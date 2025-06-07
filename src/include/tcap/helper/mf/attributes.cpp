@@ -31,10 +31,18 @@ std::expected<AttributesBox, Error> AttributesBox::create(int size) noexcept {
     return AttributesBox{pAttributes};
 }
 
-std::expected<void, Error> AttributesBox::set(const GUID& key, const GUID& value) noexcept {
+std::expected<void, Error> AttributesBox::setGuid(const GUID& key, const GUID& value) noexcept {
     HRESULT hr = pAttributes_->SetGUID(key, value);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pAttributes_->SetGUID failed"}};
+    }
+    return {};
+}
+
+std::expected<void, Error> AttributesBox::setUnknown(const GUID& key, IUnknown* pUnknown) noexcept {
+    HRESULT hr = pAttributes_->SetUnknown(key, pUnknown);
+    if (FAILED(hr)) {
+        return std::unexpected{Error{hr, "pAttributes_->SetUnknown failed"}};
     }
     return {};
 }

@@ -3,10 +3,10 @@
 #include <expected>
 #include <vector>
 
+#include "tcap/camera/mf/media_type.hpp"
+#include "tcap/camera/mf/reader.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/media_type.hpp"
-#include "tcap/platforms/mf/reader.hpp"
 
 namespace tcap::mf {
 

@@ -11,6 +11,11 @@ class SampleBox {
     SampleBox(IMFSample* pSample) noexcept;
 
 public:
+    SampleBox() noexcept : pSample_(nullptr) {}
+    SampleBox& operator=(SampleBox&& rhs) noexcept {
+        pSample_ = std::exchange(rhs.pSample_, nullptr);
+        return *this;
+    }
     SampleBox(SampleBox&& rhs) noexcept;
     ~SampleBox() noexcept;
 

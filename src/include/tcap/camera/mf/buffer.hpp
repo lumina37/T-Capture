@@ -4,9 +4,9 @@
 
 #include <mfobjects.h>
 
+#include "tcap/camera/mf/sample.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/sample.hpp"
 
 namespace tcap::mf {
 

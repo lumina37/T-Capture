@@ -1,4 +1,4 @@
 #pragma once
 
-#include "tcap/platforms.hpp"
+#include "tcap/camera.hpp"
 #include "tcap/utils.hpp"

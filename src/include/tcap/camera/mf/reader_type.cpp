@@ -2,12 +2,12 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
+#include "tcap/camera/mf/media_type.hpp"
+#include "tcap/camera/mf/reader.hpp"
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/media_type.hpp"
-#include "tcap/platforms/mf/reader.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/reader_type.hpp"
+#    include "tcap/camera/mf/reader_type.hpp"
 #endif
 
 namespace tcap::mf {

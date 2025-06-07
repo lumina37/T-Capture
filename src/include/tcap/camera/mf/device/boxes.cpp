@@ -3,12 +3,12 @@
 #include <mfidl.h>
 #include <mfobjects.h>
 
+#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
-#include "tcap/platforms/mf/device/box.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/device/boxes.hpp"
+#    include "tcap/camera/mf/device/boxes.hpp"
 #endif
 
 namespace tcap::mf {
@@ -23,7 +23,7 @@ std::expected<DeviceBoxes, Error> DeviceBoxes::create() noexcept {
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
 
-    auto setRes = attrsBox.set(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID);
+    auto setRes = attrsBox.setGuid(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID);
     if (!setRes) return std::unexpected{std::move(setRes.error())};
 
     UINT32 deviceCount = 0;

@@ -8,7 +8,7 @@
 #include "tcap/helper/mf/wstring.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/device/box.hpp"
+#    include "tcap/camera/mf/device/box.hpp"
 #endif
 
 namespace tcap::mf {

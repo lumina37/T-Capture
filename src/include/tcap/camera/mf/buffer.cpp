@@ -1,10 +1,10 @@
 ﻿#include <mfobjects.h>
 
+#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/device/box.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/buffer.hpp"
+#    include "tcap/camera/mf/buffer.hpp"
 #endif
 
 namespace tcap::mf {

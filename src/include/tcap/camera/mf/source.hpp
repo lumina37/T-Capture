@@ -5,9 +5,9 @@
 
 #include <mfidl.h>
 
+#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
-#include "tcap/platforms/mf/device/box.hpp"
 
 namespace tcap::mf {
 
