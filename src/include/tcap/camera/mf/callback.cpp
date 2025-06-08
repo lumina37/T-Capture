@@ -12,7 +12,7 @@ SampleCallback::SampleCallback(SampleCallback&& rhs) noexcept
       err_(std::move(rhs.err_)) {}
 
 STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
-                                          IMFSample* pSample) {
+                                          IMFSample* pSample) noexcept {
     if (FAILED(hr)) {
         err_ = {hr, "OnReadSample failed"};
         return S_OK;

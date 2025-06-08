@@ -14,6 +14,8 @@ class SampleCallback;
 class SampleAwaitable {
 public:
     SampleAwaitable(SampleCallback* pCallback) noexcept : pCallback_(pCallback) {}
+    SampleAwaitable(const SampleAwaitable&) = delete;
+    SampleAwaitable(SampleAwaitable&&) = delete;  // Pinned in memory
 
     bool await_ready() noexcept {
         return false;  // always suspend
