@@ -7,7 +7,7 @@ namespace tcap {
 
 class Error {
 public:
-    int code{0};
+    int code;
     std::source_location source;
     std::string msg;
 

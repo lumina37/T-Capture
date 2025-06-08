@@ -6,6 +6,8 @@
 
 namespace tcap::mf {
 
+SampleCallback::SampleCallback() noexcept : pReader_(nullptr), currentAwaitable_(nullptr), err_(0) {}
+
 SampleCallback::SampleCallback(SampleCallback&& rhs) noexcept
     : pReader_(std::exchange(rhs.pReader_, nullptr)),
       currentAwaitable_(std::exchange(rhs.currentAwaitable_, nullptr)),
