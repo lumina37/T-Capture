@@ -12,4 +12,22 @@ SampleCallback::SampleCallback(SampleCallback&& rhs) noexcept
       refCount_(rhs.refCount_),
       err_(std::move(rhs.err_)) {}
 
+STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
+                                          IMFSample* pSample) {
+    if (FAILED(hr)) {
+        err_ = {hr, "OnReadSample failed"};
+        return S_OK;
+    }
+    if (pSample == nullptr) {
+        _sample();
+        return S_OK;
+    }
+
+    pSample->AddRef();
+    currentAwaitable_->setPSample(pSample);
+    currentAwaitable_->resume();
+
+    return S_OK;
+}
+
 }  // namespace tcap::mf

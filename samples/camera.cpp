@@ -1,8 +1,6 @@
 #include <fstream>
 #include <thread>
 
-#include <mfobjects.h>
-
 #include "sample_helper.hpp"
 #include "tcap.hpp"
 #include "tcap/helper/charset.hpp"

@@ -49,22 +49,7 @@ public:
 
     /* IMFSourceReaderCallback impl */
     STDMETHODIMP OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
-                              IMFSample* pSample) override {
-        if (FAILED(hr)) {
-            err_ = {hr, "OnReadSample failed"};
-            return S_OK;
-        }
-        if (pSample == nullptr) {
-            _sample();
-            return S_OK;
-        }
-
-        pSample->AddRef();
-        currentAwaitable_->setPSample(pSample);
-        currentAwaitable_->resume();
-
-        return S_OK;
-    }
+                              IMFSample* pSample) override;
     STDMETHODIMP OnEvent(DWORD, IMFMediaEvent*) override { return S_OK; }
     STDMETHODIMP OnFlush(DWORD) override { return S_OK; }
     /* IMFSourceReaderCallback impl */
