@@ -17,8 +17,8 @@ class ReaderBox {
     ReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
 
 public:
-    ReaderBox(ReaderBox&& rhs) noexcept;
-    ~ReaderBox() noexcept;
+    TCAP_API ReaderBox(ReaderBox&& rhs) noexcept;
+    TCAP_API ~ReaderBox() noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<ReaderBox, Error> create(const SourceBox& sourceBox) noexcept;
 

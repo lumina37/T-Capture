@@ -13,8 +13,8 @@ class SampleBox {
     SampleBox(IMFSample* pSample) noexcept;
 
 public:
-    SampleBox(SampleBox&& rhs) noexcept;
-    ~SampleBox() noexcept;
+    TCAP_API SampleBox(SampleBox&& rhs) noexcept;
+    TCAP_API ~SampleBox() noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<SampleBox, Error> create(IMFSample* pSample) noexcept;
 

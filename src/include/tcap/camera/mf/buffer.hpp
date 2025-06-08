@@ -14,8 +14,8 @@ class BufferBox {
     BufferBox(IMFMediaBuffer* pBuffer) noexcept;
 
 public:
-    BufferBox(BufferBox&& rhs) noexcept;
-    ~BufferBox() noexcept;
+    TCAP_API BufferBox(BufferBox&& rhs) noexcept;
+    TCAP_API ~BufferBox() noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<BufferBox, Error> create(SampleBox& sampleBox) noexcept;
 

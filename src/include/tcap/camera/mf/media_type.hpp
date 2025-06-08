@@ -22,8 +22,8 @@ class MediaTypeBox {
                  int fpsDenominator) noexcept;
 
 public:
-    MediaTypeBox(MediaTypeBox&& rhs) noexcept;
-    ~MediaTypeBox() noexcept;
+    TCAP_API MediaTypeBox(MediaTypeBox&& rhs) noexcept;
+    TCAP_API ~MediaTypeBox() noexcept;
 
     // this will take the lifetime of the `IMFMediaType*`
     [[nodiscard]] TCAP_API static std::expected<MediaTypeBox, Error> create(IMFMediaType* pMediaType) noexcept;
