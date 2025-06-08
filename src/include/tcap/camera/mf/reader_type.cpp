@@ -26,6 +26,7 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const ReaderBox& reade
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pReader->GetCurrentMediaType failed"}};
     }
+    pCurrMediaType->AddRef();
     auto currMediaTypeBoxRes = MediaTypeBox::create(pCurrMediaType);
     if (!currMediaTypeBoxRes) return std::unexpected{std::move(currMediaTypeBoxRes.error())};
     auto& currMediaTypeBox = currMediaTypeBoxRes.value();
@@ -40,6 +41,7 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const ReaderBox& reade
         if (FAILED(hr)) {
             return std::unexpected{Error{hr, "pReader->GetNativeMediaType failed"}};
         }
+        pMediaType->AddRef();
 
         auto nativeMediaTypeBoxRes = MediaTypeBox::create(pMediaType);
         if (!nativeMediaTypeBoxRes) return std::unexpected{std::move(nativeMediaTypeBoxRes.error())};

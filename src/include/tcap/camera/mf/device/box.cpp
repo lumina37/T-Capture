@@ -37,6 +37,8 @@ DeviceBox::~DeviceBox() noexcept {
 }
 
 std::expected<DeviceBox, Error> DeviceBox::create(IMFActivate* pDevice) noexcept {
+    pDevice->AddRef();
+
     auto uuidWStrBoxRes = query(pDevice, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK);
     if (!uuidWStrBoxRes) return std::unexpected{Error{std::move(uuidWStrBoxRes.error())}};
     auto& uuidWStrBox = uuidWStrBoxRes.value();

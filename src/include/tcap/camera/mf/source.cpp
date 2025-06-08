@@ -34,6 +34,7 @@ std::expected<SourceBox, Error> SourceBox::create(std::shared_ptr<DeviceBox> pDe
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pDevice->ActivateObject failed"}};
     }
+    pSource->AddRef();
 
     return SourceBox{std::move(pDeviceBox), pSource};
 }

@@ -11,9 +11,9 @@ struct SimpleTask {
     struct promise_type {
         SimpleTask get_return_object() { return {}; }
         std::suspend_never initial_suspend() noexcept { return {}; }
-        std::suspend_never final_suspend() noexcept { return {}; }
+        std::suspend_always final_suspend() noexcept { return {}; }
         void return_void() noexcept {}
-        void unhandled_exception() { std::terminate(); }
+        void unhandled_exception() {}
     };
 };
 
@@ -49,10 +49,9 @@ int main() {
     std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
 
     std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);
-    for (int i = 0; i < 5; i++) {
-        SampleOneFrame(frameData, readerBox);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
+
+    SampleOneFrame(frameData, readerBox);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
     tcap::mf::globalDestroy();
 }

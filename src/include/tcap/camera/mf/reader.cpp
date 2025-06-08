@@ -1,8 +1,10 @@
-﻿#include <mfidl.h>
+﻿#include <memory>
+
+#include <mfidl.h>
 #include <mfreadwrite.h>
 
-#include "tcap/camera/mf/async.hpp"
-#include "tcap/camera/mf/sample.hpp"
+#include "tcap/camera/mf/callback.hpp"
+#include "tcap/camera/mf/coroutine.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
@@ -13,14 +15,16 @@
 
 namespace tcap::mf {
 
-ReaderBox::ReaderBox(IMFSourceReader* pReader, SampleCallback* pSampleCallback) noexcept
-    : pReader_(pReader), pSampleCallback_(pSampleCallback) {}
+ReaderBox::ReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
+    : pReader_(pReader), pSampleCallback_(std::move(pSampleCallback)) {}
 
 ReaderBox::ReaderBox(ReaderBox&& rhs) noexcept
-    : pReader_(std::exchange(rhs.pReader_, nullptr)), pSampleCallback_(std::exchange(rhs.pSampleCallback_, nullptr)) {}
+    : pReader_(std::exchange(rhs.pReader_, nullptr)), pSampleCallback_(std::move(rhs.pSampleCallback_)) {}
 
 ReaderBox::~ReaderBox() noexcept {
     if (pReader_ == nullptr) return;
+    pSampleCallback_->Release();
+    pSampleCallback_ = nullptr;
     pReader_->Release();
     pReader_ = nullptr;
 }
@@ -30,8 +34,9 @@ std::expected<ReaderBox, Error> ReaderBox::create(const SourceBox& sourceBox) no
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
 
-    auto* pSampleCallback = new SampleCallback;
-    auto setRes = attrsBox.setUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, pSampleCallback);
+    auto pSampleCallback = std::make_unique<SampleCallback>();
+    pSampleCallback->AddRef();
+    auto setRes = attrsBox.setUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, pSampleCallback.get());
     if (!setRes) return std::unexpected{std::move(setRes.error())};
 
     IMFSourceReader* pReader;
@@ -40,30 +45,13 @@ std::expected<ReaderBox, Error> ReaderBox::create(const SourceBox& sourceBox) no
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
     }
+    pReader->AddRef();
 
-    pSampleCallback->pReader_ = pReader;
+    pSampleCallback->setPReader(pReader);
 
-    return ReaderBox{pReader, pSampleCallback};
+    return ReaderBox{pReader, std::move(pSampleCallback)};
 }
 
-std::expected<SampleBox, Error> ReaderBox::blockingSample() noexcept {
-    DWORD streamIndex, flags;
-    LONGLONG llTimeStamp;
-    IMFSample* pSample;
-    const HRESULT hr =
-        pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &flags, &llTimeStamp, &pSample);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader_->ReadSample failed"}};
-    }
-    if (pSample == nullptr) {
-        return std::unexpected{Error{-1, "pSample is nullptr"}};
-    }
-
-    SampleBox sampleBox = SampleBox::create(pSample).value();
-
-    return sampleBox;
-}
-
-SampleCallback::SampleAwaitable ReaderBox::sample() noexcept { return pSampleCallback_->sample(); }
+SampleAwaitable ReaderBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
 
 }  // namespace tcap::mf

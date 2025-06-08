@@ -1,6 +1,5 @@
 ﻿#include <mfobjects.h>
 
-#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/helper/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
@@ -29,6 +28,7 @@ std::expected<BufferBox, Error> BufferBox::create(SampleBox& sampleBox) noexcept
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pSample->ConvertToContiguousBuffer failed"}};
     }
+    pBuffer->AddRef();
 
     return BufferBox{pBuffer};
 }

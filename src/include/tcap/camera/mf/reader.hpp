@@ -1,12 +1,12 @@
 #pragma once
 
 #include <expected>
+#include <memory>
 
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
-#include "tcap/camera/mf/async.hpp"
-#include "tcap/camera/mf/sample.hpp"
+#include "tcap/camera/mf/coroutine.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
@@ -14,7 +14,7 @@
 namespace tcap::mf {
 
 class ReaderBox {
-    ReaderBox(IMFSourceReader* pReader, SampleCallback* pSampleCallback) noexcept;
+    ReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
 
 public:
     ReaderBox(ReaderBox&& rhs) noexcept;
@@ -24,12 +24,11 @@ public:
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 
-    [[nodiscard]] TCAP_API std::expected<SampleBox, Error> blockingSample() noexcept;
-    [[nodiscard]] TCAP_API SampleCallback::SampleAwaitable sample() noexcept;
+    [[nodiscard]] TCAP_API SampleAwaitable sample() noexcept;
 
 private:
     IMFSourceReader* pReader_;
-    SampleCallback* pSampleCallback_;
+    std::unique_ptr<SampleCallback> pSampleCallback_;
 };
 
 }  // namespace tcap::mf
