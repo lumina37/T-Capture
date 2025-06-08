@@ -15,17 +15,10 @@ class SampleCallback : public IMFSourceReaderCallback {
 public:
     SampleCallback() noexcept = default;
     SampleCallback(SampleCallback&& rhs) noexcept;
-    virtual ~SampleCallback() = default;
+    virtual ~SampleCallback() noexcept = default;
 
     void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }
     void setCurrentAwaitable(SampleAwaitable* awaitable) noexcept { currentAwaitable_ = awaitable; }
-    void _sampleNonBlock() {
-        std::unique_lock lock(mutex_);
-        HRESULT hr = pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
-        if (FAILED(hr)) {
-            err_ = {hr, "pReader_->ReadSample failed"};
-        }
-    }
 
     /* IMFSourceReaderCallback impl */
     // !!! Main logic of the reader callback !!!
@@ -33,14 +26,16 @@ public:
     // then we will call `SampleAwaitable::setPSample` to set the coroutine result
     // and finally call `SampleAwaitable::resume` to resume the coroutine
     STDMETHODIMP OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
-                              IMFSample* pSample) override;
-    STDMETHODIMP OnEvent(DWORD, IMFMediaEvent*) override { return S_OK; }
-    STDMETHODIMP OnFlush(DWORD) override { return S_OK; }
+                              IMFSample* pSample) noexcept override;
+    STDMETHODIMP OnEvent(DWORD, IMFMediaEvent*) noexcept override { return S_OK; }
+    STDMETHODIMP OnFlush(DWORD) noexcept override { return S_OK; }
     /* IMFSourceReaderCallback impl */
 
     friend class SampleAwaitable;
 
 private:
+    void sampleNonBlock() noexcept;
+
     IMFSourceReader* pReader_;
     SampleAwaitable* currentAwaitable_;
     Error err_;

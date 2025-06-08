@@ -18,7 +18,7 @@ STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD
         return S_OK;
     }
     if (pSample == nullptr) {
-        _sampleNonBlock();
+        sampleNonBlock();
         return S_OK;
     }
 
@@ -27,6 +27,14 @@ STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD
     currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
 
     return S_OK;
+}
+
+void SampleCallback::sampleNonBlock() noexcept {
+    std::unique_lock lock(mutex_);
+    HRESULT hr = pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
+    if (FAILED(hr)) {
+        err_ = {hr, "pReader_->ReadSample failed"};
+    }
 }
 
 }  // namespace tcap::mf

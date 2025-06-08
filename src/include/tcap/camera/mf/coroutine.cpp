@@ -11,13 +11,13 @@
 
 namespace tcap::mf {
 
-void SampleAwaitable::await_suspend(std::coroutine_handle<> handle) {
+void SampleAwaitable::await_suspend(std::coroutine_handle<> handle) noexcept {
     handle_ = handle;
     pCallback_->setCurrentAwaitable(this);
-    pCallback_->_sampleNonBlock();  // would return immediately without blocking
+    pCallback_->sampleNonBlock();  // would return immediately without blocking
 }
 
-std::expected<SampleBox, Error> SampleAwaitable::await_resume() {
+std::expected<SampleBox, Error> SampleAwaitable::await_resume() noexcept {
     std::unique_lock lock(pCallback_->mutex_);
     if (pCallback_->err_.code != 0) {
         return std::unexpected{std::move(pCallback_->err_)};
