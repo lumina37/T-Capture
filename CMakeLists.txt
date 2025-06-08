@@ -21,7 +21,6 @@ option(TCAP_VERBOSE_WARNING "Show verbose compiler warnings" OFF)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 if (WIN32)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/windows")
     find_package(MediaFoundation)
 endif ()
 

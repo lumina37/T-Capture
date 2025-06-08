@@ -9,7 +9,6 @@ namespace tcap::mf {
 SampleCallback::SampleCallback(SampleCallback&& rhs) noexcept
     : pReader_(std::exchange(rhs.pReader_, nullptr)),
       currentAwaitable_(std::exchange(rhs.currentAwaitable_, nullptr)),
-      refCount_(rhs.refCount_),
       err_(std::move(rhs.err_)) {}
 
 STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
@@ -19,13 +18,13 @@ STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD
         return S_OK;
     }
     if (pSample == nullptr) {
-        _sample();
+        _sampleNonBlock();
         return S_OK;
     }
 
     pSample->AddRef();
     currentAwaitable_->setPSample(pSample);
-    currentAwaitable_->resume();
+    currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
 
     return S_OK;
 }

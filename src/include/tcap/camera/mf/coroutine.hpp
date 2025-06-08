@@ -15,11 +15,18 @@ class SampleAwaitable {
 public:
     SampleAwaitable(SampleCallback* pCallback) noexcept : pCallback_(pCallback) {}
 
-    bool await_ready() { return false; }
+    bool await_ready() {
+        return false;  // Always suspend
+    }
+    // In this func we will call `ReadSample` to asynchronously request one frame
     void await_suspend(std::coroutine_handle<> handle);
+    // After resuming by the reader callback (`SampleCallback::OnReadSample`)
+    // we return the `pSample_` as the result to the `co_await` caller
     std::expected<SampleBox, Error> await_resume();
 
+    // This interface is for `SampleCallback::OnReadSample` to resume the coroutine
     void resume() noexcept { handle_.resume(); }
+    // This interface is for `SampleCallback::OnReadSample` to set the `pSample_` as result
     void setPSample(IMFSample* pSample) noexcept { pSample_ = pSample; }
 
 private:

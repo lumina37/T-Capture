@@ -17,37 +17,21 @@ public:
     SampleCallback(SampleCallback&& rhs) noexcept;
     virtual ~SampleCallback() = default;
 
-    // Helper functions
     void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }
     void setCurrentAwaitable(SampleAwaitable* awaitable) noexcept { currentAwaitable_ = awaitable; }
-    void _sample() {
+    void _sampleNonBlock() {
         std::unique_lock lock(mutex_);
         HRESULT hr = pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
         if (FAILED(hr)) {
             err_ = {hr, "pReader_->ReadSample failed"};
         }
     }
-    /* Awaitable impl */
-
-    /* IUnknown impl */
-    STDMETHODIMP QueryInterface(REFIID iid, void** ppv) override {
-        static const QITAB qit[] = {
-            QITABENT(SampleCallback, IMFSourceReaderCallback),
-            {nullptr},
-        };
-        return QISearch(this, qit, iid, ppv);
-    }
-    STDMETHODIMP_(ULONG) AddRef() override { return InterlockedIncrement(&refCount_); }
-    STDMETHODIMP_(ULONG) Release() override {
-        ULONG uCount = InterlockedDecrement(&refCount_);
-        if (uCount == 0) {
-            delete this;
-        }
-        return uCount;
-    }
-    /* IUnknown impl */
 
     /* IMFSourceReaderCallback impl */
+    // !!! Main logic of the reader callback !!!
+    // In `OnReadSample`, if `pSample` is available,
+    // then we will call `SampleAwaitable::setPSample` to set the coroutine result
+    // and finally call `SampleAwaitable::resume` to resume the coroutine
     STDMETHODIMP OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
                               IMFSample* pSample) override;
     STDMETHODIMP OnEvent(DWORD, IMFMediaEvent*) override { return S_OK; }
@@ -58,11 +42,22 @@ public:
 
 private:
     IMFSourceReader* pReader_;
-    std::mutex mutex_;
     SampleAwaitable* currentAwaitable_;
-
-    LONG refCount_;
     Error err_;
+    std::mutex mutex_;
+
+public:
+    /* IUnknown impl (Don't need to care) */
+    STDMETHODIMP QueryInterface(REFIID iid, void** ppv) override {
+        static const QITAB qit[] = {
+            QITABENT(SampleCallback, IMFSourceReaderCallback),
+            {nullptr},
+        };
+        return QISearch(this, qit, iid, ppv);
+    }
+    STDMETHODIMP_(ULONG) AddRef() override { return 1; }
+    STDMETHODIMP_(ULONG) Release() override { return 0; }
+    /* IUnknown impl */
 };
 
 }  // namespace tcap::mf
