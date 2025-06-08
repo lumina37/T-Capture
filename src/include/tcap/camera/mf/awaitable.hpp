@@ -42,5 +42,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/coroutine.cpp"
+#    include "tcap/platforms/mf/awaitable.cpp"
 #endif

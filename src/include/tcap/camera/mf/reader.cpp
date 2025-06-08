@@ -3,8 +3,8 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
+#include "tcap/camera/mf/awaitable.hpp"
 #include "tcap/camera/mf/callback.hpp"
-#include "tcap/camera/mf/coroutine.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"

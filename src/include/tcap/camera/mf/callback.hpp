@@ -6,7 +6,7 @@
 #include <mfreadwrite.h>
 #include <shlwapi.h>
 
-#include "tcap/camera/mf/coroutine.hpp"
+#include "tcap/camera/mf/awaitable.hpp"
 #include "tcap/camera/mf/sample.hpp"
 
 namespace tcap::mf {
