@@ -6,6 +6,7 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
+#include "tcap/camera/mf/media_type.hpp"
 #include "tcap/camera/mf/reader/async/awaitable.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/common/defines.h"
@@ -19,12 +20,12 @@ class ReaderAsyncBox {
 public:
     ReaderAsyncBox(const ReaderAsyncBox&) = delete;
     TCAP_API ReaderAsyncBox(ReaderAsyncBox&&) noexcept = default;
-    TCAP_API ~ReaderAsyncBox() noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<ReaderAsyncBox, Error> create(const SourceBox& sourceBox) noexcept;
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 
+    [[nodiscard]] TCAP_API std::expected<void, Error> setMediaType(const MediaTypeBox& mediaTypeBox) noexcept;
     [[nodiscard]] TCAP_API SampleAwaitable sample() noexcept;
 
 private:

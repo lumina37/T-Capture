@@ -2,8 +2,8 @@
 
 #include <expected>
 
-#include "atlbase.h"
-#include "mfobjects.h"
+#include <atlbase.h>
+#include <mfobjects.h>
 
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
@@ -29,6 +29,7 @@ public:
     [[nodiscard]] TCAP_API static std::expected<MediaTypeBox, Error> create(
         CComPtr<IMFMediaType>&& pMediaType) noexcept;
 
+    [[nodiscard]] TCAP_API IMFMediaType* getPMediaType() const noexcept { return pMediaType_; }
     [[nodiscard]] TCAP_API GUID getSubTypeGuid() const noexcept { return subTypeGuid_; }
     [[nodiscard]] TCAP_API StreamSubType getSubType() const noexcept { return subType_; }
     [[nodiscard]] TCAP_API int getWidth() const noexcept { return width_; }

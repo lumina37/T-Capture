@@ -20,12 +20,6 @@ ReaderAsyncBox::ReaderAsyncBox(CComPtr<IMFSourceReader>&& pReader,
                                std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
     : pReader_(std::move(pReader)), pSampleCallback_(std::move(pSampleCallback)) {}
 
-ReaderAsyncBox::~ReaderAsyncBox() noexcept {
-    // if (pSampleCallback_ == nullptr) return;
-    // pSampleCallback_->Release();
-    // pSampleCallback_ = nullptr;
-}
-
 std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sourceBox) noexcept {
     auto attrsBoxRes = AttributesBox::create(1);
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
@@ -49,6 +43,16 @@ std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sou
     pSampleCallback->setPReader(pReader);
 
     return ReaderAsyncBox{std::move(pReader), std::move(pSampleCallback)};
+}
+
+std::expected<void, Error> ReaderAsyncBox::setMediaType(const MediaTypeBox& mediaTypeBox) noexcept {
+    IMFMediaType* pMediaType = mediaTypeBox.getPMediaType();
+
+    const HRESULT hr = pReader_->SetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
+    if (FAILED(hr)) {
+        return std::unexpected{Error{hr, "pReader_->SetCurrentMediaType failed"}};
+    }
+    return {};
 }
 
 SampleAwaitable ReaderAsyncBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }

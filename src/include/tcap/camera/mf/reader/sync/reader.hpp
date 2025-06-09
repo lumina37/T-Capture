@@ -6,6 +6,7 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
+#include "tcap/camera/mf/media_type.hpp"
 #include "tcap/camera/mf/sample.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/common/defines.h"
@@ -24,6 +25,7 @@ public:
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 
+    [[nodiscard]] TCAP_API std::expected<void, Error> setMediaType(const MediaTypeBox& mediaTypeBox) noexcept;
     [[nodiscard]] TCAP_API std::expected<SampleBox, Error> sample() noexcept;
 
 private:

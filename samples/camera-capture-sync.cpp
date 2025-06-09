@@ -17,8 +17,16 @@ int main() {
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
     auto readerBox = tcap::mf::ReaderSyncBox::create(sourceBox) | unwrap;
 
-    std::vector<std::byte> frameData(640 * 360 / 2 * 3);
+    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
+    const auto& oldMediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
+    std::println("width={}, height={}", oldMediaTypeBox.getWidth(), oldMediaTypeBox.getHeight());
 
+    const auto& mediaTypeBox = readerTypeBox.getNativeMediaTypeBoxes().back();
+    readerBox.setMediaType(mediaTypeBox) | unwrap;
+    std::println("After switching", (int)mediaTypeBox.getSubType());
+    std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
+
+    std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         auto sampleBoxRes = readerBox.sample();
