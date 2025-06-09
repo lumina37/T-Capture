@@ -1,4 +1,5 @@
-﻿#include <mfapi.h>
+﻿#include <atlbase.h>
+#include <mfapi.h>
 #include <mfidl.h>
 
 #include "tcap/camera/mf/source.hpp"
@@ -16,9 +17,9 @@ StreamSubType mapGuidToStreamSubType(const GUID& guid) {
     return StreamSubType::eUnknown;
 }
 
-MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
-                           int fpsDenominator) noexcept
-    : pMediaType_(pMediaType),
+MediaTypeBox::MediaTypeBox(CComPtr<IMFMediaType>&& pMediaType, GUID subTypeGuid, int width, int height,
+                           int fpsNumerator, int fpsDenominator) noexcept
+    : pMediaType_(std::move(pMediaType)),
       subTypeGuid_(subTypeGuid),
       subType_(mapGuidToStreamSubType(subTypeGuid)),
       width_(width),
@@ -27,23 +28,7 @@ MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width
       fpsDenominator_(fpsDenominator),
       approxFps_((float)fpsNumerator / (float)fpsDenominator) {}
 
-MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
-    : pMediaType_(std::exchange(rhs.pMediaType_, nullptr)),
-      subTypeGuid_(rhs.subTypeGuid_),
-      subType_(rhs.subType_),
-      width_(rhs.width_),
-      height_(rhs.height_),
-      fpsNumerator_(rhs.fpsNumerator_),
-      fpsDenominator_(rhs.fpsDenominator_),
-      approxFps_(rhs.approxFps_) {}
-
-MediaTypeBox::~MediaTypeBox() noexcept {
-    if (pMediaType_ == nullptr) return;
-    pMediaType_->Release();
-    pMediaType_ = nullptr;
-}
-
-std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType) noexcept {
+std::expected<MediaTypeBox, Error> MediaTypeBox::create(CComPtr<IMFMediaType>&& pMediaType) noexcept {
     HRESULT hr;
 
     GUID subTypeGuid;
@@ -67,7 +52,8 @@ std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType
         return std::unexpected{Error{hr, "fpsDenominator is 0"}};
     }
 
-    return MediaTypeBox{pMediaType, subTypeGuid, (int)width, (int)height, (int)fpsNumerator, (int)fpsDenominator};
+    return MediaTypeBox{std::move(pMediaType), subTypeGuid,       (int)width,
+                        (int)height,           (int)fpsNumerator, (int)fpsDenominator};
 }
 
 }  // namespace tcap::mf

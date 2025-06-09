@@ -9,16 +9,10 @@
 
 namespace tcap::mf {
 
-SampleBox::SampleBox(IMFSample* pSample) noexcept : pSample_(pSample) {}
+SampleBox::SampleBox(CComPtr<IMFSample>&& pSample) noexcept : pSample_(pSample) {}
 
-SampleBox::SampleBox(SampleBox&& rhs) noexcept : pSample_(std::exchange(rhs.pSample_, nullptr)) {}
-
-SampleBox::~SampleBox() noexcept {
-    if (pSample_ == nullptr) return;
-    pSample_->Release();
-    pSample_ = nullptr;
+std::expected<SampleBox, Error> SampleBox::create(CComPtr<IMFSample>&& pSample) noexcept {
+    return SampleBox{std::move(pSample)};
 }
-
-std::expected<SampleBox, Error> SampleBox::create(IMFSample* pSample) noexcept { return SampleBox{pSample}; }
 
 }  // namespace tcap::mf

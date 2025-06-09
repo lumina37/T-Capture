@@ -3,6 +3,7 @@
 #include <expected>
 #include <memory>
 
+#include <atlbase.h>
 #include <mfidl.h>
 
 #include "tcap/camera/mf/device/box.hpp"
@@ -12,11 +13,11 @@
 namespace tcap::mf {
 
 class SourceBox {
-    SourceBox(std::shared_ptr<DeviceBox>&& pDeviceBox, IMFMediaSource* pSource) noexcept;
+    SourceBox(std::shared_ptr<DeviceBox>&& pDeviceBox, CComPtr<IMFMediaSource>&& pSource) noexcept;
 
 public:
     SourceBox(const SourceBox&) = delete;
-    TCAP_API SourceBox(SourceBox&& rhs) noexcept;
+    TCAP_API SourceBox(SourceBox&&) noexcept = default;
     TCAP_API ~SourceBox() noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<SourceBox, Error> create(
@@ -26,7 +27,7 @@ public:
 
 private:
     std::shared_ptr<DeviceBox> pDeviceBox_;
-    IMFMediaSource* pSource_;
+    CComPtr<IMFMediaSource> pSource_;
 };
 
 }  // namespace tcap::mf

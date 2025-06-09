@@ -35,7 +35,8 @@ std::expected<DeviceBoxes, Error> DeviceBoxes::create() noexcept {
     std::vector<std::shared_ptr<DeviceBox>> deviceBoxes;
     deviceBoxes.reserve(deviceCount);
     for (UINT32 i = 0; i < deviceCount; i++) {
-        auto deviceBoxRes = DeviceBox::create(pDevices[i]);
+        CComPtr pDevice{pDevices[i]};
+        auto deviceBoxRes = DeviceBox::create(std::move(pDevice));
         if (!deviceBoxRes) return std::unexpected{std::move(deviceBoxRes.error())};
         auto pDeviceBox = std::make_shared<DeviceBox>(std::move(deviceBoxRes.value()));
         deviceBoxes.push_back(std::move(pDeviceBox));

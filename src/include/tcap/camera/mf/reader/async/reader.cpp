@@ -15,18 +15,14 @@
 
 namespace tcap::mf {
 
-AsyncReaderBox::AsyncReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
-    : pReader_(pReader), pSampleCallback_(std::move(pSampleCallback)) {}
-
-AsyncReaderBox::AsyncReaderBox(AsyncReaderBox&& rhs) noexcept
-    : pReader_(std::exchange(rhs.pReader_, nullptr)), pSampleCallback_(std::move(rhs.pSampleCallback_)) {}
+AsyncReaderBox::AsyncReaderBox(CComPtr<IMFSourceReader>&& pReader,
+                               std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
+    : pReader_(std::move(pReader)), pSampleCallback_(std::move(pSampleCallback)) {}
 
 AsyncReaderBox::~AsyncReaderBox() noexcept {
-    if (pReader_ == nullptr) return;
+    if (pSampleCallback_ == nullptr) return;
     pSampleCallback_->Release();
     pSampleCallback_ = nullptr;
-    pReader_->Release();
-    pReader_ = nullptr;
 }
 
 std::expected<AsyncReaderBox, Error> AsyncReaderBox::create(const SourceBox& sourceBox) noexcept {
@@ -35,21 +31,20 @@ std::expected<AsyncReaderBox, Error> AsyncReaderBox::create(const SourceBox& sou
     auto& attrsBox = attrsBoxRes.value();
 
     auto pSampleCallback = std::make_unique<SampleCallback>();
-    pSampleCallback->AddRef();
     auto setRes = attrsBox.setUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, pSampleCallback.get());
     if (!setRes) return std::unexpected{std::move(setRes.error())};
 
-    IMFSourceReader* pReader;
+    CComPtr<IMFSourceReader> pReader;
     auto pSource = sourceBox.getPSource();
     const HRESULT hr = MFCreateSourceReaderFromMediaSource(pSource, attrsBox.getPAttributes(), &pReader);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
     }
-    pReader->AddRef();
 
+    (*pReader).AddRef();  // TODO: add ref elsewhere
     pSampleCallback->setPReader(pReader);
 
-    return AsyncReaderBox{pReader, std::move(pSampleCallback)};
+    return AsyncReaderBox{std::move(pReader), std::move(pSampleCallback)};
 }
 
 SampleAwaitable AsyncReaderBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }

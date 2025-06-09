@@ -2,6 +2,7 @@
 
 #include <expected>
 
+#include <atlbase.h>
 #include <mfobjects.h>
 
 #include "tcap/common/defines.h"
@@ -10,19 +11,18 @@
 namespace tcap::mf {
 
 class SampleBox {
-    SampleBox(IMFSample* pSample) noexcept;
+    SampleBox(CComPtr<IMFSample>&& pSample) noexcept;
 
 public:
     SampleBox(const SampleBox&) = delete;
-    TCAP_API SampleBox(SampleBox&& rhs) noexcept;
-    TCAP_API ~SampleBox() noexcept;
+    TCAP_API SampleBox(SampleBox&&) noexcept = default;
 
-    [[nodiscard]] TCAP_API static std::expected<SampleBox, Error> create(IMFSample* pSample) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<SampleBox, Error> create(CComPtr<IMFSample>&& pSample) noexcept;
 
     [[nodiscard]] TCAP_API IMFSample* getPSample() const noexcept { return pSample_; }
 
 private:
-    IMFSample* pSample_;
+    CComPtr<IMFSample> pSample_;
 };
 
 }  // namespace tcap::mf

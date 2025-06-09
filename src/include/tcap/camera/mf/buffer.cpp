@@ -1,4 +1,5 @@
-﻿#include <mfobjects.h>
+﻿#include <atlbase.h>
+#include <mfobjects.h>
 
 #include "tcap/helper/error.hpp"
 
@@ -8,15 +9,7 @@
 
 namespace tcap::mf {
 
-BufferBox::BufferBox(IMFMediaBuffer* pBuffer) noexcept : pBuffer_(pBuffer) {}
-
-BufferBox::BufferBox(BufferBox&& rhs) noexcept : pBuffer_(std::exchange(rhs.pBuffer_, nullptr)) {}
-
-BufferBox::~BufferBox() noexcept {
-    if (pBuffer_ == nullptr) return;
-    pBuffer_->Release();
-    pBuffer_ = nullptr;
-}
+BufferBox::BufferBox(CComPtr<IMFMediaBuffer>&& pBuffer) noexcept : pBuffer_(pBuffer) {}
 
 std::expected<BufferBox, Error> BufferBox::create(SampleBox& sampleBox) noexcept {
     HRESULT hr;

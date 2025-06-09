@@ -1,4 +1,5 @@
-﻿#include <mferror.h>
+﻿#include <atlbase.h>
+#include <mferror.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
@@ -21,19 +22,18 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const AsyncReaderBox& 
 
     IMFSourceReader* pReader = readerBox.getPReader();
 
-    IMFMediaType* pCurrMediaType;
+    CComPtr<IMFMediaType> pCurrMediaType;
     hr = pReader->GetCurrentMediaType(0, &pCurrMediaType);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pReader->GetCurrentMediaType failed"}};
     }
-    pCurrMediaType->AddRef();
-    auto currMediaTypeBoxRes = MediaTypeBox::create(pCurrMediaType);
+    auto currMediaTypeBoxRes = MediaTypeBox::create(std::move(pCurrMediaType));
     if (!currMediaTypeBoxRes) return std::unexpected{std::move(currMediaTypeBoxRes.error())};
     auto& currMediaTypeBox = currMediaTypeBoxRes.value();
 
     std::vector<MediaTypeBox> nativeMediaTypeBoxes;
     for (int mediaTypeIdx = 0;; mediaTypeIdx++) {
-        IMFMediaType* pMediaType;
+        CComPtr<IMFMediaType> pMediaType;
         hr = pReader->GetNativeMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, mediaTypeIdx, &pMediaType);
         if (hr == MF_E_NO_MORE_TYPES) {
             break;
@@ -41,9 +41,8 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const AsyncReaderBox& 
         if (FAILED(hr)) {
             return std::unexpected{Error{hr, "pReader->GetNativeMediaType failed"}};
         }
-        pMediaType->AddRef();
 
-        auto nativeMediaTypeBoxRes = MediaTypeBox::create(pMediaType);
+        auto nativeMediaTypeBoxRes = MediaTypeBox::create(std::move(pMediaType));
         if (!nativeMediaTypeBoxRes) return std::unexpected{std::move(nativeMediaTypeBoxRes.error())};
         nativeMediaTypeBoxes.push_back(std::move(nativeMediaTypeBoxRes.value()));
     }

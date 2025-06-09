@@ -16,7 +16,7 @@ public:
     SampleCallback() noexcept;
     SampleCallback(const SampleCallback&) = delete;
     SampleCallback(SampleCallback&& rhs) noexcept;
-    virtual ~SampleCallback() noexcept = default;
+    virtual ~SampleCallback() noexcept {}
 
     void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }
     void setCurrentAwaitable(SampleAwaitable* awaitable) noexcept { currentAwaitable_ = awaitable; }
