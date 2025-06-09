@@ -1,5 +1,6 @@
 #include <expected>
 
+#include <atlbase.h>
 #include <mfapi.h>
 #include <mfobjects.h>
 
@@ -11,15 +12,7 @@
 
 namespace tcap::mf {
 
-AttributesBox::AttributesBox(IMFAttributes* pAttributes) noexcept : pAttributes_(pAttributes) {}
-
-AttributesBox::AttributesBox(AttributesBox&& rhs) noexcept : pAttributes_(std::exchange(rhs.pAttributes_, nullptr)) {}
-
-AttributesBox::~AttributesBox() noexcept {
-    if (pAttributes_ == nullptr) return;
-    pAttributes_->Release();
-    pAttributes_ = nullptr;
-}
+AttributesBox::AttributesBox(CComPtr<IMFAttributes>&& pAttributes) noexcept : pAttributes_(std::move(pAttributes)) {}
 
 std::expected<AttributesBox, Error> AttributesBox::create(int size) noexcept {
     IMFAttributes* pAttributes;

@@ -2,6 +2,7 @@
 
 #include <expected>
 
+#include <atlbase.h>
 #include <mfobjects.h>
 
 #include "tcap/common/defines.h"
@@ -10,11 +11,11 @@
 namespace tcap::mf {
 
 class AttributesBox {
-    AttributesBox(IMFAttributes* pAttributes) noexcept;
+    AttributesBox(CComPtr<IMFAttributes>&& pAttributes) noexcept;
 
 public:
-    TCAP_API AttributesBox(AttributesBox&& rhs) noexcept;
-    TCAP_API ~AttributesBox() noexcept;
+    AttributesBox(const AttributesBox&) = delete;
+    TCAP_API AttributesBox(AttributesBox&& rhs) noexcept = default;
 
     [[nodiscard]] TCAP_API static std::expected<AttributesBox, Error> create(int size) noexcept;
 
@@ -24,7 +25,7 @@ public:
     [[nodiscard]] TCAP_API std::expected<void, Error> setUnknown(const GUID& key, IUnknown* pUnknown) noexcept;
 
 private:
-    IMFAttributes* pAttributes_;
+    CComPtr<IMFAttributes> pAttributes_;
 };
 
 }  // namespace tcap::mf
