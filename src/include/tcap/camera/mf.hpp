@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "tcap/camera/mf/awaitable.hpp"
 #include "tcap/camera/mf/buffer.hpp"
 #include "tcap/camera/mf/device.hpp"
 #include "tcap/camera/mf/media_type.hpp"

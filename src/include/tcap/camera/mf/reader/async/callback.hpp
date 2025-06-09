@@ -6,7 +6,7 @@
 #include <mfreadwrite.h>
 #include <shlwapi.h>
 
-#include "tcap/camera/mf/awaitable.hpp"
+#include "tcap/camera/mf/reader/async/awaitable.hpp"
 #include "tcap/helper/error.hpp"
 
 namespace tcap::mf {
@@ -59,5 +59,5 @@ public:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/callback.cpp"
+#    include "tcap/camera/mf/reader/async/callback.cpp"
 #endif

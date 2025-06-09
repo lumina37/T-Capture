@@ -1,7 +1,7 @@
 ﻿#include "tcap/helper/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/callback.hpp"
+#    include "tcap/camera/mf/reader/async/callback.hpp"
 #endif
 
 namespace tcap::mf {

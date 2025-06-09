@@ -3,8 +3,8 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
-#include "tcap/camera/mf/awaitable.hpp"
-#include "tcap/camera/mf/callback.hpp"
+#include "tcap/camera/mf/reader/async/awaitable.hpp"
+#include "tcap/camera/mf/reader/async/callback.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
@@ -15,13 +15,13 @@
 
 namespace tcap::mf {
 
-ReaderBox::ReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
+AsyncReaderBox::AsyncReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
     : pReader_(pReader), pSampleCallback_(std::move(pSampleCallback)) {}
 
-ReaderBox::ReaderBox(ReaderBox&& rhs) noexcept
+AsyncReaderBox::AsyncReaderBox(AsyncReaderBox&& rhs) noexcept
     : pReader_(std::exchange(rhs.pReader_, nullptr)), pSampleCallback_(std::move(rhs.pSampleCallback_)) {}
 
-ReaderBox::~ReaderBox() noexcept {
+AsyncReaderBox::~AsyncReaderBox() noexcept {
     if (pReader_ == nullptr) return;
     pSampleCallback_->Release();
     pSampleCallback_ = nullptr;
@@ -29,7 +29,7 @@ ReaderBox::~ReaderBox() noexcept {
     pReader_ = nullptr;
 }
 
-std::expected<ReaderBox, Error> ReaderBox::create(const SourceBox& sourceBox) noexcept {
+std::expected<AsyncReaderBox, Error> AsyncReaderBox::create(const SourceBox& sourceBox) noexcept {
     auto attrsBoxRes = AttributesBox::create(1);
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
@@ -49,9 +49,9 @@ std::expected<ReaderBox, Error> ReaderBox::create(const SourceBox& sourceBox) no
 
     pSampleCallback->setPReader(pReader);
 
-    return ReaderBox{pReader, std::move(pSampleCallback)};
+    return AsyncReaderBox{pReader, std::move(pSampleCallback)};
 }
 
-SampleAwaitable ReaderBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
+SampleAwaitable AsyncReaderBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
 
 }  // namespace tcap::mf

@@ -15,7 +15,7 @@ struct Future {
     };
 };
 
-Future sampleOneFrame(tcap::mf::ReaderBox& readerBox, std::vector<std::byte>& frameData) {
+Future sampleOneFrame(tcap::mf::AsyncReaderBox& readerBox, std::vector<std::byte>& frameData) {
     auto sampleBoxRes = co_await readerBox.sample();
 
     auto& sampleBox = sampleBoxRes.value();
@@ -38,7 +38,7 @@ int main() {
     }
 
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
-    auto readerBox = tcap::mf::ReaderBox::create(sourceBox) | unwrap;
+    auto readerBox = tcap::mf::AsyncReaderBox::create(sourceBox) | unwrap;
 
     auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
     const auto& mediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();

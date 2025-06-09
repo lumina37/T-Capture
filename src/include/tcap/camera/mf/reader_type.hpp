@@ -3,8 +3,8 @@
 #include <expected>
 #include <vector>
 
+#include "reader/async/reader.hpp"
 #include "tcap/camera/mf/media_type.hpp"
-#include "tcap/camera/mf/reader.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
@@ -17,7 +17,7 @@ public:
     ReaderTypeBox(const ReaderTypeBox&) = delete;
     TCAP_API ReaderTypeBox(ReaderTypeBox&&) noexcept = default;
 
-    [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const ReaderBox& readerBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const AsyncReaderBox& readerBox) noexcept;
 
     [[nodiscard]] TCAP_API const std::vector<MediaTypeBox>& getNativeMediaTypeBoxes() const noexcept {
         return nativeMediaTypeBoxes_;
