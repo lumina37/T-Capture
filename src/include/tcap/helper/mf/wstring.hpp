@@ -4,17 +4,19 @@
 
 #include <mfobjects.h>
 
+#include "tcap/common/defines.h"
+
 namespace tcap::mf {
 
 class WStringBox {
 public:
-    WStringBox(WCHAR* pWString, UINT32 len) noexcept;
+    TCAP_API WStringBox(WCHAR* pWString, UINT32 len) noexcept;
 
-    WStringBox(WStringBox&& rhs) noexcept;
-    ~WStringBox() noexcept;
+    TCAP_API WStringBox(WStringBox&& rhs) noexcept;
+    TCAP_API ~WStringBox() noexcept;
 
-    [[nodiscard]] WCHAR* getPWString() const noexcept { return pWString_; }
-    [[nodiscard]] std::wstring_view getWStringView() const noexcept { return {pWString_, len_}; }
+    [[nodiscard]] TCAP_API WCHAR* getPWString() const noexcept { return pWString_; }
+    [[nodiscard]] TCAP_API std::wstring_view getWStringView() const noexcept { return {pWString_, len_}; }
 
 private:
     WCHAR* pWString_;

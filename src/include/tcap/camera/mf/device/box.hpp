@@ -17,6 +17,7 @@ class DeviceBox {
     [[nodiscard]] static std::expected<WStringBox, Error> query(IMFActivate* pDevice, const GUID& key) noexcept;
 
 public:
+    DeviceBox(const DeviceBox&) = delete;
     TCAP_API DeviceBox(DeviceBox&& rhs) noexcept;
     TCAP_API ~DeviceBox() noexcept;
 

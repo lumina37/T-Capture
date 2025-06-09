@@ -17,6 +17,7 @@ class ReaderBox {
     ReaderBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
 
 public:
+    ReaderBox(const ReaderBox&) = delete;
     TCAP_API ReaderBox(ReaderBox&& rhs) noexcept;
     TCAP_API ~ReaderBox() noexcept;
 

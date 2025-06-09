@@ -6,6 +6,7 @@
 #include <mfobjects.h>
 
 #include "tcap/camera/mf/sample.hpp"
+#include "tcap/common/defines.h"
 
 namespace tcap::mf {
 
@@ -13,7 +14,7 @@ class SampleCallback;
 
 class SampleAwaitable {
 public:
-    SampleAwaitable(SampleCallback* pCallback) noexcept : pCallback_(pCallback) {}
+    TCAP_API SampleAwaitable(SampleCallback* pCallback) noexcept : pCallback_(pCallback) {}
     SampleAwaitable(const SampleAwaitable&) = delete;
     SampleAwaitable(SampleAwaitable&&) = delete;  // Pinned in memory
 
@@ -26,12 +27,14 @@ public:
     // we return the `pSample_` as the result to the `co_await` caller
     std::expected<SampleBox, Error> await_resume() noexcept;
 
+    friend class SampleCallback;
+
+private:
     // This interface is for `SampleCallback::OnReadSample` to resume the coroutine
     void resume() noexcept { handle_.resume(); }
     // This interface is for `SampleCallback::OnReadSample` to set the `pSample_` as result
     void setPSample(IMFSample* pSample) noexcept { pSample_ = pSample; }
 
-private:
     SampleCallback* pCallback_;
     std::coroutine_handle<> handle_;
 

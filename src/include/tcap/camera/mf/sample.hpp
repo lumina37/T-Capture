@@ -13,6 +13,7 @@ class SampleBox {
     SampleBox(IMFSample* pSample) noexcept;
 
 public:
+    SampleBox(const SampleBox&) = delete;
     TCAP_API SampleBox(SampleBox&& rhs) noexcept;
     TCAP_API ~SampleBox() noexcept;
 

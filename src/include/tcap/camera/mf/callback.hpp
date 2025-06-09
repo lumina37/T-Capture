@@ -14,6 +14,7 @@ namespace tcap::mf {
 class SampleCallback : public IMFSourceReaderCallback {
 public:
     SampleCallback() noexcept;
+    SampleCallback(const SampleCallback&) = delete;
     SampleCallback(SampleCallback&& rhs) noexcept;
     virtual ~SampleCallback() noexcept = default;
 

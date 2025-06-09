@@ -14,6 +14,9 @@ class ReaderTypeBox {
     ReaderTypeBox(MediaTypeBox&& currentMediaTypeBox, std::vector<MediaTypeBox>&& nativeMediaTypeBoxes) noexcept;
 
 public:
+    ReaderTypeBox(const ReaderTypeBox&) = delete;
+    TCAP_API ReaderTypeBox(ReaderTypeBox&&) noexcept = default;
+
     [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const ReaderBox& readerBox) noexcept;
 
     [[nodiscard]] TCAP_API const std::vector<MediaTypeBox>& getNativeMediaTypeBoxes() const noexcept {

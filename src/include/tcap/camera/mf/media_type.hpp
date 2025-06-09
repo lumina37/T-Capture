@@ -22,6 +22,7 @@ class MediaTypeBox {
                  int fpsDenominator) noexcept;
 
 public:
+    MediaTypeBox(const MediaTypeBox&) = delete;
     TCAP_API MediaTypeBox(MediaTypeBox&& rhs) noexcept;
     TCAP_API ~MediaTypeBox() noexcept;
 

@@ -14,6 +14,7 @@ class BufferBox {
     BufferBox(IMFMediaBuffer* pBuffer) noexcept;
 
 public:
+    BufferBox(const BufferBox&) = delete;
     TCAP_API BufferBox(BufferBox&& rhs) noexcept;
     TCAP_API ~BufferBox() noexcept;
 

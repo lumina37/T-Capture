@@ -15,6 +15,7 @@ class SourceBox {
     SourceBox(std::shared_ptr<DeviceBox>&& pDeviceBox, IMFMediaSource* pSource) noexcept;
 
 public:
+    SourceBox(const SourceBox&) = delete;
     TCAP_API SourceBox(SourceBox&& rhs) noexcept;
     TCAP_API ~SourceBox() noexcept;
 

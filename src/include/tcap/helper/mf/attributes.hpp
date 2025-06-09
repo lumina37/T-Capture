@@ -4,6 +4,7 @@
 
 #include <mfobjects.h>
 
+#include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
 namespace tcap::mf {
@@ -12,15 +13,15 @@ class AttributesBox {
     AttributesBox(IMFAttributes* pAttributes) noexcept;
 
 public:
-    AttributesBox(AttributesBox&& rhs) noexcept;
-    ~AttributesBox() noexcept;
+    TCAP_API AttributesBox(AttributesBox&& rhs) noexcept;
+    TCAP_API ~AttributesBox() noexcept;
 
-    [[nodiscard]] static std::expected<AttributesBox, Error> create(int size) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<AttributesBox, Error> create(int size) noexcept;
 
-    [[nodiscard]] IMFAttributes* getPAttributes() const noexcept { return pAttributes_; }
+    [[nodiscard]] TCAP_API IMFAttributes* getPAttributes() const noexcept { return pAttributes_; }
 
-    [[nodiscard]] std::expected<void, Error> setGuid(const GUID& key, const GUID& value) noexcept;
-    [[nodiscard]] std::expected<void, Error> setUnknown(const GUID& key, IUnknown* pUnknown) noexcept;
+    [[nodiscard]] TCAP_API std::expected<void, Error> setGuid(const GUID& key, const GUID& value) noexcept;
+    [[nodiscard]] TCAP_API std::expected<void, Error> setUnknown(const GUID& key, IUnknown* pUnknown) noexcept;
 
 private:
     IMFAttributes* pAttributes_;

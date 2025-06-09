@@ -14,6 +14,9 @@ class DeviceBoxes {
     DeviceBoxes(std::vector<std::shared_ptr<DeviceBox>>&& deviceBoxes) noexcept;
 
 public:
+    DeviceBoxes(const DeviceBoxes&) = delete;
+    DeviceBoxes(DeviceBoxes&&) noexcept = default;
+
     [[nodiscard]] TCAP_API static std::expected<DeviceBoxes, Error> create() noexcept;
 
     [[nodiscard]] TCAP_API int size() const noexcept { return (int)pDeviceBoxes_.size(); }
