@@ -3,6 +3,7 @@
 #include <coroutine>
 #include <expected>
 
+#include <atlbase.h>
 #include <mfobjects.h>
 
 #include "tcap/camera/mf/sample.hpp"
@@ -33,13 +34,13 @@ private:
     // This interface is for `SampleCallback::OnReadSample` to resume the coroutine
     void resume() noexcept { handle_.resume(); }
     // This interface is for `SampleCallback::OnReadSample` to set the `pSample_` as result
-    void setPSample(IMFSample* pSample) noexcept { pSample_ = pSample; }
+    void setPSample(CComPtr<IMFSample>&& pSample) noexcept { pSample_ = std::move(pSample); }
 
     SampleCallback* pCallback_;
     std::coroutine_handle<> handle_;
 
     // Result
-    IMFSample* pSample_;
+    CComPtr<IMFSample> pSample_;
 };
 
 }  // namespace tcap::mf

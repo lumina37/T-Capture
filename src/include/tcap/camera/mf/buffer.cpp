@@ -16,14 +16,13 @@ std::expected<BufferBox, Error> BufferBox::create(SampleBox& sampleBox) noexcept
 
     IMFSample* pSample = sampleBox.getPSample();
 
-    IMFMediaBuffer* pBuffer;
+    CComPtr<IMFMediaBuffer> pBuffer;
     hr = pSample->ConvertToContiguousBuffer(&pBuffer);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pSample->ConvertToContiguousBuffer failed"}};
     }
-    pBuffer->AddRef();
 
-    return BufferBox{pBuffer};
+    return BufferBox{std::move(pBuffer)};
 }
 
 std::expected<void, Error> BufferBox::copyTo(std::byte* pData) const noexcept {

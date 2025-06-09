@@ -24,8 +24,8 @@ STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD
         return S_OK;
     }
 
-    pSample->AddRef();
-    currentAwaitable_->setPSample(pSample);
+    CComPtr pComSample{pSample};
+    currentAwaitable_->setPSample(std::move(pComSample));
     currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
 
     return S_OK;

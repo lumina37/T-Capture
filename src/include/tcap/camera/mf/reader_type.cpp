@@ -17,7 +17,7 @@ ReaderTypeBox::ReaderTypeBox(MediaTypeBox&& currentMediaTypeBox,
                              std::vector<MediaTypeBox>&& nativeMediaTypeBoxes) noexcept
     : currentMediaTypeBox_(std::move(currentMediaTypeBox)), nativeMediaTypeBoxes_(std::move(nativeMediaTypeBoxes)) {}
 
-std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const AsyncReaderBox& readerBox) noexcept {
+std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const ReaderAsyncBox& readerBox) noexcept {
     HRESULT hr;
 
     IMFSourceReader* pReader = readerBox.getPReader();

@@ -1,5 +1,6 @@
 ﻿#include <memory>
 
+#include <atlbase.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
@@ -15,17 +16,17 @@
 
 namespace tcap::mf {
 
-AsyncReaderBox::AsyncReaderBox(CComPtr<IMFSourceReader>&& pReader,
+ReaderAsyncBox::ReaderAsyncBox(CComPtr<IMFSourceReader>&& pReader,
                                std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
     : pReader_(std::move(pReader)), pSampleCallback_(std::move(pSampleCallback)) {}
 
-AsyncReaderBox::~AsyncReaderBox() noexcept {
-    if (pSampleCallback_ == nullptr) return;
-    pSampleCallback_->Release();
-    pSampleCallback_ = nullptr;
+ReaderAsyncBox::~ReaderAsyncBox() noexcept {
+    // if (pSampleCallback_ == nullptr) return;
+    // pSampleCallback_->Release();
+    // pSampleCallback_ = nullptr;
 }
 
-std::expected<AsyncReaderBox, Error> AsyncReaderBox::create(const SourceBox& sourceBox) noexcept {
+std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sourceBox) noexcept {
     auto attrsBoxRes = AttributesBox::create(1);
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
@@ -41,12 +42,15 @@ std::expected<AsyncReaderBox, Error> AsyncReaderBox::create(const SourceBox& sou
         return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
     }
 
-    (*pReader).AddRef();  // TODO: add ref elsewhere
+    // without this `AddRef`, the ref count is only 2
+    // for other `CComPtr` like `pBuffer`, the ref count shall be 3
+    // so we add another `AddRef` here
+    (*pReader).AddRef();
     pSampleCallback->setPReader(pReader);
 
-    return AsyncReaderBox{std::move(pReader), std::move(pSampleCallback)};
+    return ReaderAsyncBox{std::move(pReader), std::move(pSampleCallback)};
 }
 
-SampleAwaitable AsyncReaderBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
+SampleAwaitable ReaderAsyncBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
 
 }  // namespace tcap::mf

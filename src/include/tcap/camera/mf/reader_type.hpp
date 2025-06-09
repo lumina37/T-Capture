@@ -17,7 +17,7 @@ public:
     ReaderTypeBox(const ReaderTypeBox&) = delete;
     TCAP_API ReaderTypeBox(ReaderTypeBox&&) noexcept = default;
 
-    [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const AsyncReaderBox& readerBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const ReaderAsyncBox& readerBox) noexcept;
 
     [[nodiscard]] TCAP_API const std::vector<MediaTypeBox>& getNativeMediaTypeBoxes() const noexcept {
         return nativeMediaTypeBoxes_;

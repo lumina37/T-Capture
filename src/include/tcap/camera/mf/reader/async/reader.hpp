@@ -13,15 +13,15 @@
 
 namespace tcap::mf {
 
-class AsyncReaderBox {
-    AsyncReaderBox(CComPtr<IMFSourceReader>&& pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
+class ReaderAsyncBox {
+    ReaderAsyncBox(CComPtr<IMFSourceReader>&& pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
 
 public:
-    AsyncReaderBox(const AsyncReaderBox&) = delete;
-    TCAP_API AsyncReaderBox(AsyncReaderBox&&) noexcept = default;
-    TCAP_API ~AsyncReaderBox() noexcept;
+    ReaderAsyncBox(const ReaderAsyncBox&) = delete;
+    TCAP_API ReaderAsyncBox(ReaderAsyncBox&&) noexcept = default;
+    TCAP_API ~ReaderAsyncBox() noexcept;
 
-    [[nodiscard]] TCAP_API static std::expected<AsyncReaderBox, Error> create(const SourceBox& sourceBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<ReaderAsyncBox, Error> create(const SourceBox& sourceBox) noexcept;
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 

@@ -22,7 +22,7 @@ std::expected<SampleBox, Error> SampleAwaitable::await_resume() noexcept {
     if (pCallback_->err_.code != 0) {
         return std::unexpected{std::move(pCallback_->err_)};
     }
-    SampleBox sampleBox = SampleBox::create(pSample_).value();
+    SampleBox sampleBox = SampleBox::create(std::move(pSample_)).value();
     return std::move(sampleBox);
 }
 
