@@ -20,7 +20,9 @@ void SampleAwaitable::await_suspend(std::coroutine_handle<> handle) noexcept {
 std::expected<SampleBox, Error> SampleAwaitable::await_resume() noexcept {
     std::unique_lock lock(pCallback_->mutex_);
     if (pCallback_->err_.code != 0) {
-        return std::unexpected{std::move(pCallback_->err_)};
+        std::unexpected err{std::move(pCallback_->err_)};
+        pCallback_->err_ = {};
+        return err;
     }
     SampleBox sampleBox = SampleBox::create(std::move(pSample_)).value();
     return std::move(sampleBox);

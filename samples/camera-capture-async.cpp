@@ -16,13 +16,17 @@ struct Future {
 };
 
 Future sampleOneFrame(tcap::mf::ReaderAsyncBox& readerBox, std::vector<std::byte>& frameData) {
-    auto sampleBoxRes = co_await readerBox.sample();
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        auto sampleBoxRes = co_await readerBox.sample();
+        if (!sampleBoxRes) continue;
+        auto& sampleBox = sampleBoxRes.value();
+        auto bufferBox = tcap::mf::BufferBox::create(sampleBox) | unwrap;
+        bufferBox.copyTo(frameData.data()) | unwrap;
+        break;
+    }
 
-    auto& sampleBox = sampleBoxRes.value();
-    auto bufferBox = tcap::mf::BufferBox::create(sampleBox) | unwrap;
-    bufferBox.copyTo(frameData.data()) | unwrap;
-
-    std::ofstream outFStream{"out.yuv"};
+    std::ofstream outFStream{"async.yuv"};
     outFStream.write((char*)frameData.data(), frameData.size());
     outFStream.close();
 }

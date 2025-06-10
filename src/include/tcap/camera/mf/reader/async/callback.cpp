@@ -19,13 +19,13 @@ STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD
         err_ = {hr, "OnReadSample failed"};
         return S_OK;
     }
-    if (pSample == nullptr) {
-        sampleNonBlock();
-        return S_OK;
-    }
 
-    CComPtr pComSample{pSample};
-    currentAwaitable_->setPSample(std::move(pComSample));
+    if (pSample == nullptr) {
+        err_ = {-1, "pSample is nullptr"};
+    } else {
+        CComPtr pComSample{pSample};
+        currentAwaitable_->setPSample(std::move(pComSample));
+    }
     currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
 
     return S_OK;
