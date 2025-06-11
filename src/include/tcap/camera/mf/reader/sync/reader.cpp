@@ -35,11 +35,11 @@ std::expected<void, Error> ReaderSyncBox::setMediaType(const MediaTypeBox& media
 }
 
 std::expected<SampleBox, Error> ReaderSyncBox::sample() noexcept {
-    DWORD streamIndex, flags;
-    LONGLONG llTimeStamp;
+    DWORD streamIndex, streamFlags;
+    LONGLONG timestamp;
     IMFSample* pSample;
     const HRESULT hr =
-        pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &flags, &llTimeStamp, &pSample);
+        pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &timestamp, &pSample);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pReader_->ReadSample failed"}};
     }
@@ -47,7 +47,7 @@ std::expected<SampleBox, Error> ReaderSyncBox::sample() noexcept {
         return std::unexpected{Error{-1, "pSample is nullptr"}};
     }
 
-    SampleBox sampleBox = SampleBox::create(pSample).value();
+    SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
 
     return sampleBox;
 }

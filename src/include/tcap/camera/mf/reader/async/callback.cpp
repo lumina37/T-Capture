@@ -6,28 +6,28 @@
 
 namespace tcap::mf {
 
-SampleCallback::SampleCallback() noexcept : pReader_(nullptr), currentAwaitable_(nullptr), err_(0) {}
+SampleCallback::SampleCallback() noexcept : pReader_(nullptr), currentAwaitable_(nullptr) {}
 
 SampleCallback::SampleCallback(SampleCallback&& rhs) noexcept
     : pReader_(std::exchange(rhs.pReader_, nullptr)),
-      currentAwaitable_(std::exchange(rhs.currentAwaitable_, nullptr)),
-      err_(std::move(rhs.err_)) {}
+      currentAwaitable_(std::exchange(rhs.currentAwaitable_, nullptr)) {}
 
-STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
+STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD streamIndex, DWORD streamFlags, LONGLONG timestamp,
                                           IMFSample* pSample) noexcept {
     if (FAILED(hr)) {
-        err_ = {hr, "OnReadSample failed"};
+        currentAwaitable_->setSampleBoxRes(std::unexpected{Error{hr, "OnReadSample failed"}});
+        currentAwaitable_->resume();
         return S_OK;
     }
 
     if (pSample == nullptr) {
-        err_ = {-1, "pSample is nullptr"};
+        currentAwaitable_->setSampleBoxRes(std::unexpected{Error{-1, "pSample is nullptr"}});
     } else {
-        CComPtr pComSample{pSample};
-        currentAwaitable_->setPSample(std::move(pComSample));
+        SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
+        currentAwaitable_->setSampleBoxRes(std::move(sampleBox));
     }
-    currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
 
+    currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
     return S_OK;
 }
 
@@ -35,7 +35,7 @@ void SampleCallback::sampleNonBlock() noexcept {
     std::unique_lock lock(mutex_);
     HRESULT hr = pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
     if (FAILED(hr)) {
-        err_ = {hr, "pReader_->ReadSample failed"};
+        currentAwaitable_->setSampleBoxRes(std::unexpected{Error{hr, "pReader_->ReadSample failed"}});
     }
 }
 

@@ -23,6 +23,10 @@ function(tcap_common_lib_setting lib)
         )
     endif ()
 
+    if (MSVC)
+        target_compile_options(${lib} ${__PUB_DEP_SCOPE} /fsanitize=address)
+    endif ()
+
     if (TCAP_VERBOSE_WARNING)
         if (MSVC)
             target_compile_options(${lib} ${__PUB_DEP_SCOPE} /W4)

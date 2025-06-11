@@ -37,7 +37,7 @@ int main() {
         break;
     }
 
-    std::ofstream outFStream{"out.yuv"};
+    std::ofstream outFStream{"sync.yuv"};
     outFStream.write((char*)frameData.data(), frameData.size());
     outFStream.close();
 

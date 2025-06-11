@@ -7,7 +7,6 @@
 #include <shlwapi.h>
 
 #include "tcap/camera/mf/reader/async/awaitable.hpp"
-#include "tcap/helper/error.hpp"
 
 namespace tcap::mf {
 
@@ -26,7 +25,7 @@ public:
     // In `OnReadSample`, if `pSample` is available,
     // then we will call `SampleAwaitable::setPSample` to set the coroutine result
     // and finally call `SampleAwaitable::resume` to resume the coroutine
-    STDMETHODIMP OnReadSample(HRESULT hr, DWORD dwStreamIndex, DWORD dwStreamFlags, LONGLONG llTimestamp,
+    STDMETHODIMP OnReadSample(HRESULT hr, DWORD streamIndex, DWORD streamFlags, LONGLONG timestamp,
                               IMFSample* pSample) noexcept override;
     STDMETHODIMP OnEvent(DWORD, IMFMediaEvent*) noexcept override { return S_OK; }
     STDMETHODIMP OnFlush(DWORD) noexcept override { return S_OK; }
@@ -39,7 +38,6 @@ private:
 
     IMFSourceReader* pReader_;
     SampleAwaitable* currentAwaitable_;
-    Error err_;
     std::mutex mutex_;
 
 public:

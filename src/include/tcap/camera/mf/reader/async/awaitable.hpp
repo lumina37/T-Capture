@@ -3,7 +3,6 @@
 #include <coroutine>
 #include <expected>
 
-#include <atlbase.h>
 #include <mfobjects.h>
 
 #include "tcap/camera/mf/sample.hpp"
@@ -15,7 +14,8 @@ class SampleCallback;
 
 class SampleAwaitable {
 public:
-    TCAP_API SampleAwaitable(SampleCallback* pCallback) noexcept : pCallback_(pCallback) {}
+    TCAP_API SampleAwaitable(SampleCallback* pCallback) noexcept
+        : pCallback_(pCallback), sampleBoxRes_(std::unexpected{Error{}}) {}
     SampleAwaitable(const SampleAwaitable&) = delete;
     SampleAwaitable(SampleAwaitable&&) = delete;  // Pinned in memory
 
@@ -34,13 +34,15 @@ private:
     // This interface is for `SampleCallback::OnReadSample` to resume the coroutine
     void resume() noexcept { handle_.resume(); }
     // This interface is for `SampleCallback::OnReadSample` to set the `pSample_` as result
-    void setPSample(CComPtr<IMFSample>&& pSample) noexcept { pSample_ = std::move(pSample); }
+    void setSampleBoxRes(std::expected<SampleBox, Error>&& sampleBoxRes) noexcept {
+        sampleBoxRes_ = std::move(sampleBoxRes);
+    }
 
     SampleCallback* pCallback_;
     std::coroutine_handle<> handle_;
 
     // Result
-    CComPtr<IMFSample> pSample_;
+    std::expected<SampleBox, Error> sampleBoxRes_;
 };
 
 }  // namespace tcap::mf
