@@ -12,6 +12,12 @@ SampleCallback::SampleCallback(SampleCallback&& rhs) noexcept
     : pReader_(std::exchange(rhs.pReader_, nullptr)),
       currentAwaitable_(std::exchange(rhs.currentAwaitable_, nullptr)) {}
 
+SampleCallback& SampleCallback::operator=(SampleCallback&& rhs) noexcept {
+    pReader_ = std::exchange(rhs.pReader_, nullptr);
+    currentAwaitable_ = std::exchange(rhs.currentAwaitable_, nullptr);
+    return *this;
+}
+
 STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD streamIndex, DWORD streamFlags, LONGLONG timestamp,
                                           IMFSample* pSample) noexcept {
     if (FAILED(hr)) {

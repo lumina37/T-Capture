@@ -15,10 +15,10 @@ public:
     explicit Error(int code, const std::source_location& source = std::source_location::current());
     Error(int code, const std::string& msg, const std::source_location& source = std::source_location::current());
     Error(int code, std::string&& msg, const std::source_location& source = std::source_location::current());
-    Error(const Error& rhs) = default;
     Error& operator=(const Error& rhs) = default;
-    Error(Error&& rhs) noexcept = default;
+    Error(const Error& rhs) = default;
     Error& operator=(Error&& rhs) = default;
+    Error(Error&& rhs) noexcept = default;
 };
 
 }  // namespace tcap

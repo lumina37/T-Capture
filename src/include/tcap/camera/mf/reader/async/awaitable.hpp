@@ -3,8 +3,6 @@
 #include <coroutine>
 #include <expected>
 
-#include <mfobjects.h>
-
 #include "tcap/camera/mf/sample.hpp"
 #include "tcap/common/defines.h"
 

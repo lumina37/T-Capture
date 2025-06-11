@@ -11,7 +11,20 @@
 
 namespace tcap::mf {
 
-ReaderSyncBox::ReaderSyncBox(CComPtr<IMFSourceReader>&& pReader) noexcept : pReader_(std::move(pReader)) {}
+ReaderSyncBox::ReaderSyncBox(IMFSourceReader* pReader) noexcept : pReader_(pReader) {}
+
+ReaderSyncBox::ReaderSyncBox(ReaderSyncBox&& rhs) noexcept : pReader_(std::exchange(rhs.pReader_, nullptr)) {}
+
+ReaderSyncBox& ReaderSyncBox::operator=(ReaderSyncBox&& rhs) noexcept {
+    pReader_ = std::exchange(rhs.pReader_, nullptr);
+    return *this;
+}
+
+ReaderSyncBox::~ReaderSyncBox() noexcept {
+    if (pReader_ == nullptr) return;
+    pReader_->Release();
+    pReader_ = nullptr;
+}
 
 std::expected<ReaderSyncBox, Error> ReaderSyncBox::create(const SourceBox& sourceBox) noexcept {
     IMFSourceReader* pReader;
@@ -20,6 +33,7 @@ std::expected<ReaderSyncBox, Error> ReaderSyncBox::create(const SourceBox& sourc
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
     }
+    pReader->AddRef();
 
     return ReaderSyncBox{pReader};
 }

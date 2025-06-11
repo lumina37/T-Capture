@@ -13,6 +13,7 @@ public:
     TCAP_API WStringBox(WCHAR* pWString, UINT32 len) noexcept;
 
     TCAP_API WStringBox(WStringBox&& rhs) noexcept;
+    TCAP_API WStringBox& operator=(WStringBox&& rhs) noexcept;
     TCAP_API ~WStringBox() noexcept;
 
     [[nodiscard]] TCAP_API WCHAR* getPWString() const noexcept { return pWString_; }

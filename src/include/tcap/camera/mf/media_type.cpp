@@ -1,5 +1,4 @@
-﻿#include <atlbase.h>
-#include <mfapi.h>
+﻿#include <mfapi.h>
 #include <mfidl.h>
 
 #include "tcap/camera/mf/source.hpp"
@@ -17,9 +16,9 @@ StreamSubType mapGuidToStreamSubType(const GUID& guid) {
     return StreamSubType::eUnknown;
 }
 
-MediaTypeBox::MediaTypeBox(CComPtr<IMFMediaType>&& pMediaType, GUID subTypeGuid, int width, int height,
-                           int fpsNumerator, int fpsDenominator) noexcept
-    : pMediaType_(std::move(pMediaType)),
+MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
+                           int fpsDenominator) noexcept
+    : pMediaType_(pMediaType),
       subTypeGuid_(subTypeGuid),
       subType_(mapGuidToStreamSubType(subTypeGuid)),
       width_(width),
@@ -28,7 +27,37 @@ MediaTypeBox::MediaTypeBox(CComPtr<IMFMediaType>&& pMediaType, GUID subTypeGuid,
       fpsDenominator_(fpsDenominator),
       approxFps_((float)fpsNumerator / (float)fpsDenominator) {}
 
-std::expected<MediaTypeBox, Error> MediaTypeBox::create(CComPtr<IMFMediaType>&& pMediaType) noexcept {
+MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
+    : pMediaType_(std::exchange(rhs.pMediaType_, nullptr)),
+      subTypeGuid_(rhs.subTypeGuid_),
+      subType_(rhs.subType_),
+      width_(rhs.width_),
+      height_(rhs.height_),
+      fpsNumerator_(rhs.fpsNumerator_),
+      fpsDenominator_(rhs.fpsDenominator_),
+      approxFps_(rhs.approxFps_) {}
+
+MediaTypeBox& MediaTypeBox::operator=(MediaTypeBox&& rhs) noexcept {
+    pMediaType_ = std::exchange(rhs.pMediaType_, nullptr);
+    subTypeGuid_ = rhs.subTypeGuid_;
+    subType_ = rhs.subType_;
+    width_ = rhs.width_;
+    height_ = rhs.height_;
+    fpsNumerator_ = rhs.fpsNumerator_;
+    fpsDenominator_ = rhs.fpsDenominator_;
+    approxFps_ = rhs.approxFps_;
+    return *this;
+}
+
+MediaTypeBox::~MediaTypeBox() noexcept {
+    if (pMediaType_ == nullptr) return;
+    pMediaType_->Release();
+    pMediaType_ = nullptr;
+}
+
+std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType) noexcept {
+    pMediaType->AddRef();
+
     HRESULT hr;
 
     GUID subTypeGuid;

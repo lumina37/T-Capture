@@ -2,7 +2,6 @@
 
 #include <expected>
 
-#include <atlbase.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
@@ -15,11 +14,14 @@
 namespace tcap::mf {
 
 class ReaderSyncBox {
-    ReaderSyncBox(CComPtr<IMFSourceReader>&& pReader) noexcept;
+    ReaderSyncBox(IMFSourceReader* pReader) noexcept;
 
 public:
     ReaderSyncBox(const ReaderSyncBox&) = delete;
-    TCAP_API ReaderSyncBox(ReaderSyncBox&& rhs) noexcept = default;
+    ReaderSyncBox& operator=(const ReaderSyncBox&) = delete;
+    TCAP_API ReaderSyncBox(ReaderSyncBox&& rhs) noexcept;
+    TCAP_API ReaderSyncBox& operator=(ReaderSyncBox&& rhs) noexcept;
+    TCAP_API ~ReaderSyncBox() noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<ReaderSyncBox, Error> create(const SourceBox& sourceBox) noexcept;
 
@@ -29,7 +31,7 @@ public:
     [[nodiscard]] TCAP_API std::expected<SampleBox, Error> sample() noexcept;
 
 private:
-    CComPtr<IMFSourceReader> pReader_;
+    IMFSourceReader* pReader_;
 };
 
 }  // namespace tcap::mf

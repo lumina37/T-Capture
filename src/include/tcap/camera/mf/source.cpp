@@ -1,6 +1,5 @@
 ﻿#include <memory>
 
-#include <atlbase.h>
 #include <mfidl.h>
 #include <mfobjects.h>
 
@@ -13,24 +12,34 @@
 
 namespace tcap::mf {
 
-SourceBox::SourceBox(std::shared_ptr<DeviceBox>&& pDeviceBox, CComPtr<IMFMediaSource>&& pSource) noexcept
-    : pDeviceBox_(std::move(pDeviceBox)), pSource_(std::move(pSource)) {}
+SourceBox::SourceBox(std::shared_ptr<DeviceBox>&& pDeviceBox, IMFMediaSource* pSource) noexcept
+    : pDeviceBox_(std::move(pDeviceBox)), pSource_(pSource) {}
+
+SourceBox& SourceBox::operator=(SourceBox&& rhs) noexcept {
+    pDeviceBox_ = std::move(rhs.pDeviceBox_);
+    pSource_ = std::exchange(rhs.pSource_, nullptr);
+    return *this;
+}
+
+SourceBox::SourceBox(SourceBox&& rhs) noexcept { *this = std::move(rhs); }
 
 SourceBox::~SourceBox() noexcept {
     if (pSource_ == nullptr) return;
     pSource_->Shutdown();
+    pSource_->Release();
     pSource_ = nullptr;
 }
 
 std::expected<SourceBox, Error> SourceBox::create(std::shared_ptr<DeviceBox> pDeviceBox) noexcept {
     auto pDevice = pDeviceBox->getPDevice();
-    CComPtr<IMFMediaSource> pSource;
+    IMFMediaSource* pSource;
     HRESULT hr = pDevice->ActivateObject(IID_PPV_ARGS(&pSource));
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pDevice->ActivateObject failed"}};
     }
+    pSource->AddRef();
 
-    return SourceBox{std::move(pDeviceBox), std::move(pSource)};
+    return SourceBox{std::move(pDeviceBox), pSource};
 }
 
 }  // namespace tcap::mf

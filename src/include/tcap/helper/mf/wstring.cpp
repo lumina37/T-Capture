@@ -12,6 +12,12 @@ WStringBox::WStringBox(WCHAR* pWString, UINT32 len) noexcept : pWString_(pWStrin
 
 WStringBox::WStringBox(WStringBox&& rhs) noexcept : pWString_(std::exchange(rhs.pWString_, nullptr)), len_(rhs.len_) {}
 
+WStringBox& WStringBox::operator=(WStringBox&& rhs) noexcept {
+    pWString_ = std::exchange(rhs.pWString_, nullptr);
+    len_ = rhs.len_;
+    return *this;
+}
+
 WStringBox::~WStringBox() noexcept {
     if (pWString_ == nullptr) return;
     CoTaskMemFree(pWString_);

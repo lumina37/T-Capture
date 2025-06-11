@@ -1,6 +1,5 @@
 ﻿#include <memory>
 
-#include <atlbase.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
@@ -16,9 +15,23 @@
 
 namespace tcap::mf {
 
-ReaderAsyncBox::ReaderAsyncBox(CComPtr<IMFSourceReader>&& pReader,
-                               std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
-    : pReader_(std::move(pReader)), pSampleCallback_(std::move(pSampleCallback)) {}
+ReaderAsyncBox::ReaderAsyncBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
+    : pReader_(pReader), pSampleCallback_(std::move(pSampleCallback)) {}
+
+ReaderAsyncBox::ReaderAsyncBox(ReaderAsyncBox&& rhs) noexcept
+    : pReader_(std::exchange(rhs.pReader_, nullptr)), pSampleCallback_(std::move(rhs.pSampleCallback_)) {}
+
+ReaderAsyncBox& ReaderAsyncBox::operator=(ReaderAsyncBox&& rhs) noexcept {
+    pReader_ = std::exchange(rhs.pReader_, nullptr);
+    pSampleCallback_ = std::move(rhs.pSampleCallback_);
+    return *this;
+}
+
+ReaderAsyncBox::~ReaderAsyncBox() noexcept {
+    if (pReader_ == nullptr) return;
+    pReader_->Release();
+    pReader_ = nullptr;
+}
 
 std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sourceBox) noexcept {
     auto attrsBoxRes = AttributesBox::create(1);
@@ -29,17 +42,14 @@ std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sou
     auto setRes = attrsBox.setUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, pSampleCallback.get());
     if (!setRes) return std::unexpected{std::move(setRes.error())};
 
-    CComPtr<IMFSourceReader> pReader;
+    IMFSourceReader* pReader;
     auto pSource = sourceBox.getPSource();
     const HRESULT hr = MFCreateSourceReaderFromMediaSource(pSource, attrsBox.getPAttributes(), &pReader);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
     }
 
-    // without this `AddRef`, the ref count is only 2
-    // for other `CComPtr` like `pBuffer`, the ref count shall be 3
-    // so we add another `AddRef` here
-    (*pReader).AddRef();
+    pReader->AddRef();
     pSampleCallback->setPReader(pReader);
 
     return ReaderAsyncBox{std::move(pReader), std::move(pSampleCallback)};

@@ -14,7 +14,9 @@ class SampleCallback : public IMFSourceReaderCallback {
 public:
     SampleCallback() noexcept;
     SampleCallback(const SampleCallback&) = delete;
+    SampleCallback& operator=(const SampleCallback&) = delete;
     SampleCallback(SampleCallback&& rhs) noexcept;
+    SampleCallback& operator=(SampleCallback&& rhs) noexcept;
     virtual ~SampleCallback() noexcept = default;
 
     void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }

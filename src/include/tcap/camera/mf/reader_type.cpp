@@ -1,11 +1,4 @@
-﻿#include <atlbase.h>
-#include <mferror.h>
-#include <mfidl.h>
-#include <mfreadwrite.h>
-
-#include "tcap/camera/mf/media_type.hpp"
-#include "tcap/camera/mf/reader.hpp"
-#include "tcap/helper/error.hpp"
+﻿#include "tcap/camera/mf/media_type.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/reader_type.hpp"

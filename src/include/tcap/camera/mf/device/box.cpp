@@ -1,6 +1,5 @@
 #include <expected>
 
-#include <atlbase.h>
 #include <mfidl.h>
 #include <mfobjects.h>
 
@@ -14,8 +13,8 @@
 
 namespace tcap::mf {
 
-DeviceBox::DeviceBox(CComPtr<IMFActivate>&& pDevice, WStringBox&& uuidBox, std::string&& name) noexcept
-    : pDevice_(std::move(pDevice)), uuidBox_(std::move(uuidBox)), name_(std::move(name)) {}
+DeviceBox::DeviceBox(IMFActivate* pDevice, WStringBox&& uuidBox, std::string&& name) noexcept
+    : pDevice_(pDevice), uuidBox_(std::move(uuidBox)), name_(std::move(name)) {}
 
 std::expected<WStringBox, Error> DeviceBox::query(IMFActivate* pDevice, const GUID& key) noexcept {
     WCHAR* pWString;
@@ -28,7 +27,25 @@ std::expected<WStringBox, Error> DeviceBox::query(IMFActivate* pDevice, const GU
     return WStringBox{pWString, len};
 }
 
-std::expected<DeviceBox, Error> DeviceBox::create(CComPtr<IMFActivate>&& pDevice) noexcept {
+DeviceBox::DeviceBox(DeviceBox&& rhs) noexcept
+    : pDevice_(std::exchange(rhs.pDevice_, nullptr)), uuidBox_(std::move(rhs.uuidBox_)), name_(std::move(rhs.name_)) {}
+
+DeviceBox& DeviceBox::operator=(DeviceBox&& rhs) noexcept {
+    pDevice_ = std::exchange(rhs.pDevice_, nullptr);
+    uuidBox_ = std::move(rhs.uuidBox_);
+    name_ = std::move(rhs.name_);
+    return *this;
+}
+
+DeviceBox::~DeviceBox() noexcept {
+    if (pDevice_ == nullptr) return;
+    pDevice_->Release();
+    pDevice_ = nullptr;
+}
+
+std::expected<DeviceBox, Error> DeviceBox::create(IMFActivate* pDevice) noexcept {
+    pDevice->AddRef();
+
     auto uuidWStrBoxRes = query(pDevice, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK);
     if (!uuidWStrBoxRes) return std::unexpected{Error{std::move(uuidWStrBoxRes.error())}};
     auto& uuidWStrBox = uuidWStrBoxRes.value();
@@ -41,7 +58,7 @@ std::expected<DeviceBox, Error> DeviceBox::create(CComPtr<IMFActivate>&& pDevice
     if (!nameRes) return std::unexpected{Error{std::move(nameRes.error())}};
     auto& name = nameRes.value();
 
-    return DeviceBox{std::move(pDevice), std::move(uuidWStrBox), std::move(name)};
+    return DeviceBox{pDevice, std::move(uuidWStrBox), std::move(name)};
 }
 
 }  // namespace tcap::mf

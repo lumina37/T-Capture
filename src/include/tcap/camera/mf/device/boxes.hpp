@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "box.hpp"
+#include "tcap/camera/mf/device/box.hpp"
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
@@ -15,7 +15,9 @@ class DeviceBoxes {
 
 public:
     DeviceBoxes(const DeviceBoxes&) = delete;
-    DeviceBoxes(DeviceBoxes&&) noexcept = default;
+    DeviceBoxes& operator=(const DeviceBoxes&) = delete;
+    TCAP_API DeviceBoxes(DeviceBoxes&&) noexcept = default;
+    TCAP_API DeviceBoxes& operator=(DeviceBoxes&&) noexcept = default;
 
     [[nodiscard]] TCAP_API static std::expected<DeviceBoxes, Error> create() noexcept;
 

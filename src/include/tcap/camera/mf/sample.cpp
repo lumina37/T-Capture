@@ -9,21 +9,21 @@
 
 namespace tcap::mf {
 
-SampleBox::SampleBox(IMFSample* pSample, const DWORD streamIndex, const LONGLONG timestamp) noexcept
-    : pSample_(pSample), streamIndex_(streamIndex), timestamp_(timestamp) {}
+SampleBox::SampleBox(IMFSample* pSample, const DWORD streamFlags, const LONGLONG timestamp) noexcept
+    : pSample_(pSample), streamFlags_(streamFlags), timestamp_(timestamp) {}
 
-std::expected<SampleBox, Error> SampleBox::create(IMFSample* pSample, const DWORD streamIndex,
+std::expected<SampleBox, Error> SampleBox::create(IMFSample* pSample, const DWORD streamFlags,
                                                   const LONGLONG timestamp) noexcept {
     pSample->AddRef();
-    return SampleBox{pSample, streamIndex, timestamp};
+    return SampleBox{pSample, streamFlags, timestamp};
 }
 
 SampleBox::SampleBox(SampleBox&& rhs) noexcept
-    : pSample_(std::exchange(rhs.pSample_, nullptr)), streamIndex_(rhs.streamIndex_), timestamp_(rhs.timestamp_) {}
+    : pSample_(std::exchange(rhs.pSample_, nullptr)), streamFlags_(rhs.streamFlags_), timestamp_(rhs.timestamp_) {}
 
 SampleBox& SampleBox::operator=(SampleBox&& rhs) noexcept {
     pSample_ = std::exchange(rhs.pSample_, nullptr);
-    streamIndex_ = rhs.streamIndex_;
+    streamFlags_ = rhs.streamFlags_;
     timestamp_ = rhs.timestamp_;
     return *this;
 }
