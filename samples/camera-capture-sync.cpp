@@ -29,9 +29,13 @@ int main() {
     std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
         auto sampleBoxRes = readerBox.sample();
         if (!sampleBoxRes) continue;
+
         auto sampleBox = std::move(sampleBoxRes.value());
+        if (sampleBox.getPSample() == nullptr) continue;
+
         auto bufferBox = tcap::mf::BufferBox::create(sampleBox) | unwrap;
         bufferBox.copyTo(frameData.data()) | unwrap;
         break;
