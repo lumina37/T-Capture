@@ -33,5 +33,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/source.cpp"
+#    include "tcap/camera/mf/source.cpp"
 #endif

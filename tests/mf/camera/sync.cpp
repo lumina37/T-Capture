@@ -1,14 +1,16 @@
 #include <fstream>
 #include <thread>
 
-#include "sample_helper.hpp"
+#include <catch2/catch_test_macros.hpp>
+
+#include "../../sample_helper.hpp"
 #include "tcap.hpp"
 
-int main() {
+TEST_CASE("Camera capture", "mf::camera::sync") {
     tcap::mf::globalInit() | unwrap;
 
     tcap::mf::DeviceBoxes deviceBoxes = tcap::mf::DeviceBoxes::create() | unwrap;
-    if (deviceBoxes.empty()) return 1;
+    if (deviceBoxes.empty()) return;
 
     for (const auto& pDeviceBox : deviceBoxes.getPDeviceBoxes()) {
         std::println("Device name: {}", pDeviceBox->getName());

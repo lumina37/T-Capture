@@ -8,5 +8,5 @@ function(vkc_add_sample name src)
     tcap_copy_dlls_if_needed(${name})
 endfunction()
 
-vkc_add_sample(tcap-camera-capture-sync camera-capture-sync.cpp)
-vkc_add_sample(tcap-camera-capture-async camera-capture-async.cpp)
+vkc_add_sample(tcap-mf-camera-async mf/camera/async.cpp)
+vkc_add_sample(tcap-mf-camera-sync mf/camera/sync.cpp)

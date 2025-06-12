@@ -33,5 +33,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/mf/arrtibutes.cpp"
+#    include "tcap/helper/mf/attributes.cpp"
 #endif

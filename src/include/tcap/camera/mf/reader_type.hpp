@@ -24,7 +24,7 @@ public:
     TCAP_API ReaderTypeBox& operator=(ReaderTypeBox&&) noexcept = default;
 
     template <CSupportGetPReader TReaderBox>
-    [[nodiscard]] TCAP_API static std::expected<ReaderTypeBox, Error> create(const TReaderBox& readerBox) noexcept;
+    [[nodiscard]] static std::expected<ReaderTypeBox, Error> create(const TReaderBox& readerBox) noexcept;
 
     [[nodiscard]] TCAP_API const std::vector<MediaTypeBox>& getNativeMediaTypeBoxes() const noexcept {
         return nativeMediaTypeBoxes_;
@@ -73,5 +73,5 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const TReaderBox& read
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/reader_type.cpp"
+#    include "tcap/camera/mf/reader_type.cpp"
 #endif

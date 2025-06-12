@@ -44,5 +44,5 @@ private:
 }  // namespace tcap::mf
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/platforms/mf/device/boxes.cpp"
+#    include "tcap/camera/mf/device/boxes.cpp"
 #endif
