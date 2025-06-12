@@ -13,10 +13,12 @@ function(tcap_add_test bin lib srcs)
     tcap_copy_dlls_if_needed(${bin})
 endfunction()
 
-tcap_add_test(test-mf-camera-async tcap::lib::static "mf/camera/async.cpp")
-tcap_add_test(test-mf-camera-sync tcap::lib::static "mf/camera/sync.cpp")
+if (WIN32)
+    tcap_add_test(test-mf-camera-async tcap::lib::static "mf/camera/async.cpp")
+    tcap_add_test(test-mf-camera-sync tcap::lib::static "mf/camera/sync.cpp")
 
-tcap_add_test(test_mf_camera_async_header_only_lib tcap::lib::header-only "mf/camera/async.cpp")
-tcap_add_test(test-mf-camera-sync-header_only_lib tcap::lib::header-only "mf/camera/sync.cpp")
+    tcap_add_test(test_mf_camera_async_header_only_lib tcap::lib::header-only "mf/camera/async.cpp")
+    tcap_add_test(test-mf-camera-sync-header_only_lib tcap::lib::header-only "mf/camera/sync.cpp")
+endif ()
 
 add_custom_target(tcap-tests DEPENDS ${_TCAP_TEST_TARGETS})
