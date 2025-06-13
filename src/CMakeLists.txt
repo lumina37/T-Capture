@@ -10,6 +10,10 @@ if (WIN32)
     include(mf.cmake)
 endif ()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    include(v4l2.cmake)
+endif ()
+
 # Libraries
 add_library(tcap-lib-static STATIC ${_TCAP_SRCS})
 tcap_common_lib_setting(tcap-lib-static)

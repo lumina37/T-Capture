@@ -12,3 +12,7 @@ if (WIN32)
     vkc_add_sample(tcap-mf-camera-async mf/camera/async.cpp)
     vkc_add_sample(tcap-mf-camera-sync mf/camera/sync.cpp)
 endif ()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    vkc_add_sample(tcap-v4l2-camera-sync v4l2/camera/sync.cpp)
+endif ()

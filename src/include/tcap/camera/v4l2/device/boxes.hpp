@@ -8,10 +8,13 @@
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
-namespace tcap::mf {
+namespace tcap::v4l2 {
 
 class DeviceBoxes {
     DeviceBoxes(std::vector<std::shared_ptr<DeviceBox>>&& deviceBoxes) noexcept;
+
+    static thread_local Error createError;
+    static int onError(const char* failedPath, int errNo) noexcept;
 
 public:
     DeviceBoxes(const DeviceBoxes&) = delete;
@@ -41,7 +44,7 @@ private:
     std::vector<std::shared_ptr<DeviceBox>> pDeviceBoxes_;
 };
 
-}  // namespace tcap::mf
+}  // namespace tcap::v4l2
 
 #ifdef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/v4l2/device/boxes.cpp"

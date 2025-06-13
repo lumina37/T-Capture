@@ -1,6 +1,8 @@
+#include <fcntl.h>
 #include <unistd.h>
-
 #include <expected>
+#include <format>
+#include <string>
 #include <utility>
 
 #include "tcap/helper/error.hpp"
@@ -9,11 +11,11 @@
 #    include "tcap/camera/v4l2/device/box.hpp"
 #endif
 
-namespace tcap::mf {
+namespace tcap::v4l2 {
 
 DeviceBox::DeviceBox(int fd) noexcept : fd_(fd) {}
 
-DeviceBox::DeviceBox(DeviceBox&& rhs) noexcept : fd_(std::exchange(rhs.fd_, nullptr)) {}
+DeviceBox::DeviceBox(DeviceBox&& rhs) noexcept : fd_(std::exchange(rhs.fd_, 0)) {}
 
 DeviceBox& DeviceBox::operator=(DeviceBox&& rhs) noexcept {
     fd_ = std::exchange(rhs.fd_, 0);
@@ -26,6 +28,14 @@ DeviceBox::~DeviceBox() noexcept {
     fd_ = 0;
 }
 
-std::expected<DeviceBox, Error> DeviceBox::create(int fd) noexcept { return DeviceBox{fd}; }
+std::expected<DeviceBox, Error> DeviceBox::create(std::string_view path) noexcept {
+    int fd = open(path.data(), O_RDWR);
+    if (fd == 0) {
+        auto errMsg = std::format("failed to open device at: {}", path);
+        return std::unexpected{Error{-1, std::move(errMsg)}};
+    }
 
-}  // namespace tcap::mf
+    return DeviceBox{fd};
+}
+
+}  // namespace tcap::v4l2
