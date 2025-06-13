@@ -26,7 +26,7 @@ std::expected<DevicePaths, Error> DevicePaths::create() noexcept {
     glob_t globRes;
     int errNo = glob("/dev/video*", GLOB_NOSORT, onError, &globRes);
     if (createError.code != 0) {
-        return std::unexpected{std::exchange(createError, {})};
+        return std::unexpected{std::exchange(createError, Error{0})};
     }
     if (errNo != 0) {
         return std::unexpected{Error{errNo, "failed to glob devices"}};
