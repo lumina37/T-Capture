@@ -2,6 +2,6 @@
 #include "tcap.hpp"
 
 int main() {
-    tcap::v4l2::DeviceBoxes deviceBoxes = tcap::v4l2::DeviceBoxes::create() | unwrap;
-    if (deviceBoxes.empty()) return 1;
+    tcap::v4l2::DevicePaths devicePaths = tcap::v4l2::DevicePaths::create() | unwrap;
+    if (devicePaths.empty()) return 1;
 }

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <expected>
-#include <string>
+#include <filesystem>
 
 #include "tcap/helper/error.hpp"
 
 namespace tcap::v4l2 {
+
+namespace fs = std::filesystem;
 
 class DeviceBox {
     DeviceBox(int fd) noexcept;
@@ -17,7 +19,7 @@ public:
     DeviceBox& operator=(DeviceBox&& rhs) noexcept;
     ~DeviceBox() noexcept;
 
-    [[nodiscard]] static std::expected<DeviceBox, Error> create(std::string_view path) noexcept;
+    [[nodiscard]] static std::expected<DeviceBox, Error> create(const fs::path& path) noexcept;
 
     [[nodiscard]] int getFd() const noexcept { return fd_; }
 

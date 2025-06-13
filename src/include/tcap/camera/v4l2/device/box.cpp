@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <expected>
 #include <format>
-#include <string>
 #include <utility>
 
 #include "tcap/helper/error.hpp"
@@ -28,10 +27,10 @@ DeviceBox::~DeviceBox() noexcept {
     fd_ = 0;
 }
 
-std::expected<DeviceBox, Error> DeviceBox::create(std::string_view path) noexcept {
-    int fd = open(path.data(), O_RDWR);
+std::expected<DeviceBox, Error> DeviceBox::create(const fs::path& path) noexcept {
+    int fd = open(path.c_str(), O_RDWR);
     if (fd == 0) {
-        auto errMsg = std::format("failed to open device at: {}", path);
+        auto errMsg = std::format("failed to open device at: {}", path.c_str());
         return std::unexpected{Error{-1, std::move(errMsg)}};
     }
 
