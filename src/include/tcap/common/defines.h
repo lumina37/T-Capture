@@ -25,3 +25,7 @@
 #ifdef _WIN32
 #    define TCAP_ENABLE_MEDIA_FOUNDATION
 #endif
+
+#ifdef __linux__
+#    define TCAP_ENABLE_V4L2
+#endif

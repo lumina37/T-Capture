@@ -7,3 +7,7 @@
 #ifdef TCAP_ENABLE_MEDIA_FOUNDATION
 #    include "tcap/camera/mf.hpp"
 #endif
+
+#ifdef TCAP_ENABLE_V4L2
+#    include "tcap/camera/v4l2.hpp"
+#endif
