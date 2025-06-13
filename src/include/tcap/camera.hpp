@@ -4,7 +4,7 @@
 
 #include "tcap/common/defines.h"
 
-#ifdef TCAP_ENABLE_MEDIA_FOUNDATION
+#ifdef TCAP_ENABLE_MF
 #    include "tcap/camera/mf.hpp"
 #endif
 

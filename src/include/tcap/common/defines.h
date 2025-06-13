@@ -23,7 +23,7 @@
 #endif
 
 #ifdef _WIN32
-#    define TCAP_ENABLE_MEDIA_FOUNDATION
+#    define TCAP_ENABLE_MF
 #endif
 
 #ifdef __linux__
