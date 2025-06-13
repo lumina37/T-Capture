@@ -54,7 +54,7 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const TReaderBox& read
     std::vector<MediaTypeBox> nativeMediaTypeBoxes;
     for (int mediaTypeIdx = 0;; mediaTypeIdx++) {
         IMFMediaType* pMediaType;
-        hr = pReader->GetNativeMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, mediaTypeIdx, &pMediaType);
+        hr = pReader->GetNativeMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, mediaTypeIdx, &pMediaType);
         if (hr == MF_E_NO_MORE_TYPES) {
             break;
         }

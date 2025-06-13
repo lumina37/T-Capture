@@ -18,8 +18,8 @@ SampleCallback& SampleCallback::operator=(SampleCallback&& rhs) noexcept {
     return *this;
 }
 
-STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD streamIndex, DWORD streamFlags, LONGLONG timestamp,
-                                          IMFSample* pSample) noexcept {
+STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, [[maybe_unused]] DWORD streamIndex, DWORD streamFlags,
+                                          LONGLONG timestamp, IMFSample* pSample) noexcept {
     if (FAILED(hr)) {
         currentAwaitable_->setSampleBoxRes(std::unexpected{Error{hr, "OnReadSample failed"}});
         currentAwaitable_->resume();
@@ -39,7 +39,7 @@ STDMETHODIMP SampleCallback::OnReadSample(HRESULT hr, DWORD streamIndex, DWORD s
 
 void SampleCallback::sampleNonBlock() noexcept {
     std::unique_lock lock(mutex_);
-    HRESULT hr = pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
+    HRESULT hr = pReader_->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
     if (FAILED(hr)) {
         currentAwaitable_->setSampleBoxRes(std::unexpected{Error{hr, "pReader_->ReadSample failed"}});
     }

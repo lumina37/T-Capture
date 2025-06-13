@@ -41,7 +41,7 @@ std::expected<ReaderSyncBox, Error> ReaderSyncBox::create(const SourceBox& sourc
 std::expected<void, Error> ReaderSyncBox::setMediaType(const MediaTypeBox& mediaTypeBox) noexcept {
     IMFMediaType* pMediaType = mediaTypeBox.getPMediaType();
 
-    const HRESULT hr = pReader_->SetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
+    const HRESULT hr = pReader_->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pReader_->SetCurrentMediaType failed"}};
     }
@@ -53,7 +53,7 @@ std::expected<SampleBox, Error> ReaderSyncBox::sample() noexcept {
     LONGLONG timestamp;
     IMFSample* pSample;
     const HRESULT hr =
-        pReader_->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &timestamp, &pSample);
+        pReader_->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &timestamp, &pSample);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pReader_->ReadSample failed"}};
     }

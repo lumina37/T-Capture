@@ -58,7 +58,7 @@ std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sou
 std::expected<void, Error> ReaderAsyncBox::setMediaType(const MediaTypeBox& mediaTypeBox) noexcept {
     IMFMediaType* pMediaType = mediaTypeBox.getPMediaType();
 
-    const HRESULT hr = pReader_->SetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
+    const HRESULT hr = pReader_->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
     if (FAILED(hr)) {
         return std::unexpected{Error{hr, "pReader_->SetCurrentMediaType failed"}};
     }
