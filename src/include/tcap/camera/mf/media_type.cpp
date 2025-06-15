@@ -13,6 +13,9 @@ namespace tcap::mf {
 StreamSubType mapGuidToStreamSubType(const GUID& guid) {
     if (guid == MFVideoFormat_I420) return StreamSubType::eI420;
     if (guid == MFVideoFormat_NV12) return StreamSubType::eNV12;
+    if (guid == MFVideoFormat_YVYU) return StreamSubType::eYVYU;
+    if (guid == MFVideoFormat_YUY2) return StreamSubType::eYUY2;
+    if (guid == MFVideoFormat_MJPG) return StreamSubType::eMJPG;
     return StreamSubType::eUnknown;
 }
 

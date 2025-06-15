@@ -13,6 +13,9 @@ enum class StreamSubType {
     eUnknown = 0,
     eI420,
     eNV12,
+    eYVYU,
+    eYUY2,
+    eMJPG,
 };
 
 StreamSubType mapGuidToStreamSubType(const GUID& guid);

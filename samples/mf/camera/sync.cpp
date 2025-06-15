@@ -14,19 +14,22 @@ int main() {
         std::println("Device name: {}", pDeviceBox->getName());
     }
 
-    auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
+    auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(1)) | unwrap;
     auto readerBox = tcap::mf::ReaderSyncBox::create(sourceBox) | unwrap;
 
     auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
     const auto& oldMediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
     std::println("width={}, height={}", oldMediaTypeBox.getWidth(), oldMediaTypeBox.getHeight());
 
-    const auto& mediaTypeBox = readerTypeBox.getNativeMediaTypeBoxes().back();
-    readerBox.setMediaType(mediaTypeBox) | unwrap;
-    std::println("After switching", (int)mediaTypeBox.getSubType());
-    std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
+    auto* pMediaTypeBox = &oldMediaTypeBox;
+    for (auto& mTypeBox : readerTypeBox.getNativeMediaTypeBoxes()) {
+        if (mTypeBox.getSubType() == tcap::mf::StreamSubType::eNV12) pMediaTypeBox = &mTypeBox;
+    }
+    readerBox.setMediaType(*pMediaTypeBox) | unwrap;
+    std::println("After switching", (int)pMediaTypeBox->getSubType());
+    std::println("width={}, height={}", pMediaTypeBox->getWidth(), pMediaTypeBox->getHeight());
 
-    std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);
+    std::vector<std::byte> frameData(pMediaTypeBox->getWidth() * pMediaTypeBox->getHeight() / 2 * 3);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
