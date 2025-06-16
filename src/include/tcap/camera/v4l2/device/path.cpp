@@ -1,6 +1,7 @@
-﻿#include <glob.h>
-#include <format>
+﻿#include <format>
 #include <utility>
+
+#include <glob.h>
 
 #include "tcap/helper/error.hpp"
 
