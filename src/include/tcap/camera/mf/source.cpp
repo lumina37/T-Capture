@@ -21,7 +21,8 @@ SourceBox& SourceBox::operator=(SourceBox&& rhs) noexcept {
     return *this;
 }
 
-SourceBox::SourceBox(SourceBox&& rhs) noexcept { *this = std::move(rhs); }
+SourceBox::SourceBox(SourceBox&& rhs) noexcept
+    : pDeviceBox_(std::move(rhs.pDeviceBox_)), pSource_(std::exchange(rhs.pSource_, nullptr)) {}
 
 SourceBox::~SourceBox() noexcept {
     if (pSource_ == nullptr) return;
