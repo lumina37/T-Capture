@@ -25,7 +25,7 @@ std::expected<DeviceCapsBox, Error> DeviceCapsBox::create(const DeviceBox& devic
 
     const uint32_t capFlags = caps.capabilities;
     if ((capFlags & V4L2_CAP_DEVICE_CAPS) == 0) {
-        return std::unexpected{Error{-1, "device capabilities is not supported"}};
+        return std::unexpected{Error{-1, "device caps is not supported"}};
     }
 
     return DeviceCapsBox{caps.device_caps};

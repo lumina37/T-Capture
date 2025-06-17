@@ -18,6 +18,7 @@ public:
 
     [[nodiscard]] TCAP_API uint32_t getNumerator() const noexcept { return numerator_; }
     [[nodiscard]] TCAP_API uint32_t getDenominator() const noexcept { return denominator_; }
+    [[nodiscard]] TCAP_API float approxFps() const noexcept { return (float)denominator_ / (float)numerator_; }
 
 private:
     uint32_t numerator_;

@@ -20,8 +20,7 @@ int main() {
             const uint32_t height = resolutionBox.getHeight();
             const auto& fpsBoxes = tcap::v4l2::FpsBox::createBoxes(deviceBox, nativeFormat, width, height) | unwrap;
             for (const auto& fpsBox : fpsBoxes) {
-                const float approxFps = (float)fpsBox.getDenominator() / (float)fpsBox.getNumerator();
-                std::println("nativeFormat={}, size={}x{}, fps={}", nativeFormat, width, height, approxFps);
+                std::println("nativeFormat={}, size={}x{}, fps={}", nativeFormat, width, height, fpsBox.approxFps());
             }
         }
     }
@@ -39,4 +38,11 @@ int main() {
     activeFormatBox = tcap::v4l2::ActiveFormatBox::create(deviceBox) | unwrap;
     std::println("new: format={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
                  activeFormatBox.getHeight());
+
+    // Queue
+    tcap::v4l2::QueueCapsBox bufferCapsBox = tcap::v4l2::QueueCapsBox::create(deviceBox) | unwrap;
+    std::println("support mmap cache hints: {}", bufferCapsBox.supportMMapCacheHints());
+    std::println("support DMA buffer: {}", bufferCapsBox.supportDMABuf());
+
+
 }

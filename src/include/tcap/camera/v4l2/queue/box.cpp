@@ -7,7 +7,7 @@
 #include "tcap/helper/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/v4l2/queue.hpp"
+#    include "tcap/camera/v4l2/queue/box.hpp"
 #endif
 
 namespace tcap::v4l2 {
