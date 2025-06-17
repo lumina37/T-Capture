@@ -11,13 +11,22 @@
 namespace tcap::v4l2 {
 
 class QueueMMapBox {
-    QueueMMapBox() noexcept;
+    QueueMMapBox(std::shared_ptr<DeviceBox>&& pDeviceBox, std::vector<BufferViewMMap>&& bufferViews) noexcept;
+
+    [[nodiscard]] static std::expected<void, Error> pushAllBuffersHelper(
+        DeviceBox& deviceBox, std::vector<BufferViewMMap>& bufferViews) noexcept;
 
 public:
-    [[nodiscard]] TCAP_API static std::expected<QueueMMapBox, Error> create(DeviceBox& deviceBox,
+    [[nodiscard]] TCAP_API static std::expected<QueueMMapBox, Error> create(std::shared_ptr<DeviceBox> pDeviceBox,
                                                                             int bufferCount = 3) noexcept;
 
+    [[nodiscard]] TCAP_API std::expected<void, Error> startStream() noexcept;
+    [[nodiscard]] TCAP_API std::expected<void, Error> stopStream() noexcept;
+    [[nodiscard]] TCAP_API std::expected<void, Error> pushBuffer(BufferViewMMap& bufferView) noexcept;
+    [[nodiscard]] TCAP_API std::expected<std::reference_wrapper<BufferViewMMap>, Error> popBuffer() noexcept;
+
 private:
+    std::shared_ptr<DeviceBox> pDeviceBox_;
     std::vector<BufferViewMMap> bufferViews_;
 };
 

@@ -20,7 +20,7 @@ std::expected<std::vector<FpsBox>, Error> FpsBox::createBoxes(const DeviceBox& d
                                                               uint32_t width, uint32_t height) noexcept {
     const int fd = deviceBox.getFd();
 
-    v4l2_frmivalenum frmIval;
+    v4l2_frmivalenum frmIval{};
     frmIval.index = 0;
     frmIval.pixel_format = format;
     frmIval.width = width;

@@ -17,7 +17,7 @@ QueueCaps::QueueCaps(uint32_t caps) noexcept : caps_(caps) {}
 std::expected<QueueCaps, Error> QueueCaps::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
-    v4l2_requestbuffers bufferRequest;
+    v4l2_requestbuffers bufferRequest{};
     bufferRequest.count = 0;
     bufferRequest.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     bufferRequest.memory = V4L2_MEMORY_MMAP;

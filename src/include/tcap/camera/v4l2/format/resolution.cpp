@@ -19,7 +19,7 @@ std::expected<std::vector<ResolutionBox>, Error> ResolutionBox::createBoxes(cons
                                                                             const uint32_t format) noexcept {
     const int fd = deviceBox.getFd();
 
-    v4l2_frmsizeenum frmSize;
+    v4l2_frmsizeenum frmSize{};
     frmSize.index = 0;
     frmSize.pixel_format = format;
 

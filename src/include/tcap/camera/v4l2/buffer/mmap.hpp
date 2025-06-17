@@ -24,6 +24,7 @@ public:
                                                                               const v4l2_buffer& bufferInfo) noexcept;
 
     [[nodiscard]] TCAP_API int getIndex() const noexcept { return index_; }
+    TCAP_API void copyTo(std::byte* pData) const noexcept;
 
 private:
     void* pBuffer_;

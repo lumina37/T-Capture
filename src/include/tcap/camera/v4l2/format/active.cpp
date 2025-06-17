@@ -21,7 +21,7 @@ ActiveFormatBox::ActiveFormatBox() noexcept : format_() {}
 std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
-    v4l2_format format;
+    v4l2_format format{};
     format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
     const int ret = ioctl(fd, VIDIOC_G_FMT, &format);

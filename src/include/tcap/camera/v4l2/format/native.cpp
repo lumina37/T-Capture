@@ -18,7 +18,7 @@ NativeFormatBox::NativeFormatBox(const uint32_t format) noexcept : format_(forma
 std::expected<std::vector<NativeFormatBox>, Error> NativeFormatBox::createBoxes(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
-    v4l2_fmtdesc fmtDesc;
+    v4l2_fmtdesc fmtDesc{};
     fmtDesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     fmtDesc.index = 0;
 

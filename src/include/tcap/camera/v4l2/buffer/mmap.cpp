@@ -3,6 +3,7 @@
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 
+#include <cstring>
 #include <utility>
 
 #include "tcap/camera/v4l2/device/box.hpp"
@@ -18,11 +19,12 @@ BufferViewMMap::BufferViewMMap(void* pBuffer, const uint32_t length, const int i
     : pBuffer_(pBuffer), length_(length), index_(index) {}
 
 BufferViewMMap::BufferViewMMap(BufferViewMMap&& rhs) noexcept
-    : pBuffer_(std::exchange(rhs.pBuffer_, nullptr)), length_(rhs.length_) {}
+    : pBuffer_(std::exchange(rhs.pBuffer_, nullptr)), length_(rhs.length_), index_(rhs.index_) {}
 
 BufferViewMMap& BufferViewMMap::operator=(BufferViewMMap&& rhs) noexcept {
     pBuffer_ = std::exchange(rhs.pBuffer_, nullptr);
     length_ = rhs.length_;
+    index_ = rhs.index_;
     return *this;
 }
 
@@ -38,8 +40,13 @@ std::expected<BufferViewMMap, Error> BufferViewMMap::create(DeviceBox& deviceBox
 
     const uint32_t length = bufferInfo.length;
     void* pData = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, bufferInfo.m.offset);
+    if (pData == nullptr) {
+        return std::unexpected{Error{errno, "failed to mmap"}};
+    }
 
     return BufferViewMMap{pData, length, (int)bufferInfo.index};
 }
+
+void BufferViewMMap::copyTo(std::byte* pData) const noexcept { std::memcpy(pData, pBuffer_, length_); }
 
 }  // namespace tcap::v4l2
