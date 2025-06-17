@@ -23,9 +23,13 @@
 #endif
 
 #ifdef _WIN32
-#    define TCAP_ENABLE_MF
+#    define TCAP_ENABLE_MF 1
+#else
+#    define TCAP_ENABLE_MF 0
 #endif
 
 #ifdef __linux__
-#    define TCAP_ENABLE_V4L2
+#    define TCAP_ENABLE_V4L2 1
+#else
+#    define TCAP_ENABLE_V4L2 0
 #endif
