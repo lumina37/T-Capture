@@ -12,7 +12,9 @@
 
 namespace tcap::v4l2 {
 
-ActiveFormatBox::ActiveFormatBox(const v4l2_format& format) noexcept : format_(format) {}
+ActiveFormatBox::ActiveFormatBox(const v4l2_format& format) noexcept : format_(format) {
+    format_.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+}
 
 ActiveFormatBox::ActiveFormatBox() noexcept : format_() {}
 
