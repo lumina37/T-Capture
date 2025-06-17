@@ -28,6 +28,15 @@ int main() {
 
     // Active format
     tcap::v4l2::ActiveFormatBox activeFormatBox = tcap::v4l2::ActiveFormatBox::create(deviceBox) | unwrap;
-    std::println("activeFormat={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
+    std::println("default: format={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
+                 activeFormatBox.getHeight());
+
+    activeFormatBox.setWidth(640);
+    activeFormatBox.setHeight(480);
+
+    activeFormatBox.apply(deviceBox) | unwrap;
+
+    activeFormatBox = tcap::v4l2::ActiveFormatBox::create(deviceBox) | unwrap;
+    std::println("new: format={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
                  activeFormatBox.getHeight());
 }

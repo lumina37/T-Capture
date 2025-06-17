@@ -12,7 +12,9 @@
 
 namespace tcap::v4l2 {
 
-ActiveFormatBox::ActiveFormatBox(const v4l2_pix_format& format) noexcept : format_(format) {}
+ActiveFormatBox::ActiveFormatBox(const v4l2_format& format) noexcept : format_(format) {}
+
+ActiveFormatBox::ActiveFormatBox() noexcept : format_() {}
 
 std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
@@ -20,12 +22,23 @@ std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& d
     v4l2_format format;
     format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    int ret = ioctl(fd, VIDIOC_G_FMT, &format);
+    const int ret = ioctl(fd, VIDIOC_G_FMT, &format);
     if (ret != 0) {
-        return std::unexpected{Error{ret, "failed to get format"}};
+        return std::unexpected{Error{errno, "failed to get format"}};
     }
 
-    return ActiveFormatBox{format.fmt.pix};
+    return ActiveFormatBox{format};
+}
+
+std::expected<void, Error> ActiveFormatBox::apply(DeviceBox& deviceBox) const noexcept {
+    const int fd = deviceBox.getFd();
+
+    const int ret = ioctl(fd, VIDIOC_S_FMT, &format_);
+    if (ret != 0) {
+        return std::unexpected{Error{errno, "failed to set format"}};
+    }
+
+    return {};
 }
 
 }  // namespace tcap::v4l2
