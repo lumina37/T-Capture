@@ -12,9 +12,9 @@
 
 namespace tcap::v4l2 {
 
-QueueCapsBox::QueueCapsBox(uint32_t caps) noexcept : caps_(caps) {}
+QueueCaps::QueueCaps(uint32_t caps) noexcept : caps_(caps) {}
 
-std::expected<QueueCapsBox, Error> QueueCapsBox::create(const DeviceBox& deviceBox) noexcept {
+std::expected<QueueCaps, Error> QueueCaps::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_requestbuffers bufferRequest;
@@ -32,7 +32,7 @@ std::expected<QueueCapsBox, Error> QueueCapsBox::create(const DeviceBox& deviceB
         return std::unexpected{Error{-1, "buffer caps is not supported"}};
     }
 
-    return QueueCapsBox{caps};
+    return QueueCaps{caps};
 }
 
 }  // namespace tcap::v4l2

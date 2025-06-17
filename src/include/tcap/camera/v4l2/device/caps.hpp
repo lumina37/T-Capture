@@ -10,11 +10,11 @@
 
 namespace tcap::v4l2 {
 
-class DeviceCapsBox {
-    DeviceCapsBox(uint32_t caps) noexcept;
+class DeviceCaps {
+    DeviceCaps(uint32_t caps) noexcept;
 
 public:
-    [[nodiscard]] TCAP_API static std::expected<DeviceCapsBox, Error> create(const DeviceBox& deviceBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<DeviceCaps, Error> create(const DeviceBox& deviceBox) noexcept;
 
     [[nodiscard]] TCAP_API bool supportVideoCapture() const noexcept { return caps_ & V4L2_CAP_VIDEO_CAPTURE; }
 

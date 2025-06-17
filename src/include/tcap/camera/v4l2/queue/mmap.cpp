@@ -7,14 +7,14 @@
 #include "tcap/helper/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/v4l2/queue/box.hpp"
+#    include "tcap/camera/v4l2/queue/mmap.hpp"
 #endif
 
 namespace tcap::v4l2 {
 
-QueueBox::QueueBox() noexcept {}
+QueueMMapBox::QueueMMapBox() noexcept {}
 
-std::expected<QueueBox, Error> QueueBox::create(const DeviceBox& deviceBox, const int bufferCount) noexcept {
+std::expected<QueueMMapBox, Error> QueueMMapBox::create(DeviceBox& deviceBox, const int bufferCount) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_requestbuffers bufferRequest;
@@ -27,7 +27,9 @@ std::expected<QueueBox, Error> QueueBox::create(const DeviceBox& deviceBox, cons
         return std::unexpected{Error{errno, "failed to request buffers"}};
     }
 
-    return QueueBox{};
+
+
+    return QueueMMapBox{};
 }
 
 }  // namespace tcap::v4l2

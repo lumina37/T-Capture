@@ -11,9 +11,9 @@
 
 namespace tcap::v4l2 {
 
-DeviceCapsBox::DeviceCapsBox(uint32_t caps) noexcept : caps_(caps) {}
+DeviceCaps::DeviceCaps(uint32_t caps) noexcept : caps_(caps) {}
 
-std::expected<DeviceCapsBox, Error> DeviceCapsBox::create(const DeviceBox& deviceBox) noexcept {
+std::expected<DeviceCaps, Error> DeviceCaps::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_capability caps;
@@ -28,7 +28,7 @@ std::expected<DeviceCapsBox, Error> DeviceCapsBox::create(const DeviceBox& devic
         return std::unexpected{Error{-1, "device caps is not supported"}};
     }
 
-    return DeviceCapsBox{caps.device_caps};
+    return DeviceCaps{caps.device_caps};
 }
 
 }  // namespace tcap::v4l2

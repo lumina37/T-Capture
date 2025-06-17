@@ -16,6 +16,7 @@ class SourceBox {
 
 public:
     SourceBox(const SourceBox&) = delete;
+    SourceBox& operator=(const SourceBox&) = delete;
     TCAP_API SourceBox& operator=(SourceBox&& rhs) noexcept;
     TCAP_API SourceBox(SourceBox&& rhs) noexcept;
     TCAP_API ~SourceBox() noexcept;

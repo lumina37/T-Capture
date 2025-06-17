@@ -10,11 +10,11 @@
 
 namespace tcap::v4l2 {
 
-class QueueCapsBox {
-    QueueCapsBox(uint32_t caps) noexcept;
+class QueueCaps {
+    QueueCaps(uint32_t caps) noexcept;
 
 public:
-    [[nodiscard]] TCAP_API static std::expected<QueueCapsBox, Error> create(const DeviceBox& deviceBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<QueueCaps, Error> create(const DeviceBox& deviceBox) noexcept;
 
     [[nodiscard]] TCAP_API bool supportMMapCacheHints() const noexcept {
         return caps_ & V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS;

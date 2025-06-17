@@ -40,7 +40,7 @@ int main() {
                  activeFormatBox.getHeight());
 
     // Queue
-    tcap::v4l2::QueueCapsBox bufferCapsBox = tcap::v4l2::QueueCapsBox::create(deviceBox) | unwrap;
+    tcap::v4l2::QueueCaps bufferCapsBox = tcap::v4l2::QueueCaps::create(deviceBox) | unwrap;
     std::println("support mmap cache hints: {}", bufferCapsBox.supportMMapCacheHints());
     std::println("support DMA buffer: {}", bufferCapsBox.supportDMABuf());
 
