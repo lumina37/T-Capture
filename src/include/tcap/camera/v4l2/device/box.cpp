@@ -29,7 +29,7 @@ DeviceBox::~DeviceBox() noexcept {
 }
 
 std::expected<DeviceBox, Error> DeviceBox::create(const fs::path& path) noexcept {
-    int fd = open(path.c_str(), O_RDWR);
+    const int fd = open(path.c_str(), O_RDWR | O_NONBLOCK);
     if (fd == 0) {
         auto errMsg = std::format("failed to open: {}", path.c_str());
         return std::unexpected{Error{-1, std::move(errMsg)}};

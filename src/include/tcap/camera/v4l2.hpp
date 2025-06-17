@@ -4,3 +4,4 @@
 
 #include "tcap/camera/v4l2/device.hpp"
 #include "tcap/camera/v4l2/format.hpp"
+#include "tcap/camera/v4l2/queue.hpp"

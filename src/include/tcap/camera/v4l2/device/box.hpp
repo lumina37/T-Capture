@@ -3,6 +3,7 @@
 #include <expected>
 #include <filesystem>
 
+#include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
 
 namespace tcap::v4l2 {
@@ -15,13 +16,13 @@ class DeviceBox {
 public:
     DeviceBox& operator=(const DeviceBox&) = delete;
     DeviceBox(const DeviceBox&) = delete;
-    DeviceBox(DeviceBox&& rhs) noexcept;
-    DeviceBox& operator=(DeviceBox&& rhs) noexcept;
-    ~DeviceBox() noexcept;
+    TCAP_API DeviceBox(DeviceBox&& rhs) noexcept;
+    TCAP_API DeviceBox& operator=(DeviceBox&& rhs) noexcept;
+    TCAP_API ~DeviceBox() noexcept;
 
-    [[nodiscard]] static std::expected<DeviceBox, Error> create(const fs::path& path) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<DeviceBox, Error> create(const fs::path& path) noexcept;
 
-    [[nodiscard]] int getFd() const noexcept { return fd_; }
+    [[nodiscard]] TCAP_API int getFd() const noexcept { return fd_; }
 
 private:
     int fd_;
