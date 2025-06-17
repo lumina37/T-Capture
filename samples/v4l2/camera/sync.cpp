@@ -2,10 +2,15 @@
 
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
+#include "tcap/camera/v4l2/format/active.hpp"
 
 int main() {
     tcap::v4l2::DevicePaths devicePaths = tcap::v4l2::DevicePaths::create() | unwrap;
+    if (devicePaths.empty()) return 1;
+
     tcap::v4l2::DeviceBox deviceBox = tcap::v4l2::DeviceBox::create(devicePaths.getPath(0)) | unwrap;
+
+    // Native formats
     const auto& nativeFormatBoxes = tcap::v4l2::NativeFormatBox::createBoxes(deviceBox) | unwrap;
     for (const auto& nativeFormatBox : nativeFormatBoxes) {
         const uint32_t nativeFormat = nativeFormatBox.getFormat();
@@ -21,5 +26,8 @@ int main() {
         }
     }
 
-    if (devicePaths.empty()) return 1;
+    // Active format
+    tcap::v4l2::ActiveFormatBox activeFormatBox = tcap::v4l2::ActiveFormatBox::create(deviceBox) | unwrap;
+    std::println("activeFormat={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
+                 activeFormatBox.getHeight());
 }
