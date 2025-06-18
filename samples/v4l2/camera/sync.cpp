@@ -55,6 +55,7 @@ int main() {
         auto sampleRes = queueBox.popBuffer();
         if (!sampleRes && sampleRes.error().code == EAGAIN) continue;
         auto sample = std::move(sampleRes) | unwrap;
+        std::println("sample at timestamp={}", sample.getTimestampNs());
         sample.copyTo(frameData.data()) | unwrap;
         break;
     }
