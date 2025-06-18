@@ -35,4 +35,20 @@ std::expected<std::vector<FpsBox>, Error> FpsBox::createBoxes(const DeviceBox& d
     return fpsBoxes;
 }
 
+std::expected<void, Error> FpsBox::apply(DeviceBox& deviceBox) const noexcept {
+    const int fd = deviceBox.getFd();
+
+    v4l2_streamparm streamParam{};
+    streamParam.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    streamParam.parm.capture.timeperframe.numerator = numerator_;
+    streamParam.parm.capture.timeperframe.denominator = denominator_;
+
+    const int ret = ioctl(fd, VIDIOC_S_PARM, &streamParam);
+    if (ret != 0) {
+        return std::unexpected{Error{errno, "failed to set fps"}};
+    }
+
+    return {};
+}
+
 }  // namespace tcap::v4l2

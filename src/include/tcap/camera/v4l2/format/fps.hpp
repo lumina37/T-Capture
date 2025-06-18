@@ -20,6 +20,11 @@ public:
     [[nodiscard]] TCAP_API uint32_t getDenominator() const noexcept { return denominator_; }
     [[nodiscard]] TCAP_API float approxFps() const noexcept { return (float)denominator_ / (float)numerator_; }
 
+    TCAP_API void setNumerator(uint32_t numerator) { numerator_ = numerator; }
+    TCAP_API void setDenominator(uint32_t denominator) { denominator_ = denominator; }
+
+    [[nodiscard]] TCAP_API std::expected<void, Error> apply(DeviceBox& deviceBox) const noexcept;
+
 private:
     uint32_t numerator_;
     uint32_t denominator_;
