@@ -15,7 +15,7 @@
 
 namespace tcap::mf {
 
-ReaderAsyncBox::ReaderAsyncBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
+ReaderAsyncBox::ReaderAsyncBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallbackBase>&& pSampleCallback) noexcept
     : pReader_(pReader), pSampleCallback_(std::move(pSampleCallback)) {}
 
 ReaderAsyncBox::ReaderAsyncBox(ReaderAsyncBox&& rhs) noexcept
@@ -65,6 +65,6 @@ std::expected<void, Error> ReaderAsyncBox::setMediaType(const MediaTypeBox& medi
     return {};
 }
 
-SampleAwaitable ReaderAsyncBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
+SampleAwaitable ReaderAsyncBox::sample() noexcept { return SampleAwaitable{(SampleCallback*)pSampleCallback_.get()}; }
 
 }  // namespace tcap::mf

@@ -10,7 +10,24 @@
 
 namespace tcap::mf {
 
-class SampleCallback : public IMFSourceReaderCallback {
+class SampleCallbackBase : public IMFSourceReaderCallback {
+public:
+    virtual ~SampleCallbackBase() noexcept = default;
+
+    /* IUnknown impl (Don't need to care) */
+    STDMETHODIMP QueryInterface(REFIID iid, void** ppv) override {
+        static const QITAB qit[] = {
+            QITABENT(SampleCallback, IMFSourceReaderCallback),
+            {nullptr},
+        };
+        return QISearch(this, qit, iid, ppv);
+    }
+    STDMETHODIMP_(ULONG) AddRef() override { return 1; }
+    STDMETHODIMP_(ULONG) Release() override { return 0; }
+    /* IUnknown impl */
+};
+
+class SampleCallback : public SampleCallbackBase {
 public:
     SampleCallback() noexcept;
     SampleCallback(const SampleCallback&) = delete;
@@ -41,19 +58,6 @@ private:
     IMFSourceReader* pReader_;
     SampleAwaitable* currentAwaitable_;
     std::mutex mutex_;
-
-public:
-    /* IUnknown impl (Don't need to care) */
-    STDMETHODIMP QueryInterface(REFIID iid, void** ppv) override {
-        static const QITAB qit[] = {
-            QITABENT(SampleCallback, IMFSourceReaderCallback),
-            {nullptr},
-        };
-        return QISearch(this, qit, iid, ppv);
-    }
-    STDMETHODIMP_(ULONG) AddRef() override { return 1; }
-    STDMETHODIMP_(ULONG) Release() override { return 0; }
-    /* IUnknown impl */
 };
 
 }  // namespace tcap::mf

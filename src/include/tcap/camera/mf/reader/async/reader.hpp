@@ -15,7 +15,7 @@
 namespace tcap::mf {
 
 class ReaderAsyncBox {
-    ReaderAsyncBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
+    ReaderAsyncBox(IMFSourceReader* pReader, std::unique_ptr<SampleCallbackBase>&& pSampleCallback) noexcept;
 
 public:
     ReaderAsyncBox(const ReaderAsyncBox&) = delete;
@@ -33,7 +33,7 @@ public:
 
 private:
     IMFSourceReader* pReader_;
-    std::unique_ptr<SampleCallback> pSampleCallback_;
+    std::unique_ptr<SampleCallbackBase> pSampleCallback_;
 };
 
 }  // namespace tcap::mf

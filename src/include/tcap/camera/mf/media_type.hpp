@@ -28,7 +28,7 @@ public:
     [[nodiscard]] TCAP_API FourCC getSubTypeFourCC() const noexcept { return FourCC{subTypeGuid_.Data1}; }
     [[nodiscard]] TCAP_API int getWidth() const noexcept { return width_; }
     [[nodiscard]] TCAP_API int getHeight() const noexcept { return height_; }
-    [[nodiscard]] TCAP_API float getApproxFps() const noexcept { return approxFps_; }
+    [[nodiscard]] TCAP_API float getApproxFps() const noexcept { return (float)fpsNumerator_ / (float)fpsDenominator_; }
 
 private:
     IMFMediaType* pMediaType_;
@@ -37,7 +37,6 @@ private:
     int height_;
     int fpsNumerator_;
     int fpsDenominator_;
-    float approxFps_;
 };
 
 }  // namespace tcap::mf

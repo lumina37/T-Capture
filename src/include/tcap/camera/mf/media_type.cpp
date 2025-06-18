@@ -17,8 +17,7 @@ MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width
       width_(width),
       height_(height),
       fpsNumerator_(fpsNumerator),
-      fpsDenominator_(fpsDenominator),
-      approxFps_((float)fpsNumerator / (float)fpsDenominator) {}
+      fpsDenominator_(fpsDenominator) {}
 
 MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
     : pMediaType_(std::exchange(rhs.pMediaType_, nullptr)),
@@ -26,8 +25,7 @@ MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
       width_(rhs.width_),
       height_(rhs.height_),
       fpsNumerator_(rhs.fpsNumerator_),
-      fpsDenominator_(rhs.fpsDenominator_),
-      approxFps_(rhs.approxFps_) {}
+      fpsDenominator_(rhs.fpsDenominator_) {}
 
 MediaTypeBox& MediaTypeBox::operator=(MediaTypeBox&& rhs) noexcept {
     pMediaType_ = std::exchange(rhs.pMediaType_, nullptr);
@@ -36,7 +34,6 @@ MediaTypeBox& MediaTypeBox::operator=(MediaTypeBox&& rhs) noexcept {
     height_ = rhs.height_;
     fpsNumerator_ = rhs.fpsNumerator_;
     fpsDenominator_ = rhs.fpsDenominator_;
-    approxFps_ = rhs.approxFps_;
     return *this;
 }
 
