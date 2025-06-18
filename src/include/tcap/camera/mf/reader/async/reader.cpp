@@ -65,6 +65,6 @@ std::expected<void, Error> ReaderAsyncBox::setMediaType(const MediaTypeBox& medi
     return {};
 }
 
-SampleAwaitable ReaderAsyncBox::sample() noexcept { return SampleAwaitable{(SampleCallback*)pSampleCallback_.get()}; }
+SampleAwaitable_<SampleCallback> ReaderAsyncBox::sample() noexcept { return SampleAwaitable_<SampleCallback>{(SampleCallback*)pSampleCallback_.get()}; }
 
 }  // namespace tcap::mf

@@ -7,6 +7,7 @@
 #include <shlwapi.h>
 
 #include "tcap/camera/mf/reader/async/awaitable.hpp"
+#include "tcap/camera/mf/reader/async/concepts.hpp"
 
 namespace tcap::mf {
 
@@ -34,10 +35,11 @@ public:
     SampleCallback& operator=(const SampleCallback&) = delete;
     SampleCallback(SampleCallback&& rhs) noexcept;
     SampleCallback& operator=(SampleCallback&& rhs) noexcept;
-    virtual ~SampleCallback() noexcept = default;
+    ~SampleCallback() noexcept override = default;
 
     void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }
-    void setCurrentAwaitable(SampleAwaitable* awaitable) noexcept { currentAwaitable_ = awaitable; }
+    void setCurrentAwaitable(SampleAwaitable_<SampleCallback>* awaitable) noexcept { currentAwaitable_ = awaitable; }
+    auto autoLock() noexcept { return std::unique_lock{mutex_}; }
 
     /* IMFSourceReaderCallback impl */
     // !!! Main logic of the reader callback !!!
@@ -51,14 +53,15 @@ public:
     /* IMFSourceReaderCallback impl */
 
     friend class SampleAwaitable;
-
-private:
     void sampleNonBlock() noexcept;
 
+private:
     IMFSourceReader* pReader_;
-    SampleAwaitable* currentAwaitable_;
+    SampleAwaitable_<SampleCallback>* currentAwaitable_;
     std::mutex mutex_;
 };
+
+static_assert(CSampleCallback<SampleCallback>);
 
 }  // namespace tcap::mf
 

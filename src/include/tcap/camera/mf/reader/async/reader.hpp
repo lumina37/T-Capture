@@ -29,7 +29,7 @@ public:
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 
     [[nodiscard]] TCAP_API std::expected<void, Error> setMediaType(const MediaTypeBox& mediaTypeBox) noexcept;
-    [[nodiscard]] TCAP_API SampleAwaitable sample() noexcept;
+    [[nodiscard]] TCAP_API SampleAwaitable_<SampleCallback> sample() noexcept;
 
 private:
     IMFSourceReader* pReader_;
