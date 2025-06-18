@@ -13,26 +13,26 @@
 
 namespace tcap::v4l2 {
 
-DeviceBox::DeviceBox(int fd) noexcept : fd_(fd) {}
+DeviceBox::DeviceBox(const int fd) noexcept : fd_(fd) {}
 
-DeviceBox::DeviceBox(DeviceBox&& rhs) noexcept : fd_(std::exchange(rhs.fd_, 0)) {}
+DeviceBox::DeviceBox(DeviceBox&& rhs) noexcept : fd_(std::exchange(rhs.fd_, -1)) {}
 
 DeviceBox& DeviceBox::operator=(DeviceBox&& rhs) noexcept {
-    fd_ = std::exchange(rhs.fd_, 0);
+    fd_ = std::exchange(rhs.fd_, -1);
     return *this;
 }
 
 DeviceBox::~DeviceBox() noexcept {
-    if (fd_ == 0) return;
+    if (fd_ < 0) return;
     close(fd_);
-    fd_ = 0;
+    fd_ = -1;
 }
 
 std::expected<DeviceBox, Error> DeviceBox::create(const fs::path& path) noexcept {
     const int fd = open(path.c_str(), O_RDWR | O_NONBLOCK);
-    if (fd == 0) {
+    if (fd < 0) {
         auto errMsg = std::format("failed to open: {}", path.c_str());
-        return std::unexpected{Error{-1, std::move(errMsg)}};
+        return std::unexpected{Error{errno, std::move(errMsg)}};
     }
 
     return DeviceBox{fd};
