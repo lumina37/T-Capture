@@ -6,19 +6,9 @@
 
 #include "tcap/common/defines.h"
 #include "tcap/helper/error.hpp"
+#include "tcap/helper/fourcc.hpp"
 
 namespace tcap::mf {
-
-enum class StreamSubType {
-    eUnknown = 0,
-    eI420,
-    eNV12,
-    eYVYU,
-    eYUY2,
-    eMJPG,
-};
-
-StreamSubType mapGuidToStreamSubType(const GUID& guid);
 
 class MediaTypeBox {
     MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
@@ -34,8 +24,8 @@ public:
     [[nodiscard]] TCAP_API static std::expected<MediaTypeBox, Error> create(IMFMediaType* pMediaType) noexcept;
 
     [[nodiscard]] TCAP_API IMFMediaType* getPMediaType() const noexcept { return pMediaType_; }
-    [[nodiscard]] TCAP_API GUID getSubTypeGuid() const noexcept { return subTypeGuid_; }
-    [[nodiscard]] TCAP_API StreamSubType getSubType() const noexcept { return subType_; }
+    [[nodiscard]] TCAP_API GUID getSubType() const noexcept { return subTypeGuid_; }
+    [[nodiscard]] TCAP_API FourCC getSubTypeFourCC() const noexcept { return FourCC{subTypeGuid_.Data1}; }
     [[nodiscard]] TCAP_API int getWidth() const noexcept { return width_; }
     [[nodiscard]] TCAP_API int getHeight() const noexcept { return height_; }
     [[nodiscard]] TCAP_API float getApproxFps() const noexcept { return approxFps_; }
@@ -43,7 +33,6 @@ public:
 private:
     IMFMediaType* pMediaType_;
     GUID subTypeGuid_;
-    StreamSubType subType_;
     int width_;
     int height_;
     int fpsNumerator_;

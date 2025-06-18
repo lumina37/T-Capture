@@ -25,7 +25,8 @@ TEST_CASE("Camera capture", "mf::camera::sync") {
 
     const auto& mediaTypeBox = readerTypeBox.getNativeMediaTypeBoxes().back();
     readerBox.setMediaType(mediaTypeBox) | unwrap;
-    std::println("After switching", (int)mediaTypeBox.getSubType());
+    std::println("After switching");
+    std::println("subType={}", mediaTypeBox.getSubTypeFourCC().strView());
     std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
 
     std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);

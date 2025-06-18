@@ -2,6 +2,8 @@
 #include <print>
 #include <thread>
 
+#include <mfapi.h>
+
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
 
@@ -20,14 +22,16 @@ int main() {
 
     auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
     const auto& oldMediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
+    std::println("subType={}", oldMediaTypeBox.getSubTypeFourCC().strView());
     std::println("width={}, height={}", oldMediaTypeBox.getWidth(), oldMediaTypeBox.getHeight());
 
     auto* pMediaTypeBox = &oldMediaTypeBox;
     for (auto& mTypeBox : readerTypeBox.getNativeMediaTypeBoxes()) {
-        if (mTypeBox.getSubType() == tcap::mf::StreamSubType::eNV12) pMediaTypeBox = &mTypeBox;
+        if (mTypeBox.getSubType() == MFVideoFormat_NV12) pMediaTypeBox = &mTypeBox;
     }
     readerBox.setMediaType(*pMediaTypeBox) | unwrap;
-    std::println("After switching", (int)pMediaTypeBox->getSubType());
+    std::println("After switching");
+    std::println("subType={}", pMediaTypeBox->getSubTypeFourCC().strView());
     std::println("width={}, height={}", pMediaTypeBox->getWidth(), pMediaTypeBox->getHeight());
 
     std::vector<std::byte> frameData(pMediaTypeBox->getWidth() * pMediaTypeBox->getHeight() / 2 * 3);

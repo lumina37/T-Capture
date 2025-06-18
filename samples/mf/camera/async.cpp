@@ -50,7 +50,7 @@ int main() {
 
     auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
     const auto& mediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
-    std::println("subType={}", (int)mediaTypeBox.getSubType());
+    std::println("subType={}", mediaTypeBox.getSubTypeFourCC().strView());
     std::println("fps={}", mediaTypeBox.getApproxFps());
     std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
 

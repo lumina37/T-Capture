@@ -10,20 +10,10 @@
 
 namespace tcap::mf {
 
-StreamSubType mapGuidToStreamSubType(const GUID& guid) {
-    if (guid == MFVideoFormat_I420) return StreamSubType::eI420;
-    if (guid == MFVideoFormat_NV12) return StreamSubType::eNV12;
-    if (guid == MFVideoFormat_YVYU) return StreamSubType::eYVYU;
-    if (guid == MFVideoFormat_YUY2) return StreamSubType::eYUY2;
-    if (guid == MFVideoFormat_MJPG) return StreamSubType::eMJPG;
-    return StreamSubType::eUnknown;
-}
-
 MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
                            int fpsDenominator) noexcept
     : pMediaType_(pMediaType),
       subTypeGuid_(subTypeGuid),
-      subType_(mapGuidToStreamSubType(subTypeGuid)),
       width_(width),
       height_(height),
       fpsNumerator_(fpsNumerator),
@@ -33,7 +23,6 @@ MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width
 MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
     : pMediaType_(std::exchange(rhs.pMediaType_, nullptr)),
       subTypeGuid_(rhs.subTypeGuid_),
-      subType_(rhs.subType_),
       width_(rhs.width_),
       height_(rhs.height_),
       fpsNumerator_(rhs.fpsNumerator_),
@@ -43,7 +32,6 @@ MediaTypeBox::MediaTypeBox(MediaTypeBox&& rhs) noexcept
 MediaTypeBox& MediaTypeBox::operator=(MediaTypeBox&& rhs) noexcept {
     pMediaType_ = std::exchange(rhs.pMediaType_, nullptr);
     subTypeGuid_ = rhs.subTypeGuid_;
-    subType_ = rhs.subType_;
     width_ = rhs.width_;
     height_ = rhs.height_;
     fpsNumerator_ = rhs.fpsNumerator_;
