@@ -21,4 +21,10 @@ if (WIN32)
     tcap_add_test(test-mf-camera-sync-header_only_lib tcap::lib::header-only "mf/camera/sync.cpp")
 endif ()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    tcap_add_test(test-v4l2-camera-sync tcap::lib::static "v4l2/camera/sync.cpp")
+
+    tcap_add_test(test-v4l2-camera-sync-header_only_lib tcap::lib::header-only "v4l2/camera/sync.cpp")
+endif ()
+
 add_custom_target(tcap-tests DEPENDS ${_TCAP_TEST_TARGETS})

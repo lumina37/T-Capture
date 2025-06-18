@@ -2,13 +2,15 @@
 #include <print>
 #include <thread>
 
+#include <catch2/catch_test_macros.hpp>
+
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
 #include "tcap/helper/fourcc.hpp"
 
-int main() {
+TEST_CASE("Camera capture", "v4l2::camera::sync") {
     tcap::v4l2::DevicePaths devicePaths = tcap::v4l2::DevicePaths::create() | unwrap;
-    if (devicePaths.empty()) return 1;
+    if (devicePaths.empty()) return;
 
     auto pDeviceBox =
         std::make_shared<tcap::v4l2::DeviceBox>(tcap::v4l2::DeviceBox::create(devicePaths.getPath(0)) | unwrap);
