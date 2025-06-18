@@ -47,15 +47,15 @@ int main() {
     std::println("support mmap cache hints: {}", bufferCapsBox.supportMMapCacheHints());
     std::println("support DMA buffer: {}", bufferCapsBox.supportDMABuf());
     tcap::v4l2::QueueMMapBox queueBox = tcap::v4l2::QueueMMapBox::create(pDeviceBox) | unwrap;
-    queueBox.startStream() | unwrap;
+    queueBox.turnOnStream() | unwrap;
 
     std::vector<std::byte> frameData(activeFormatBox.getWidth() * activeFormatBox.getHeight() * 2);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        auto bufferViewRes = queueBox.popBuffer();
-        if (!bufferViewRes && bufferViewRes.error().code == EAGAIN) continue;
-        auto bufferView = std::move(bufferViewRes) | unwrap;
-        bufferView.get().copyTo(frameData.data());
+        auto sampleRes = queueBox.popBuffer();
+        if (!sampleRes && sampleRes.error().code == EAGAIN) continue;
+        auto sample = std::move(sampleRes) | unwrap;
+        sample.copyTo(frameData.data()) | unwrap;
         break;
     }
 

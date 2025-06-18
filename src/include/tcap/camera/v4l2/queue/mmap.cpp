@@ -12,19 +12,19 @@
 
 namespace tcap::v4l2 {
 
-QueueMMapBox::QueueMMapBox(std::shared_ptr<DeviceBox>&& pDeviceBox, std::vector<BufferViewMMap>&& bufferViews) noexcept
-    : pDeviceBox_(std::move(pDeviceBox)), bufferViews_(std::move(bufferViews)) {}
+QueueMMapBox::QueueMMapBox(std::shared_ptr<DeviceBox>&& pDeviceBox,
+                           std::vector<std::shared_ptr<BufferViewMMap>>&& bufferViews) noexcept
+    : pDeviceBox_(std::move(pDeviceBox)), pBufferViews_(std::move(bufferViews)) {}
 
-std::expected<void, Error> QueueMMapBox::pushAllBuffersHelper(DeviceBox& deviceBox,
-                                                              std::vector<BufferViewMMap>& bufferViews) noexcept {
+std::expected<void, Error> QueueMMapBox::pushAllBuffersHelper(DeviceBox& deviceBox, const int bufferCount) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_buffer bufferInfo{};
     bufferInfo.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     bufferInfo.memory = V4L2_MEMORY_MMAP;
 
-    for (auto& bufferView : bufferViews) {
-        bufferInfo.index = bufferView.getIndex();
+    for (int index = 0; index < bufferCount; index++) {
+        bufferInfo.index = index;
         bufferInfo.flags = 0;
         const int ret = ioctl(fd, VIDIOC_QBUF, &bufferInfo);
         if (ret != 0) {
@@ -33,6 +33,21 @@ std::expected<void, Error> QueueMMapBox::pushAllBuffersHelper(DeviceBox& deviceB
     }
 
     return {};
+}
+
+QueueMMapBox::~QueueMMapBox() noexcept {
+    if (pDeviceBox_ == nullptr) return;
+
+    const int fd = pDeviceBox_->getFd();
+
+    v4l2_requestbuffers bufferRequest{};
+    bufferRequest.count = 0;
+    bufferRequest.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    bufferRequest.memory = V4L2_MEMORY_MMAP;
+
+    ioctl(fd, VIDIOC_REQBUFS, &bufferRequest);
+
+    pDeviceBox_ = nullptr;
 }
 
 std::expected<QueueMMapBox, Error> QueueMMapBox::create(std::shared_ptr<DeviceBox> pDeviceBox,
@@ -53,7 +68,7 @@ std::expected<QueueMMapBox, Error> QueueMMapBox::create(std::shared_ptr<DeviceBo
         return std::unexpected{Error{errno, "failed to request buffers"}};
     }
 
-    std::vector<BufferViewMMap> bufferViews;
+    std::vector<std::shared_ptr<BufferViewMMap>> bufferViews;
     bufferViews.reserve(bufferCount);
     for (int bufferIndex = 0; bufferIndex < bufferCount; bufferIndex++) {
         v4l2_buffer bufferInfo{};
@@ -68,16 +83,17 @@ std::expected<QueueMMapBox, Error> QueueMMapBox::create(std::shared_ptr<DeviceBo
 
         auto bufferViewRes = BufferViewMMap::create(*pDeviceBox, bufferInfo);
         if (!bufferViewRes) return std::unexpected{std::move(bufferViewRes.error())};
-        bufferViews.push_back(std::move(bufferViewRes.value()));
+        auto pBufferView = std::make_shared<BufferViewMMap>(std::move(bufferViewRes.value()));
+        bufferViews.push_back(std::move(pBufferView));
     }
 
-    auto pushBuffersRes = pushAllBuffersHelper(*pDeviceBox, bufferViews);
+    auto pushBuffersRes = pushAllBuffersHelper(*pDeviceBox, bufferCount);
     if (!pushBuffersRes) return std::unexpected{std::move(pushBuffersRes.error())};
 
     return QueueMMapBox{std::move(pDeviceBox), std::move(bufferViews)};
 }
 
-std::expected<void, Error> QueueMMapBox::startStream() noexcept {
+std::expected<void, Error> QueueMMapBox::turnOnStream() noexcept {
     const int fd = pDeviceBox_->getFd();
 
     v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -90,7 +106,7 @@ std::expected<void, Error> QueueMMapBox::startStream() noexcept {
     return {};
 }
 
-std::expected<void, Error> QueueMMapBox::stopStream() noexcept {
+std::expected<void, Error> QueueMMapBox::turnOffStream() noexcept {
     const int fd = pDeviceBox_->getFd();
 
     v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -103,11 +119,11 @@ std::expected<void, Error> QueueMMapBox::stopStream() noexcept {
     return {};
 }
 
-std::expected<void, Error> QueueMMapBox::pushBuffer(BufferViewMMap& bufferView) noexcept {
+std::expected<void, Error> QueueMMapBox::pushBuffer(SampleMMap&& sample) noexcept {
     const int fd = pDeviceBox_->getFd();
 
     v4l2_buffer bufferInfo{};
-    bufferInfo.index = bufferView.getIndex();
+    bufferInfo.index = sample.take().lock()->getIndex();
     bufferInfo.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     bufferInfo.memory = V4L2_MEMORY_MMAP;
 
@@ -119,7 +135,7 @@ std::expected<void, Error> QueueMMapBox::pushBuffer(BufferViewMMap& bufferView) 
     return {};
 }
 
-std::expected<std::reference_wrapper<BufferViewMMap>, Error> QueueMMapBox::popBuffer() noexcept {
+std::expected<SampleMMap, Error> QueueMMapBox::popBuffer() noexcept {
     const int fd = pDeviceBox_->getFd();
 
     v4l2_buffer bufferInfo{};
@@ -131,8 +147,11 @@ std::expected<std::reference_wrapper<BufferViewMMap>, Error> QueueMMapBox::popBu
         return std::unexpected{Error{errno, "failed to pop buffer from queue"}};
     }
 
-    auto& bufferView = bufferViews_[bufferInfo.index];
-    return bufferView;
+    auto pBuffer = std::weak_ptr{pBufferViews_[bufferInfo.index]};
+    const timeval timestamp = bufferInfo.timestamp;
+    const uint64_t timestampNs = timestamp.tv_sec * 1000000000ull + timestamp.tv_usec * 1000000ull;
+
+    return SampleMMap{std::move(pBuffer), timestampNs};
 }
 
 }  // namespace tcap::v4l2

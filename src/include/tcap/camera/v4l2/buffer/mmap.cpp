@@ -1,10 +1,9 @@
-﻿#include <expected>
+﻿#include <cstring>
+#include <expected>
+#include <utility>
 
 #include <linux/videodev2.h>
 #include <sys/mman.h>
-
-#include <cstring>
-#include <utility>
 
 #include "tcap/camera/v4l2/device/box.hpp"
 #include "tcap/helper/error.hpp"

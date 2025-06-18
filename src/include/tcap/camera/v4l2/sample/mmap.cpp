@@ -1,0 +1,29 @@
+﻿#include <expected>
+#include <utility>
+
+#include "tcap/camera/v4l2/device/box.hpp"
+#include "tcap/helper/error.hpp"
+
+#ifndef _TCAP_LIB_HEADER_ONLY
+#    include "tcap/camera/v4l2/sample/mmap.hpp"
+#endif
+
+namespace tcap::v4l2 {
+
+SampleMMap::SampleMMap(std::weak_ptr<BufferViewMMap>&& pBufferView, uint64_t timestampNs) noexcept
+    : pBufferView_(std::move(pBufferView)), timestampNs_(timestampNs) {}
+
+std::weak_ptr<BufferViewMMap> SampleMMap::take() noexcept { return std::exchange(pBufferView_, {}); }
+
+std::expected<void, Error> SampleMMap::copyTo(std::byte* pData) const noexcept {
+    auto pBufferView = pBufferView_.lock();
+    if (pBufferView == nullptr) {
+        return std::unexpected{Error{-1, "this sample is moved or queue is deconstructed"}};
+    }
+
+    pBufferView->copyTo(pData);
+
+    return {};
+}
+
+}  // namespace tcap::v4l2
