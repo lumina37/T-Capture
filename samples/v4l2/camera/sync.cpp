@@ -23,15 +23,16 @@ int main() {
             const uint32_t height = resolutionBox.getHeight();
             const auto& fpsBoxes = tcap::v4l2::FpsBox::createBoxes(*pDeviceBox, nativeFormat, width, height) | unwrap;
             for (const auto& fpsBox : fpsBoxes) {
-                std::println("nativeFormat={}, size={}x{}, fps={}", nativeFormat, width, height, fpsBox.approxFps());
+                std::println("nativeFormat={}, size={}x{}, fps={}", tcap::FourCC(nativeFormat).strView(), width, height,
+                             fpsBox.approxFps());
             }
         }
     }
 
     // Active format
     tcap::v4l2::ActiveFormatBox activeFormatBox = tcap::v4l2::ActiveFormatBox::create(*pDeviceBox) | unwrap;
-    std::println("default: format={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
-                 activeFormatBox.getHeight());
+    std::println("default: format={}, size={}x{}", tcap::FourCC(activeFormatBox.getFormat()).strView(),
+                 activeFormatBox.getWidth(), activeFormatBox.getHeight());
 
     activeFormatBox.setWidth(640);
     activeFormatBox.setHeight(480);
@@ -39,8 +40,8 @@ int main() {
     activeFormatBox.apply(*pDeviceBox) | unwrap;
 
     activeFormatBox = tcap::v4l2::ActiveFormatBox::create(*pDeviceBox) | unwrap;
-    std::println("new: format={}, size={}x{}", activeFormatBox.getFormat(), activeFormatBox.getWidth(),
-                 activeFormatBox.getHeight());
+    std::println("new: format={}, size={}x{}", tcap::FourCC(activeFormatBox.getFormat()).strView(),
+                 activeFormatBox.getWidth(), activeFormatBox.getHeight());
 
     // Queue
     tcap::v4l2::QueueCaps bufferCapsBox = tcap::v4l2::QueueCaps::create(*pDeviceBox) | unwrap;
