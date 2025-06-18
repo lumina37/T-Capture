@@ -119,11 +119,11 @@ std::expected<void, Error> QueueMMapBox::turnOffStream() noexcept {
     return {};
 }
 
-std::expected<void, Error> QueueMMapBox::pushBuffer(SampleMMap&& sample) noexcept {
+std::expected<void, Error> QueueMMapBox::pushBuffer(std::weak_ptr<BufferViewMMap>&& pBufferView) noexcept {
     const int fd = pDeviceBox_->getFd();
 
     v4l2_buffer bufferInfo{};
-    bufferInfo.index = sample.take().lock()->getIndex();
+    bufferInfo.index = pBufferView.lock()->getIndex();
     bufferInfo.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     bufferInfo.memory = V4L2_MEMORY_MMAP;
 

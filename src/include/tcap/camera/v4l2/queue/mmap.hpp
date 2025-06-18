@@ -30,7 +30,7 @@ public:
 
     [[nodiscard]] TCAP_API std::expected<void, Error> turnOnStream() noexcept;
     [[nodiscard]] TCAP_API std::expected<void, Error> turnOffStream() noexcept;
-    [[nodiscard]] TCAP_API std::expected<void, Error> pushBuffer(SampleMMap&& sample) noexcept;
+    [[nodiscard]] TCAP_API std::expected<void, Error> pushBuffer(std::weak_ptr<BufferViewMMap>&& pBufferView) noexcept;
     [[nodiscard]] TCAP_API std::expected<SampleMMap, Error> popBuffer() noexcept;
 
 private:

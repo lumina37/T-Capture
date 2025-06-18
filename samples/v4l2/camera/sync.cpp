@@ -57,6 +57,7 @@ int main() {
         auto sample = std::move(sampleRes) | unwrap;
         std::println("sample at timestamp={}", sample.getTimestampNs());
         sample.copyTo(frameData.data()) | unwrap;
+        queueBox.pushBuffer(sample.take()) | unwrap;
         break;
     }
 
