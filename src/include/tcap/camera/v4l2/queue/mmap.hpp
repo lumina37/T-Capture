@@ -12,8 +12,7 @@
 namespace tcap::v4l2 {
 
 class QueueMMapBox {
-    QueueMMapBox(std::shared_ptr<DeviceBox>&& pDeviceBox,
-                 std::vector<std::shared_ptr<BufferViewMMap>>&& bufferViews) noexcept;
+    QueueMMapBox(DeviceBox&& deviceBox, std::vector<std::shared_ptr<BufferViewMMap>>&& bufferViews) noexcept;
 
     [[nodiscard]] static std::expected<void, Error> pushAllBuffersHelper(DeviceBox& deviceBox,
                                                                          int bufferCount) noexcept;
@@ -25,8 +24,11 @@ public:
     TCAP_API QueueMMapBox& operator=(QueueMMapBox&&) noexcept = default;
     TCAP_API ~QueueMMapBox() noexcept;
 
-    [[nodiscard]] TCAP_API static std::expected<QueueMMapBox, Error> create(std::shared_ptr<DeviceBox> pDeviceBox,
+    [[nodiscard]] TCAP_API static std::expected<QueueMMapBox, Error> create(DeviceBox&& deviceBox,
                                                                             int bufferCount = 3) noexcept;
+
+    [[nodiscard]] TCAP_API const DeviceBox& getDeviceBox() const noexcept { return deviceBox_; }
+    [[nodiscard]] TCAP_API DeviceBox& getDeviceBox() noexcept { return deviceBox_; }
 
     [[nodiscard]] TCAP_API std::expected<void, Error> turnOnStream() noexcept;
     [[nodiscard]] TCAP_API std::expected<void, Error> turnOffStream() noexcept;
@@ -34,8 +36,9 @@ public:
     [[nodiscard]] TCAP_API std::expected<SampleMMap, Error> popBuffer() noexcept;
 
 private:
-    std::shared_ptr<DeviceBox> pDeviceBox_;
+    DeviceBox deviceBox_;
     std::vector<std::shared_ptr<BufferViewMMap>> pBufferViews_;
+    bool isStreaming_;
 };
 
 }  // namespace tcap::v4l2

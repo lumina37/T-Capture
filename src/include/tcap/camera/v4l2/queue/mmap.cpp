@@ -12,9 +12,8 @@
 
 namespace tcap::v4l2 {
 
-QueueMMapBox::QueueMMapBox(std::shared_ptr<DeviceBox>&& pDeviceBox,
-                           std::vector<std::shared_ptr<BufferViewMMap>>&& bufferViews) noexcept
-    : pDeviceBox_(std::move(pDeviceBox)), pBufferViews_(std::move(bufferViews)) {}
+QueueMMapBox::QueueMMapBox(DeviceBox&& deviceBox, std::vector<std::shared_ptr<BufferViewMMap>>&& bufferViews) noexcept
+    : deviceBox_(std::move(deviceBox)), pBufferViews_(std::move(bufferViews)), isStreaming_(false) {}
 
 std::expected<void, Error> QueueMMapBox::pushAllBuffersHelper(DeviceBox& deviceBox, const int bufferCount) noexcept {
     const int fd = deviceBox.getFd();
@@ -36,9 +35,12 @@ std::expected<void, Error> QueueMMapBox::pushAllBuffersHelper(DeviceBox& deviceB
 }
 
 QueueMMapBox::~QueueMMapBox() noexcept {
-    if (pDeviceBox_ == nullptr) return;
+    const int fd = deviceBox_.getFd();
+    if (fd < 0) return;
 
-    const int fd = pDeviceBox_->getFd();
+    if (isStreaming_) {
+        turnOffStream().error();  // ignore exception
+    }
 
     v4l2_requestbuffers bufferRequest{};
     bufferRequest.count = 0;
@@ -46,17 +48,14 @@ QueueMMapBox::~QueueMMapBox() noexcept {
     bufferRequest.memory = V4L2_MEMORY_MMAP;
 
     ioctl(fd, VIDIOC_REQBUFS, &bufferRequest);
-
-    pDeviceBox_ = nullptr;
 }
 
-std::expected<QueueMMapBox, Error> QueueMMapBox::create(std::shared_ptr<DeviceBox> pDeviceBox,
-                                                        const int bufferCount) noexcept {
+std::expected<QueueMMapBox, Error> QueueMMapBox::create(DeviceBox&& deviceBox, const int bufferCount) noexcept {
     if (bufferCount < 3) {
         return std::unexpected{Error{-1, "bufferCount must be >= 3"}};
     }
 
-    const int fd = pDeviceBox->getFd();
+    const int fd = deviceBox.getFd();
 
     v4l2_requestbuffers bufferRequest{};
     bufferRequest.count = bufferCount;
@@ -81,20 +80,20 @@ std::expected<QueueMMapBox, Error> QueueMMapBox::create(std::shared_ptr<DeviceBo
             return std::unexpected{Error{errno, "failed to query buffer info"}};
         }
 
-        auto bufferViewRes = BufferViewMMap::create(*pDeviceBox, bufferInfo);
+        auto bufferViewRes = BufferViewMMap::create(deviceBox, bufferInfo);
         if (!bufferViewRes) return std::unexpected{std::move(bufferViewRes.error())};
         auto pBufferView = std::make_shared<BufferViewMMap>(std::move(bufferViewRes.value()));
         bufferViews.push_back(std::move(pBufferView));
     }
 
-    auto pushBuffersRes = pushAllBuffersHelper(*pDeviceBox, bufferCount);
+    auto pushBuffersRes = pushAllBuffersHelper(deviceBox, bufferCount);
     if (!pushBuffersRes) return std::unexpected{std::move(pushBuffersRes.error())};
 
-    return QueueMMapBox{std::move(pDeviceBox), std::move(bufferViews)};
+    return QueueMMapBox{std::move(deviceBox), std::move(bufferViews)};
 }
 
 std::expected<void, Error> QueueMMapBox::turnOnStream() noexcept {
-    const int fd = pDeviceBox_->getFd();
+    const int fd = deviceBox_.getFd();
 
     v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
@@ -103,11 +102,13 @@ std::expected<void, Error> QueueMMapBox::turnOnStream() noexcept {
         return std::unexpected{Error{errno, "failed to launch stream"}};
     }
 
+    isStreaming_ = true;
+
     return {};
 }
 
 std::expected<void, Error> QueueMMapBox::turnOffStream() noexcept {
-    const int fd = pDeviceBox_->getFd();
+    const int fd = deviceBox_.getFd();
 
     v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
@@ -116,11 +117,13 @@ std::expected<void, Error> QueueMMapBox::turnOffStream() noexcept {
         return std::unexpected{Error{errno, "failed to stop stream"}};
     }
 
+    isStreaming_ = false;
+
     return {};
 }
 
 std::expected<void, Error> QueueMMapBox::pushBuffer(std::weak_ptr<BufferViewMMap>&& pBufferView) noexcept {
-    const int fd = pDeviceBox_->getFd();
+    const int fd = deviceBox_.getFd();
 
     v4l2_buffer bufferInfo{};
     bufferInfo.index = pBufferView.lock()->getIndex();
@@ -136,7 +139,7 @@ std::expected<void, Error> QueueMMapBox::pushBuffer(std::weak_ptr<BufferViewMMap
 }
 
 std::expected<SampleMMap, Error> QueueMMapBox::popBuffer() noexcept {
-    const int fd = pDeviceBox_->getFd();
+    const int fd = deviceBox_.getFd();
 
     v4l2_buffer bufferInfo{};
     bufferInfo.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
