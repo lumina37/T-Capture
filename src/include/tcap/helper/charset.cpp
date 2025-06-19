@@ -7,7 +7,7 @@
 #    include "tcap/helper/charset.hpp"
 #endif
 
-namespace tcap::mf::_i {
+namespace tcap::_i {
 
 constexpr bool isHiSurrogate(const wchar_t wc) { return 0xD800 <= wc && wc <= 0xDBFF; }
 
@@ -66,4 +66,4 @@ std::expected<std::string, Error> wstringToUtf8(std::wstring_view wstrView) noex
     return utf8Str;
 }
 
-}  // namespace tcap::mf::_i
+}  // namespace tcap::_i
