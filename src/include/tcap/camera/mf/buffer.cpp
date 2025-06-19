@@ -31,7 +31,7 @@ std::expected<BufferBox, Error> BufferBox::create(SampleBox& sampleBox) noexcept
     IMFMediaBuffer* pBuffer;
     hr = pSample->ConvertToContiguousBuffer(&pBuffer);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pSample->ConvertToContiguousBuffer failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     pBuffer->AddRef();
 
@@ -45,14 +45,14 @@ std::expected<void, Error> BufferBox::copyTo(std::byte* pData) const noexcept {
     DWORD maxLen, currLen;
     hr = pBuffer_->Lock(&pFirstRow, &maxLen, &currLen);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pBuffer_->Lock failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
 
     std::memcpy(pData, pFirstRow, currLen);
 
     hr = pBuffer_->Unlock();
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pBuffer_->Unlock failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
 
     return {};

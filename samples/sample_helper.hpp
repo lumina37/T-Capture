@@ -22,8 +22,9 @@ public:
             const fs::path filePath{err.source.file_name()};
             const fs::path grandparentDir = filePath.parent_path().parent_path();
             const std::string fileName = fs::relative(filePath, grandparentDir).generic_string();
-            std::println(std::cerr, "{}:{} msg={} code={}", fileName, err.source.line(), err.msg, err.code);
-            std::exit(err.code);
+            std::println(std::cerr, "{}:{} cate={} code={} msg={}", fileName, err.source.line(),
+                         tcap::errCateToStr(err.cate), err.code, err.msg);
+            std::exit(-1);
         }
         if constexpr (!std::is_void_v<T>) {
             return std::forward_like<T>(src.value());

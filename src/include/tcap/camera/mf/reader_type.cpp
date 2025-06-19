@@ -25,7 +25,7 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const ReaderBox& reade
     IMFMediaType* pCurrMediaType;
     hr = pReader->GetCurrentMediaType(0, &pCurrMediaType);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader->GetCurrentMediaType failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     auto currMediaTypeBoxRes = MediaTypeBox::create(pCurrMediaType);
     if (!currMediaTypeBoxRes) return std::unexpected{std::move(currMediaTypeBoxRes.error())};
@@ -39,7 +39,7 @@ std::expected<ReaderTypeBox, Error> ReaderTypeBox::create(const ReaderBox& reade
             break;
         }
         if (FAILED(hr)) {
-            return std::unexpected{Error{hr, "pReader->GetNativeMediaType failed"}};
+            return std::unexpected{Error{ECate::eMF, hr}};
         }
 
         auto nativeMediaTypeBoxRes = MediaTypeBox::create(pMediaType);

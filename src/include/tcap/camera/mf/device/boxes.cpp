@@ -29,7 +29,7 @@ std::expected<DeviceBoxes, Error> DeviceBoxes::create() noexcept {
     UINT32 deviceCount = 0;
     HRESULT hr = MFEnumDeviceSources(attrsBox.getPAttributes(), &pDevices, &deviceCount);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "MFEnumDeviceSources failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
 
     std::vector<std::shared_ptr<DeviceBox>> deviceBoxes;

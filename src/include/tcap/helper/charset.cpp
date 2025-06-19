@@ -30,18 +30,18 @@ std::expected<std::string, Error> wstringToUtf8(std::wstring_view wstrView) noex
         if constexpr (sizeof(wchar_t) == 2) {
             if (isHiSurrogate(wideCh)) {
                 if (chIdx + 1 >= wstrView.size() || !isLoSurrogate(wstrView[chIdx + 1])) {
-                    return std::unexpected{Error{-1, "invalid surrogate pair"}};
+                    return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "invalid surrogate pair"}};
                 }
                 codepoint = surrogatePair2Codepoint(wideCh, wstrView[++chIdx]);
             } else if (isLoSurrogate(wideCh)) {
-                return std::unexpected{Error{-1, "unpaired low surrogate"}};
+                return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "unpaired low surrogate"}};
             } else {
                 codepoint = (char32_t)wideCh;
             }
         } else if constexpr (sizeof(wchar_t) == 4) {
             codepoint = (char32_t)wideCh;
         } else {
-            return std::unexpected{Error{-1, "unsupported wchar_t size"}};
+            return std::unexpected{Error{ECate::eTCap, ECode::eNoImpl, "unsupported wchar_t size"}};
         }
 
         if (codepoint <= 0x7F) {
@@ -59,7 +59,7 @@ std::expected<std::string, Error> wstringToUtf8(std::wstring_view wstrView) noex
             utf8Str.push_back((char)(0x80 | ((codepoint >> 6) & 0x3F)));
             utf8Str.push_back((char)(0x80 | (codepoint & 0x3F)));
         } else {
-            return std::unexpected{Error{-1, "invalid unicode"}};
+            return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "invalid unicode"}};
         }
     }
 

@@ -32,7 +32,7 @@ std::expected<ReaderBox, Error> ReaderBox::createSync(const SourceBox& sourceBox
     auto pSource = sourceBox.getPSource();
     const HRESULT hr = MFCreateSourceReaderFromMediaSource(pSource, nullptr, &pReader);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     pReader->AddRef();
 
@@ -52,7 +52,7 @@ std::expected<ReaderBox, Error> ReaderBox::createAsync(const SourceBox& sourceBo
     auto pSource = sourceBox.getPSource();
     const HRESULT hr = MFCreateSourceReaderFromMediaSource(pSource, attrsBox.getPAttributes(), &pReader);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     pReader->AddRef();
 
@@ -64,7 +64,7 @@ std::expected<void, Error> ReaderBox::setMediaType(const MediaTypeBox& mediaType
 
     const HRESULT hr = pReader_->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader_->SetCurrentMediaType failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     return {};
 }
@@ -76,10 +76,10 @@ std::expected<SampleBox, Error> ReaderBox::sampleSync() noexcept {
     const HRESULT hr = pReader_->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags,
                                             &timestamp, &pSample);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader_->ReadSample failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     if (pSample == nullptr) {
-        return std::unexpected{Error{-1, "pSample is nullptr"}};
+        return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "pSample is nullptr"}};
     }
 
     SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
@@ -91,7 +91,7 @@ std::expected<void, Error> ReaderBox::sampleAsync() noexcept {
     const HRESULT hr =
         pReader_->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr, nullptr, nullptr);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader_->ReadSample failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
 
     return {};

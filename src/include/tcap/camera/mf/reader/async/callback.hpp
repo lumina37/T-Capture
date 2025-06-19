@@ -67,12 +67,13 @@ private:
 };
 
 template <typename TAwaitable>
-STDMETHODIMP SampleCallback_<TAwaitable>::OnReadSample(HRESULT hr, [[maybe_unused]] DWORD streamIndex, DWORD streamFlags,
-                                                      LONGLONG timestamp, IMFSample* pSample) noexcept {
+STDMETHODIMP SampleCallback_<TAwaitable>::OnReadSample(HRESULT hr, [[maybe_unused]] DWORD streamIndex,
+                                                       DWORD streamFlags, LONGLONG timestamp,
+                                                       IMFSample* pSample) noexcept {
     if (FAILED(hr)) {
         {
             auto lock = std::lock_guard{currentAwaitable_->getMutex()};
-            currentAwaitable_->setSampleBoxRes(std::unexpected{Error{hr, "OnReadSample failed"}});
+            currentAwaitable_->setSampleBoxRes(std::unexpected{Error{ECate::eMF, hr}});
         }
         currentAwaitable_->resume();
         return S_OK;
@@ -81,7 +82,8 @@ STDMETHODIMP SampleCallback_<TAwaitable>::OnReadSample(HRESULT hr, [[maybe_unuse
     {
         auto lock = std::lock_guard{currentAwaitable_->getMutex()};
         if (pSample == nullptr) {
-            currentAwaitable_->setSampleBoxRes(std::unexpected{Error{-1, "pSample is nullptr"}});
+            currentAwaitable_->setSampleBoxRes(
+                std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "pSample is nullptr"}});
         } else {
             SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
             currentAwaitable_->setSampleBoxRes(std::move(sampleBox));

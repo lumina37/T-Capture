@@ -21,7 +21,7 @@ std::expected<WStringBox, Error> DeviceBox::query(IMFActivate* pDevice, const GU
     UINT32 len;
     const HRESULT hr = pDevice->GetAllocatedString(key, &pWString, &len);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pDevice_->GetAllocatedString failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
 
     return WStringBox{pWString, len};
@@ -47,15 +47,15 @@ std::expected<DeviceBox, Error> DeviceBox::create(IMFActivate* pDevice) noexcept
     pDevice->AddRef();
 
     auto uuidWStrBoxRes = query(pDevice, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK);
-    if (!uuidWStrBoxRes) return std::unexpected{Error{std::move(uuidWStrBoxRes.error())}};
+    if (!uuidWStrBoxRes) return std::unexpected{std::move(uuidWStrBoxRes.error())};
     auto& uuidWStrBox = uuidWStrBoxRes.value();
 
     auto nameWStrBoxRes = query(pDevice, MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME);
-    if (!nameWStrBoxRes) return std::unexpected{Error{std::move(nameWStrBoxRes.error())}};
+    if (!nameWStrBoxRes) return std::unexpected{std::move(nameWStrBoxRes.error())};
     auto& nameWStrBox = nameWStrBoxRes.value();
 
     auto nameRes = _i::wstringToUtf8(nameWStrBox.getWStringView());
-    if (!nameRes) return std::unexpected{Error{std::move(nameRes.error())}};
+    if (!nameRes) return std::unexpected{std::move(nameRes.error())};
     auto& name = nameRes.value();
 
     return DeviceBox{pDevice, std::move(uuidWStrBox), std::move(name)};

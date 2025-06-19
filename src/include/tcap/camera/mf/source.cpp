@@ -36,7 +36,7 @@ std::expected<SourceBox, Error> SourceBox::create(std::shared_ptr<DeviceBox> pDe
     IMFMediaSource* pSource;
     HRESULT hr = pDevice->ActivateObject(IID_PPV_ARGS(&pSource));
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pDevice->ActivateObject failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     pSource->AddRef();
 

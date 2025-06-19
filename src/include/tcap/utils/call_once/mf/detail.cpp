@@ -14,7 +14,7 @@ namespace tcap::mf {
 std::expected<void, Error> initCOM() noexcept {
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "CoInitializeEx failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     return {};
 }
@@ -22,7 +22,7 @@ std::expected<void, Error> initCOM() noexcept {
 std::expected<void, Error> initMF() noexcept {
     HRESULT hr = MFStartup(MF_VERSION);
     if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "MFStartup failed"}};
+        return std::unexpected{Error{ECate::eMF, hr}};
     }
     return {};
 }

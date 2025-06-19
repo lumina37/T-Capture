@@ -46,27 +46,16 @@ MediaTypeBox::~MediaTypeBox() noexcept {
 std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType) noexcept {
     pMediaType->AddRef();
 
-    HRESULT hr;
-
     GUID subTypeGuid;
-    hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subTypeGuid);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "get subType failed"}};
-    }
+    pMediaType->GetGUID(MF_MT_SUBTYPE, &subTypeGuid);
 
     UINT32 width, height;
-    hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &width, &height);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "get size failed"}};
-    }
+    MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &width, &height);
 
     UINT32 fpsNumerator, fpsDenominator;
-    hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &fpsNumerator, &fpsDenominator);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "get fps failed"}};
-    }
+    MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &fpsNumerator, &fpsDenominator);
     if (fpsDenominator == 0) {
-        return std::unexpected{Error{hr, "fpsDenominator is 0"}};
+        return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "fpsDenominator is 0"}};
     }
 
     return MediaTypeBox{std::move(pMediaType), subTypeGuid,       (int)width,
