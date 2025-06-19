@@ -3,13 +3,13 @@
 #include <mfapi.h>
 #include <mfobjects.h>
 
-#include "tcap/helper/error.hpp"
+#include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/helper/mf/attributes.hpp"
 #endif
 
-namespace tcap::mf {
+namespace tcap::mf::_i {
 
 AttributesBox::AttributesBox(IMFAttributes* pAttributes) noexcept : pAttributes_(pAttributes) {}
 
@@ -52,4 +52,4 @@ std::expected<void, Error> AttributesBox::setUnknown(const GUID& key, IUnknown* 
     return {};
 }
 
-}  // namespace tcap::mf
+}  // namespace tcap::mf::_i

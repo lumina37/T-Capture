@@ -3,7 +3,7 @@
 
 #include <glob.h>
 
-#include "tcap/helper/error.hpp"
+#include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/v4l2/device/path.hpp"

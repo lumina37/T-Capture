@@ -12,7 +12,6 @@ set(_TCAP_MF_SRCS
         include/tcap/camera/mf/source.cpp
 
         include/tcap/helper/mf/attributes.cpp
-        include/tcap/helper/mf/wstring.cpp
 
         include/tcap/utils/call_once/mf/detail.cpp
 )

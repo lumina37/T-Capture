@@ -6,7 +6,6 @@
 
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
-#include "tcap/helper/fourcc.hpp"
 
 TEST_CASE("Camera capture", "v4l2::camera::sync") {
     tcap::v4l2::DevicePaths devicePaths = tcap::v4l2::DevicePaths::create() | unwrap;

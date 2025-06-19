@@ -3,7 +3,7 @@
 #include <utility>
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/error.hpp"
+#    include "tcap/utils/error.hpp"
 #endif
 
 namespace tcap {

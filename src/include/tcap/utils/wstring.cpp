@@ -3,7 +3,7 @@
 #include <mfobjects.h>
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/mf/wstring.hpp"
+#    include "tcap/utils/wstring.hpp"
 #endif
 
 namespace tcap::mf {

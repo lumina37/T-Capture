@@ -3,7 +3,7 @@
 #include <mfapi.h>
 #include <mfidl.h>
 
-#include "tcap/helper/error.hpp"
+#include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/utils/call_once/mf/detail.hpp"

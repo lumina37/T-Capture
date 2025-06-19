@@ -4,8 +4,8 @@
 #include <mfobjects.h>
 
 #include "tcap/helper/charset.hpp"
-#include "tcap/helper/error.hpp"
-#include "tcap/helper/mf/wstring.hpp"
+#include "tcap/utils/error.hpp"
+#include "tcap/utils/wstring.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/device/box.hpp"
@@ -54,7 +54,7 @@ std::expected<DeviceBox, Error> DeviceBox::create(IMFActivate* pDevice) noexcept
     if (!nameWStrBoxRes) return std::unexpected{Error{std::move(nameWStrBoxRes.error())}};
     auto& nameWStrBox = nameWStrBoxRes.value();
 
-    auto nameRes = wstringToUtf8(nameWStrBox.getWStringView());
+    auto nameRes = _i::wstringToUtf8(nameWStrBox.getWStringView());
     if (!nameRes) return std::unexpected{Error{std::move(nameRes.error())}};
     auto& name = nameRes.value();
 

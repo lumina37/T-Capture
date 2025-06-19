@@ -3,8 +3,8 @@
 
 #include "tcap/camera/mf/sample.hpp"
 #include "tcap/camera/mf/source.hpp"
-#include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
+#include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/reader/core.hpp"
@@ -41,7 +41,7 @@ std::expected<ReaderBox, Error> ReaderBox::createSync(const SourceBox& sourceBox
 
 std::expected<ReaderBox, Error> ReaderBox::createAsync(const SourceBox& sourceBox,
                                                        IMFSourceReaderCallback* pCallback) noexcept {
-    auto attrsBoxRes = AttributesBox::create(1);
+    auto attrsBoxRes = _i::AttributesBox::create(1);
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
 

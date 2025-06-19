@@ -20,7 +20,8 @@ public:
         if (!src.has_value()) {
             const auto& err = src.error();
             const fs::path filePath{err.source.file_name()};
-            const std::string fileName = filePath.filename().string();
+            const fs::path grandparentDir = filePath.parent_path().parent_path();
+            const std::string fileName = fs::relative(filePath, grandparentDir).generic_string();
             std::println(std::cerr, "{}:{} msg={} code={}", fileName, err.source.line(), err.msg, err.code);
             std::exit(err.code);
         }

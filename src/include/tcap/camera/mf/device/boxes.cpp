@@ -4,8 +4,8 @@
 #include <mfobjects.h>
 
 #include "tcap/camera/mf/device/box.hpp"
-#include "tcap/helper/error.hpp"
 #include "tcap/helper/mf/attributes.hpp"
+#include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/device/boxes.hpp"
@@ -19,7 +19,7 @@ DeviceBoxes::DeviceBoxes(std::vector<std::shared_ptr<DeviceBox>>&& deviceBoxes) 
 std::expected<DeviceBoxes, Error> DeviceBoxes::create() noexcept {
     IMFActivate** pDevices;
 
-    auto attrsBoxRes = AttributesBox::create(1);
+    auto attrsBoxRes = _i::AttributesBox::create(1);
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
 

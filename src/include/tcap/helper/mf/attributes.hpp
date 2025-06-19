@@ -5,9 +5,9 @@
 #include <mfobjects.h>
 
 #include "tcap/common/defines.h"
-#include "tcap/helper/error.hpp"
+#include "tcap/utils/error.hpp"
 
-namespace tcap::mf {
+namespace tcap::mf::_i {
 
 class AttributesBox {
     AttributesBox(IMFAttributes* pAttributes) noexcept;
@@ -30,7 +30,7 @@ private:
     IMFAttributes* pAttributes_;
 };
 
-}  // namespace tcap::mf
+}  // namespace tcap::mf::_i
 
 #ifdef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/helper/mf/attributes.cpp"

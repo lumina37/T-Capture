@@ -5,8 +5,8 @@
 #include <mfobjects.h>
 
 #include "tcap/common/defines.h"
-#include "tcap/helper/error.hpp"
-#include "tcap/helper/fourcc.hpp"
+#include "tcap/utils/error.hpp"
+#include "tcap/utils/fourcc.hpp"
 
 namespace tcap::mf {
 

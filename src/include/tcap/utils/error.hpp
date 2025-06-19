@@ -24,5 +24,5 @@ public:
 }  // namespace tcap
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/error.cpp"
+#    include "tcap/utils/error.cpp"
 #endif

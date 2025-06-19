@@ -17,7 +17,7 @@ int main() {
         std::println("Device name: {}", pDeviceBox->getName());
     }
 
-    auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(1)) | unwrap;
+    auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
     auto reader = tcap::mf::ReaderSync::create(sourceBox) | unwrap;
 
     auto readerTypeBox = tcap::mf::ReaderTypeBox::create(reader.getReaderBox()) | unwrap;

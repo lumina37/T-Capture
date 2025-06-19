@@ -6,7 +6,7 @@
 
 #include "tcap/camera/v4l2/device/box.hpp"
 #include "tcap/common/defines.h"
-#include "tcap/helper/error.hpp"
+#include "tcap/utils/error.hpp"
 
 namespace tcap::v4l2 {
 
