@@ -18,12 +18,12 @@ public:
 
     [[nodiscard]] TCAP_API std::weak_ptr<BufferViewMMap> take() noexcept;
 
-    [[nodiscard]] TCAP_API uint64_t getTimestampNs() const noexcept { return timestampNs_; }
+    [[nodiscard]] TCAP_API uint64_t getTimestampMs() const noexcept { return timestampMs_; }
     [[nodiscard]] TCAP_API std::expected<void, Error> copyTo(std::byte* pData) const noexcept;
 
 private:
     std::weak_ptr<BufferViewMMap> pBufferView_;
-    uint64_t timestampNs_;
+    uint64_t timestampMs_;
 };
 
 }  // namespace tcap::v4l2

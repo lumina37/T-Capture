@@ -54,13 +54,13 @@ int main() {
         auto sampleRes = queueBox.popBuffer();
         if (!sampleRes && sampleRes.error().code == EAGAIN) continue;
         auto sample = std::move(sampleRes) | unwrap;
-        std::println("sample at timestamp={}", sample.getTimestampNs());
+        std::println("sample at timestamp={}", sample.getTimestampMs());
         sample.copyTo(frameData.data()) | unwrap;
         queueBox.pushBuffer(sample.take()) | unwrap;
         break;
     }
 
     std::ofstream outFStream{"sync.yuv"};
-    outFStream.write((char*)frameData.data(), frameData.size());
+    outFStream.write((char*)frameData.data(), (std::streamsize)frameData.size());
     outFStream.close();
 }

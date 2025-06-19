@@ -10,8 +10,8 @@
 
 namespace tcap::v4l2 {
 
-SampleMMap::SampleMMap(std::weak_ptr<BufferViewMMap>&& pBufferView, const uint64_t timestampNs) noexcept
-    : pBufferView_(std::move(pBufferView)), timestampNs_(timestampNs) {}
+SampleMMap::SampleMMap(std::weak_ptr<BufferViewMMap>&& pBufferView, const uint64_t timestampMs) noexcept
+    : pBufferView_(std::move(pBufferView)), timestampMs_(timestampMs) {}
 
 std::weak_ptr<BufferViewMMap> SampleMMap::take() noexcept { return std::exchange(pBufferView_, {}); }
 

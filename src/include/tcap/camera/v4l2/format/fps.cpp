@@ -16,8 +16,8 @@ namespace tcap::v4l2 {
 constexpr FpsBox::FpsBox(const uint32_t numerator, const uint32_t denominator) noexcept
     : numerator_(numerator), denominator_(denominator) {}
 
-std::expected<std::vector<FpsBox>, Error> FpsBox::createBoxes(const DeviceBox& deviceBox, uint32_t format,
-                                                              uint32_t width, uint32_t height) noexcept {
+std::expected<std::vector<FpsBox>, Error> FpsBox::createBoxes(const DeviceBox& deviceBox, const uint32_t format,
+                                                              const uint32_t width, const uint32_t height) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_frmivalenum frmIval{};

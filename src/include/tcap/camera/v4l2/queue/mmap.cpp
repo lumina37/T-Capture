@@ -152,9 +152,9 @@ std::expected<SampleMMap, Error> QueueMMapBox::popBuffer() noexcept {
 
     auto pBuffer = std::weak_ptr{pBufferViews_[bufferInfo.index]};
     const timeval timestamp = bufferInfo.timestamp;
-    const uint64_t timestampNs = timestamp.tv_sec * 1000000000ull + timestamp.tv_usec * 1000000ull;
+    const uint64_t timestampMs = timestamp.tv_sec * 1000ull + timestamp.tv_usec;
 
-    return SampleMMap{std::move(pBuffer), timestampNs};
+    return SampleMMap{std::move(pBuffer), timestampMs};
 }
 
 }  // namespace tcap::v4l2

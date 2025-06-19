@@ -11,7 +11,7 @@
 
 namespace tcap::v4l2 {
 
-constexpr DeviceCaps::DeviceCaps(uint32_t caps) noexcept : caps_(caps) {}
+constexpr DeviceCaps::DeviceCaps(const uint32_t caps) noexcept : caps_(caps) {}
 
 std::expected<DeviceCaps, Error> DeviceCaps::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();

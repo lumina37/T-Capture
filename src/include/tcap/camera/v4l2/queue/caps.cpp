@@ -12,7 +12,7 @@
 
 namespace tcap::v4l2 {
 
-constexpr QueueCaps::QueueCaps(uint32_t caps) noexcept : caps_(caps) {}
+constexpr QueueCaps::QueueCaps(const uint32_t caps) noexcept : caps_(caps) {}
 
 std::expected<QueueCaps, Error> QueueCaps::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();

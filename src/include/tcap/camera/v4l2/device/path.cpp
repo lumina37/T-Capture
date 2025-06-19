@@ -25,7 +25,7 @@ thread_local Error DevicePaths::createError{};
 
 std::expected<DevicePaths, Error> DevicePaths::create() noexcept {
     glob_t globRes;
-    int errNo = glob("/dev/video*", GLOB_NOSORT, onError, &globRes);
+    const int errNo = glob("/dev/video*", GLOB_NOSORT, onError, &globRes);
     if (createError.code != 0) {
         return std::unexpected{std::exchange(createError, Error{ECate::eUnknown, 0})};
     }

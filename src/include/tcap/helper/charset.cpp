@@ -24,7 +24,7 @@ std::expected<std::string, Error> wstringToUtf8(std::wstring_view wstrView) noex
     for (size_t chIdx = 0; chIdx < wstrView.size(); chIdx++) {
         char32_t codepoint;
 
-        wchar_t wideCh = wstrView[chIdx];
+        const wchar_t wideCh = wstrView[chIdx];
 
         // Convert to codepoint
         if constexpr (sizeof(wchar_t) == 2) {
