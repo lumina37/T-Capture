@@ -66,6 +66,7 @@ std::expected<void, Error> ReaderBox::setMediaType(const MediaTypeBox& mediaType
     if (FAILED(hr)) {
         return std::unexpected{Error{ECate::eMF, hr}};
     }
+
     return {};
 }
 

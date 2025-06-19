@@ -55,6 +55,7 @@ std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType
     UINT32 fpsNumerator, fpsDenominator;
     MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &fpsNumerator, &fpsDenominator);
     if (fpsDenominator == 0) {
+        pMediaType->Release();
         return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "fpsDenominator is 0"}};
     }
 

@@ -47,15 +47,16 @@ std::expected<DeviceBox, Error> DeviceBox::create(IMFActivate* pDevice) noexcept
     pDevice->AddRef();
 
     auto uuidWStrBoxRes = query(pDevice, MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK);
-    if (!uuidWStrBoxRes) return std::unexpected{std::move(uuidWStrBoxRes.error())};
     auto& uuidWStrBox = uuidWStrBoxRes.value();
 
     auto nameWStrBoxRes = query(pDevice, MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME);
-    if (!nameWStrBoxRes) return std::unexpected{std::move(nameWStrBoxRes.error())};
     auto& nameWStrBox = nameWStrBoxRes.value();
 
     auto nameRes = _i::wstringToUtf8(nameWStrBox.getWStringView());
-    if (!nameRes) return std::unexpected{std::move(nameRes.error())};
+    if (!nameRes) {
+        pDevice->Release();
+        return std::unexpected{std::move(nameRes.error())};
+    }
     auto& name = nameRes.value();
 
     return DeviceBox{pDevice, std::move(uuidWStrBox), std::move(name)};
