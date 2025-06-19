@@ -26,7 +26,7 @@ std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& d
 
     const int ret = ioctl(fd, VIDIOC_G_FMT, &format);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to get format"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     return ActiveFormatBox{format};
@@ -37,7 +37,7 @@ std::expected<void, Error> ActiveFormatBox::apply(DeviceBox& deviceBox) const no
 
     const int ret = ioctl(fd, VIDIOC_S_FMT, &format_);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to set format"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     return {};

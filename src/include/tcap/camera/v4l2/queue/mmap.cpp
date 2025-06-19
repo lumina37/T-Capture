@@ -27,7 +27,7 @@ std::expected<void, Error> QueueMMapBox::pushAllBuffersHelper(DeviceBox& deviceB
         bufferInfo.flags = 0;
         const int ret = ioctl(fd, VIDIOC_QBUF, &bufferInfo);
         if (ret != 0) {
-            return std::unexpected{Error{errno, "failed to push buffer into queue"}};
+            return std::unexpected{Error{ECate::eV4L2, errno}};
         }
     }
 
@@ -52,7 +52,7 @@ QueueMMapBox::~QueueMMapBox() noexcept {
 
 std::expected<QueueMMapBox, Error> QueueMMapBox::create(DeviceBox&& deviceBox, const int bufferCount) noexcept {
     if (bufferCount < 3) {
-        return std::unexpected{Error{-1, "bufferCount must be >= 3"}};
+        return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "bufferCount must be >= 3"}};
     }
 
     const int fd = deviceBox.getFd();
@@ -64,7 +64,7 @@ std::expected<QueueMMapBox, Error> QueueMMapBox::create(DeviceBox&& deviceBox, c
 
     const int ret = ioctl(fd, VIDIOC_REQBUFS, &bufferRequest);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to request buffers"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     std::vector<std::shared_ptr<BufferViewMMap>> bufferViews;
@@ -77,7 +77,7 @@ std::expected<QueueMMapBox, Error> QueueMMapBox::create(DeviceBox&& deviceBox, c
 
         const int queryRet = ioctl(fd, VIDIOC_QUERYBUF, &bufferInfo);
         if (queryRet != 0) {
-            return std::unexpected{Error{errno, "failed to query buffer info"}};
+            return std::unexpected{Error{ECate::eV4L2, errno}};
         }
 
         auto bufferViewRes = BufferViewMMap::create(deviceBox, bufferInfo);
@@ -99,7 +99,7 @@ std::expected<void, Error> QueueMMapBox::turnOnStream() noexcept {
 
     const int ret = ioctl(fd, VIDIOC_STREAMON, &type);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to launch stream"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     isStreaming_ = true;
@@ -114,7 +114,7 @@ std::expected<void, Error> QueueMMapBox::turnOffStream() noexcept {
 
     const int ret = ioctl(fd, VIDIOC_STREAMOFF, &type);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to stop stream"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     isStreaming_ = false;
@@ -132,7 +132,7 @@ std::expected<void, Error> QueueMMapBox::pushBuffer(std::weak_ptr<BufferViewMMap
 
     const int ret = ioctl(fd, VIDIOC_QBUF, &bufferInfo);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to push buffer into queue"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     return {};
@@ -147,7 +147,7 @@ std::expected<SampleMMap, Error> QueueMMapBox::popBuffer() noexcept {
 
     const int ret = ioctl(fd, VIDIOC_DQBUF, &bufferInfo);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to pop buffer from queue"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     auto pBuffer = std::weak_ptr{pBufferViews_[bufferInfo.index]};

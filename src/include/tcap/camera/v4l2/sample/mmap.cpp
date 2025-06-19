@@ -18,7 +18,8 @@ std::weak_ptr<BufferViewMMap> SampleMMap::take() noexcept { return std::exchange
 std::expected<void, Error> SampleMMap::copyTo(std::byte* pData) const noexcept {
     auto pBufferView = pBufferView_.lock();
     if (pBufferView == nullptr) {
-        return std::unexpected{Error{-1, "pBufferView_ is taken or queue is deconstructed"}};
+        return std::unexpected{
+            Error{ECate::eTCap, ECode::eResInvalid, "pBufferView_ is taken or queue is deconstructed"}};
     }
 
     pBufferView->copyTo(pData);

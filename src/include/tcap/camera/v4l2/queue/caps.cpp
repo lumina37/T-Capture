@@ -24,12 +24,12 @@ std::expected<QueueCaps, Error> QueueCaps::create(const DeviceBox& deviceBox) no
 
     const int ret = ioctl(fd, VIDIOC_REQBUFS, &bufferRequest);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to get buffer caps"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     const uint32_t caps = bufferRequest.capabilities;
     if (caps == 0) {
-        return std::unexpected{Error{-1, "buffer caps is not supported"}};
+        return std::unexpected{Error{ECate::eTCap, ECode::eNoSupport}};
     }
 
     return QueueCaps{caps};

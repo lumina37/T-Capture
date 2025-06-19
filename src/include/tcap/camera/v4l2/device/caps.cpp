@@ -20,12 +20,12 @@ std::expected<DeviceCaps, Error> DeviceCaps::create(const DeviceBox& deviceBox) 
 
     const int ret = ioctl(fd, VIDIOC_QUERYCAP, &caps);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to get caps"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     const uint32_t capFlags = caps.capabilities;
     if ((capFlags & V4L2_CAP_DEVICE_CAPS) == 0) {
-        return std::unexpected{Error{-1, "device caps is not supported"}};
+        return std::unexpected{Error{ECate::eTCap, ECode::eNoSupport}};
     }
 
     return DeviceCaps{caps.device_caps};

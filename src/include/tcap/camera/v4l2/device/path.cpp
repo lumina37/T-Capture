@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 
 int DevicePaths::onError(const char* failedPath, int errNo) noexcept {
     auto errMsg = std::format("failed on path: {}", failedPath);
-    createError = {errNo, errMsg};
+    createError = {ECate::eSys, errNo, std::move(errMsg)};
     return 1;
 }
 
@@ -27,10 +27,10 @@ std::expected<DevicePaths, Error> DevicePaths::create() noexcept {
     glob_t globRes;
     int errNo = glob("/dev/video*", GLOB_NOSORT, onError, &globRes);
     if (createError.code != 0) {
-        return std::unexpected{std::exchange(createError, Error{0})};
+        return std::unexpected{std::exchange(createError, Error{ECate::eUnknown, 0})};
     }
     if (errNo != 0) {
-        return std::unexpected{Error{errNo, "failed to glob devices"}};
+        return std::unexpected{Error{ECate::eSys, errNo}};
     }
 
     std::vector<fs::path> devicePaths;

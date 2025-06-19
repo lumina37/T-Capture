@@ -45,7 +45,7 @@ std::expected<void, Error> FpsBox::apply(DeviceBox& deviceBox) const noexcept {
 
     const int ret = ioctl(fd, VIDIOC_S_PARM, &streamParam);
     if (ret != 0) {
-        return std::unexpected{Error{errno, "failed to set fps"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     return {};

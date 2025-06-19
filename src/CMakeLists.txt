@@ -4,7 +4,6 @@ include(helper.cmake)
 set(_TCAP_SRCS
         include/tcap/helper/charset.cpp
         include/tcap/utils/error.cpp
-        include/tcap/utils/wstring.cpp
 )
 
 if (WIN32)

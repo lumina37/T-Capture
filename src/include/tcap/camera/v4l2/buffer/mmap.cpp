@@ -40,7 +40,7 @@ std::expected<BufferViewMMap, Error> BufferViewMMap::create(DeviceBox& deviceBox
     const uint32_t length = bufferInfo.length;
     void* pData = mmap(nullptr, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, bufferInfo.m.offset);
     if (pData == nullptr) {
-        return std::unexpected{Error{errno, "failed to mmap"}};
+        return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
     return BufferViewMMap{pData, length, (int)bufferInfo.index};

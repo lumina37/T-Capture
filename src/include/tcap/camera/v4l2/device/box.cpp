@@ -32,7 +32,7 @@ std::expected<DeviceBox, Error> DeviceBox::create(const fs::path& path) noexcept
     const int fd = open(path.c_str(), O_RDWR | O_NONBLOCK);
     if (fd < 0) {
         auto errMsg = std::format("failed to open: {}", path.c_str());
-        return std::unexpected{Error{errno, std::move(errMsg)}};
+        return std::unexpected{Error{ECate::eV4L2, errno, std::move(errMsg)}};
     }
 
     return DeviceBox{fd};
