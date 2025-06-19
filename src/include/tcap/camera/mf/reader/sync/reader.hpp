@@ -2,10 +2,8 @@
 
 #include <expected>
 
-#include <mfidl.h>
-#include <mfreadwrite.h>
-
 #include "tcap/camera/mf/media_type.hpp"
+#include "tcap/camera/mf/reader/core.hpp"
 #include "tcap/camera/mf/sample.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/common/defines.h"
@@ -13,25 +11,25 @@
 
 namespace tcap::mf {
 
-class ReaderSyncBox {
-    ReaderSyncBox(IMFSourceReader* pReader) noexcept;
+class ReaderSync {
+    ReaderSync(ReaderBox&& readerBox) noexcept;
 
 public:
-    ReaderSyncBox(const ReaderSyncBox&) = delete;
-    ReaderSyncBox& operator=(const ReaderSyncBox&) = delete;
-    TCAP_API ReaderSyncBox(ReaderSyncBox&& rhs) noexcept;
-    TCAP_API ReaderSyncBox& operator=(ReaderSyncBox&& rhs) noexcept;
-    TCAP_API ~ReaderSyncBox() noexcept;
+    ReaderSync(const ReaderSync&) = delete;
+    ReaderSync& operator=(const ReaderSync&) = delete;
+    TCAP_API ReaderSync(ReaderSync&& rhs) noexcept = default;
+    TCAP_API ReaderSync& operator=(ReaderSync&& rhs) noexcept = default;
 
-    [[nodiscard]] TCAP_API static std::expected<ReaderSyncBox, Error> create(const SourceBox& sourceBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<ReaderSync, Error> create(const SourceBox& sourceBox) noexcept;
 
-    [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
+    [[nodiscard]] TCAP_API const ReaderBox& getReaderBox() const noexcept { return readerBox_; }
+    [[nodiscard]] TCAP_API ReaderBox& getReaderBox() noexcept { return readerBox_; }
 
     [[nodiscard]] TCAP_API std::expected<void, Error> setMediaType(const MediaTypeBox& mediaTypeBox) noexcept;
     [[nodiscard]] TCAP_API std::expected<SampleBox, Error> sample() noexcept;
 
 private:
-    IMFSourceReader* pReader_;
+    ReaderBox readerBox_;
 };
 
 }  // namespace tcap::mf

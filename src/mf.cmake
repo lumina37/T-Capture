@@ -1,6 +1,7 @@
 set(_TCAP_MF_SRCS
         include/tcap/camera/mf/device/box.cpp
         include/tcap/camera/mf/device/boxes.cpp
+        include/tcap/camera/mf/reader/core.cpp
         include/tcap/camera/mf/reader/async/callback.cpp
         include/tcap/camera/mf/reader/async/reader.cpp
         include/tcap/camera/mf/reader/sync/reader.cpp

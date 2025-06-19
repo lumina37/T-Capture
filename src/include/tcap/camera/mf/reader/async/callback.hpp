@@ -39,7 +39,9 @@ public:
 
     void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }
     void setCurrentAwaitable(SampleAwaitable_<SampleCallback>* awaitable) noexcept { currentAwaitable_ = awaitable; }
-    auto autoLock() noexcept { return std::unique_lock{mutex_}; }
+    auto autoLock() noexcept { return std::lock_guard{mutex_}; }
+
+    [[nodiscard]] IMFSourceReader* getPReader() const noexcept { return pReader_; }
 
     /* IMFSourceReaderCallback impl */
     // !!! Main logic of the reader callback !!!
@@ -60,8 +62,6 @@ private:
     SampleAwaitable_<SampleCallback>* currentAwaitable_;
     std::mutex mutex_;
 };
-
-static_assert(CSampleCallback<SampleCallback>);
 
 }  // namespace tcap::mf
 

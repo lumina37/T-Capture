@@ -1,7 +1,4 @@
-﻿#include <mfidl.h>
-#include <mfreadwrite.h>
-
-#include "tcap/camera/mf/sample.hpp"
+﻿#include "tcap/camera/mf/sample.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/helper/error.hpp"
 
@@ -11,59 +8,20 @@
 
 namespace tcap::mf {
 
-ReaderSyncBox::ReaderSyncBox(IMFSourceReader* pReader) noexcept : pReader_(pReader) {}
+ReaderSync::ReaderSync(ReaderBox&& readerBox) noexcept : readerBox_(std::move(readerBox)) {}
 
-ReaderSyncBox::ReaderSyncBox(ReaderSyncBox&& rhs) noexcept : pReader_(std::exchange(rhs.pReader_, nullptr)) {}
+std::expected<ReaderSync, Error> ReaderSync::create(const SourceBox& sourceBox) noexcept {
+    auto readerBoxRes = ReaderBox::createSync(sourceBox);
+    if (!readerBoxRes) return std::unexpected{std::move(readerBoxRes.error())};
+    auto& readerBox = readerBoxRes.value();
 
-ReaderSyncBox& ReaderSyncBox::operator=(ReaderSyncBox&& rhs) noexcept {
-    pReader_ = std::exchange(rhs.pReader_, nullptr);
-    return *this;
+    return ReaderSync{std::move(readerBox)};
 }
 
-ReaderSyncBox::~ReaderSyncBox() noexcept {
-    if (pReader_ == nullptr) return;
-    pReader_->Release();
-    pReader_ = nullptr;
+std::expected<void, Error> ReaderSync::setMediaType(const MediaTypeBox& mediaTypeBox) noexcept {
+    return readerBox_.setMediaType(mediaTypeBox);
 }
 
-std::expected<ReaderSyncBox, Error> ReaderSyncBox::create(const SourceBox& sourceBox) noexcept {
-    IMFSourceReader* pReader;
-    auto pSource = sourceBox.getPSource();
-    const HRESULT hr = MFCreateSourceReaderFromMediaSource(pSource, nullptr, &pReader);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "MFCreateSourceReaderFromMediaSource failed"}};
-    }
-    pReader->AddRef();
-
-    return ReaderSyncBox{pReader};
-}
-
-std::expected<void, Error> ReaderSyncBox::setMediaType(const MediaTypeBox& mediaTypeBox) noexcept {
-    IMFMediaType* pMediaType = mediaTypeBox.getPMediaType();
-
-    const HRESULT hr = pReader_->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pMediaType);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader_->SetCurrentMediaType failed"}};
-    }
-    return {};
-}
-
-std::expected<SampleBox, Error> ReaderSyncBox::sample() noexcept {
-    DWORD streamIndex, streamFlags;
-    LONGLONG timestamp;
-    IMFSample* pSample;
-    const HRESULT hr =
-        pReader_->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &streamIndex, &streamFlags, &timestamp, &pSample);
-    if (FAILED(hr)) {
-        return std::unexpected{Error{hr, "pReader_->ReadSample failed"}};
-    }
-    if (pSample == nullptr) {
-        return std::unexpected{Error{-1, "pSample is nullptr"}};
-    }
-
-    SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
-
-    return sampleBox;
-}
+std::expected<SampleBox, Error> ReaderSync::sample() noexcept { return readerBox_.sampleSync(); }
 
 }  // namespace tcap::mf

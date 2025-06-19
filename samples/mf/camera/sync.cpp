@@ -18,9 +18,9 @@ int main() {
     }
 
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(1)) | unwrap;
-    auto readerBox = tcap::mf::ReaderSyncBox::create(sourceBox) | unwrap;
+    auto reader = tcap::mf::ReaderSync::create(sourceBox) | unwrap;
 
-    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
+    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(reader.getReaderBox()) | unwrap;
     const auto& oldMediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
     std::println("subType={}", oldMediaTypeBox.getSubTypeFourCC().strView());
     std::println("width={}, height={}", oldMediaTypeBox.getWidth(), oldMediaTypeBox.getHeight());
@@ -29,7 +29,7 @@ int main() {
     for (auto& mTypeBox : readerTypeBox.getNativeMediaTypeBoxes()) {
         if (mTypeBox.getSubType() == MFVideoFormat_NV12) pMediaTypeBox = &mTypeBox;
     }
-    readerBox.setMediaType(*pMediaTypeBox) | unwrap;
+    reader.setMediaType(*pMediaTypeBox) | unwrap;
     std::println("After switching");
     std::println("subType={}", pMediaTypeBox->getSubTypeFourCC().strView());
     std::println("width={}, height={}", pMediaTypeBox->getWidth(), pMediaTypeBox->getHeight());
@@ -38,7 +38,7 @@ int main() {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-        auto sampleBoxRes = readerBox.sample();
+        auto sampleBoxRes = reader.sample();
         if (!sampleBoxRes) continue;
 
         auto sampleBox = std::move(sampleBoxRes.value());
