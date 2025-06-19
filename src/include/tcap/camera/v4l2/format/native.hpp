@@ -11,12 +11,12 @@ namespace tcap::v4l2 {
 
 class NativeFormatBox {
 public:
-    TCAP_API NativeFormatBox(uint32_t format) noexcept;
+    TCAP_API constexpr NativeFormatBox(uint32_t format) noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<std::vector<NativeFormatBox>, Error> createBoxes(
         const DeviceBox& deviceBox) noexcept;
 
-    [[nodiscard]] TCAP_API uint32_t getFormat() const noexcept { return format_; }
+    [[nodiscard]] TCAP_API constexpr uint32_t getFormat() const noexcept { return format_; }
 
 private:
     uint32_t format_;

@@ -13,7 +13,7 @@
 
 namespace tcap::v4l2 {
 
-ResolutionBox::ResolutionBox(const int width, const int height) noexcept : width_(width), height_(height) {}
+constexpr ResolutionBox::ResolutionBox(const int width, const int height) noexcept : width_(width), height_(height) {}
 
 std::expected<std::vector<ResolutionBox>, Error> ResolutionBox::createBoxes(const DeviceBox& deviceBox,
                                                                             const uint32_t format) noexcept {

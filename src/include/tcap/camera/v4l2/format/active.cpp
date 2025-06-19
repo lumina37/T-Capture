@@ -12,11 +12,11 @@
 
 namespace tcap::v4l2 {
 
-ActiveFormatBox::ActiveFormatBox(const v4l2_format& format) noexcept : format_(format) {
+constexpr ActiveFormatBox::ActiveFormatBox(const v4l2_format& format) noexcept : format_(format) {
     format_.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 }
 
-ActiveFormatBox::ActiveFormatBox() noexcept : format_() {}
+constexpr ActiveFormatBox::ActiveFormatBox() noexcept : format_() {}
 
 std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();

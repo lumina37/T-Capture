@@ -13,7 +13,7 @@
 
 namespace tcap::v4l2 {
 
-FpsBox::FpsBox(const uint32_t numerator, const uint32_t denominator) noexcept
+constexpr FpsBox::FpsBox(const uint32_t numerator, const uint32_t denominator) noexcept
     : numerator_(numerator), denominator_(denominator) {}
 
 std::expected<std::vector<FpsBox>, Error> FpsBox::createBoxes(const DeviceBox& deviceBox, uint32_t format,

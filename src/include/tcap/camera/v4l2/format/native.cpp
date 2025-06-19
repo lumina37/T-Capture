@@ -13,7 +13,7 @@
 
 namespace tcap::v4l2 {
 
-NativeFormatBox::NativeFormatBox(const uint32_t format) noexcept : format_(format) {}
+constexpr NativeFormatBox::NativeFormatBox(const uint32_t format) noexcept : format_(format) {}
 
 std::expected<std::vector<NativeFormatBox>, Error> NativeFormatBox::createBoxes(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();

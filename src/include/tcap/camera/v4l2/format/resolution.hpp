@@ -11,13 +11,13 @@ namespace tcap::v4l2 {
 
 class ResolutionBox {
 public:
-    ResolutionBox(int width, int height) noexcept;
+    TCAP_API constexpr ResolutionBox(int width, int height) noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<std::vector<ResolutionBox>, Error> createBoxes(
         const DeviceBox& deviceBox, uint32_t format) noexcept;
 
-    [[nodiscard]] TCAP_API int getWidth() const noexcept { return width_; }
-    [[nodiscard]] TCAP_API int getHeight() const noexcept { return height_; }
+    [[nodiscard]] TCAP_API constexpr int getWidth() const noexcept { return width_; }
+    [[nodiscard]] TCAP_API constexpr int getHeight() const noexcept { return height_; }
 
 private:
     int width_;

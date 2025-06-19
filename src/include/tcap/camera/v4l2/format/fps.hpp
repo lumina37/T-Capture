@@ -10,18 +10,18 @@ namespace tcap::v4l2 {
 
 class FpsBox {
 public:
-    TCAP_API FpsBox(uint32_t numerator, uint32_t denominator) noexcept;
+    TCAP_API constexpr FpsBox(uint32_t numerator, uint32_t denominator) noexcept;
 
     [[nodiscard]] TCAP_API static std::expected<std::vector<FpsBox>, Error> createBoxes(const DeviceBox& deviceBox,
                                                                                         uint32_t format, uint32_t width,
                                                                                         uint32_t height) noexcept;
 
-    [[nodiscard]] TCAP_API uint32_t getNumerator() const noexcept { return numerator_; }
-    [[nodiscard]] TCAP_API uint32_t getDenominator() const noexcept { return denominator_; }
-    [[nodiscard]] TCAP_API float approxFps() const noexcept { return (float)denominator_ / (float)numerator_; }
+    [[nodiscard]] TCAP_API constexpr uint32_t getNumerator() const noexcept { return numerator_; }
+    [[nodiscard]] TCAP_API constexpr uint32_t getDenominator() const noexcept { return denominator_; }
+    [[nodiscard]] TCAP_API constexpr float approxFps() const noexcept { return (float)denominator_ / (float)numerator_; }
 
-    TCAP_API void setNumerator(uint32_t numerator) { numerator_ = numerator; }
-    TCAP_API void setDenominator(uint32_t denominator) { denominator_ = denominator; }
+    TCAP_API constexpr void setNumerator(const uint32_t numerator) noexcept { numerator_ = numerator; }
+    TCAP_API constexpr void setDenominator(const uint32_t denominator) noexcept { denominator_ = denominator; }
 
     [[nodiscard]] TCAP_API std::expected<void, Error> apply(DeviceBox& deviceBox) const noexcept;
 
