@@ -12,7 +12,7 @@ class FourCC {
 public:
     static constexpr int SIZE = 4;
 
-    TCAP_API constexpr FourCC(uint32_t format) noexcept {
+    TCAP_API constexpr FourCC(const uint32_t format) noexcept {
         for (int i = 0; i < SIZE; ++i) {
             arr_[i] = (char)(format >> (i * 8) & 0xFF);
         }

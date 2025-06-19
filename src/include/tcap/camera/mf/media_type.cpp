@@ -1,7 +1,6 @@
 ﻿#include <mfapi.h>
 #include <mfidl.h>
 
-#include "tcap/camera/mf/source.hpp"
 #include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
@@ -10,8 +9,8 @@
 
 namespace tcap::mf {
 
-MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, GUID subTypeGuid, int width, int height, int fpsNumerator,
-                           int fpsDenominator) noexcept
+MediaTypeBox::MediaTypeBox(IMFMediaType* pMediaType, const GUID subTypeGuid, const int width, const int height,
+                           const int fpsNumerator, const int fpsDenominator) noexcept
     : pMediaType_(pMediaType),
       subTypeGuid_(subTypeGuid),
       width_(width),
@@ -59,8 +58,7 @@ std::expected<MediaTypeBox, Error> MediaTypeBox::create(IMFMediaType* pMediaType
         return std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "fpsDenominator is 0"}};
     }
 
-    return MediaTypeBox{std::move(pMediaType), subTypeGuid,       (int)width,
-                        (int)height,           (int)fpsNumerator, (int)fpsDenominator};
+    return MediaTypeBox{pMediaType, subTypeGuid, (int)width, (int)height, (int)fpsNumerator, (int)fpsDenominator};
 }
 
 }  // namespace tcap::mf

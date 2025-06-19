@@ -8,7 +8,7 @@
 
 namespace tcap::mf {
 
-WStringBox::WStringBox(WCHAR* pWString, UINT32 len) noexcept : pWString_(pWString), len_(len) {}
+WStringBox::WStringBox(WCHAR* pWString, const UINT32 len) noexcept : pWString_(pWString), len_(len) {}
 
 WStringBox::WStringBox(WStringBox&& rhs) noexcept : pWString_(std::exchange(rhs.pWString_, nullptr)), len_(rhs.len_) {}
 

@@ -7,7 +7,6 @@
 #include <shlwapi.h>
 
 #include "tcap/camera/mf/reader/async/callback.hpp"
-#include "tcap/camera/mf/reader/async/concepts.hpp"
 #include "tcap/camera/mf/reader/core.hpp"
 #include "tcap/utils/error.hpp"
 
@@ -31,7 +30,7 @@ public:
 };
 
 template <typename TAwaitable_>
-class SampleCallback_ : public SampleCallbackBase {
+class SampleCallback_ final : public SampleCallbackBase {
 public:
     using TAwaitable = TAwaitable_;
 
@@ -95,7 +94,3 @@ STDMETHODIMP SampleCallback_<TAwaitable>::OnReadSample(HRESULT hr, [[maybe_unuse
 }
 
 }  // namespace tcap::mf
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/reader/async/callback.cpp"
-#endif

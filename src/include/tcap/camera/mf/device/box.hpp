@@ -7,7 +7,7 @@
 
 #include "tcap/common/defines.h"
 #include "tcap/utils/error.hpp"
-#include "tcap/utils/wstring.hpp"
+#include "tcap/utils/mf/wstring.hpp"
 
 namespace tcap::mf {
 

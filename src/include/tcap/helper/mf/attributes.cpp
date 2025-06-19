@@ -26,9 +26,9 @@ AttributesBox::~AttributesBox() noexcept {
     pAttributes_ = nullptr;
 }
 
-std::expected<AttributesBox, Error> AttributesBox::create(int size) noexcept {
+std::expected<AttributesBox, Error> AttributesBox::create(const int size) noexcept {
     IMFAttributes* pAttributes;
-    HRESULT hr = MFCreateAttributes(&pAttributes, size);
+    const HRESULT hr = MFCreateAttributes(&pAttributes, size);
     if (FAILED(hr)) {
         return std::unexpected{Error{ECate::eMF, hr}};
     }

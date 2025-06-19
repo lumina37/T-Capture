@@ -5,7 +5,7 @@
 
 #include "tcap/helper/charset.hpp"
 #include "tcap/utils/error.hpp"
-#include "tcap/utils/wstring.hpp"
+#include "tcap/utils/mf/wstring.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
 #    include "tcap/camera/mf/device/box.hpp"
