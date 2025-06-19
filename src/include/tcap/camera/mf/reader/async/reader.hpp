@@ -13,7 +13,11 @@
 namespace tcap::mf {
 
 class ReaderAsyncBox {
-    ReaderAsyncBox(std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept;
+public:
+    using TSampleCallback = SampleCallback_<SampleAwaitable>;
+
+private:
+    ReaderAsyncBox(std::unique_ptr<TSampleCallback>&& pSampleCallback) noexcept;
 
 public:
     ReaderAsyncBox(const ReaderAsyncBox&) = delete;
@@ -27,10 +31,10 @@ public:
     [[nodiscard]] TCAP_API ReaderBox& getReaderBox() noexcept { return pSampleCallback_->getReaderBox(); }
 
     [[nodiscard]] TCAP_API std::expected<void, Error> setMediaType(const MediaTypeBox& mediaTypeBox) noexcept;
-    [[nodiscard]] TCAP_API SampleAwaitable_<SampleCallback> sample() noexcept;
+    [[nodiscard]] TCAP_API SampleAwaitable sample() noexcept;
 
 private:
-    std::unique_ptr<SampleCallback> pSampleCallback_;
+    std::unique_ptr<TSampleCallback> pSampleCallback_;
 };
 
 }  // namespace tcap::mf

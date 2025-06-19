@@ -11,11 +11,11 @@
 
 namespace tcap::mf {
 
-ReaderAsyncBox::ReaderAsyncBox(std::unique_ptr<SampleCallback>&& pSampleCallback) noexcept
+ReaderAsyncBox::ReaderAsyncBox(std::unique_ptr<TSampleCallback>&& pSampleCallback) noexcept
     : pSampleCallback_(std::move(pSampleCallback)) {}
 
 std::expected<ReaderAsyncBox, Error> ReaderAsyncBox::create(const SourceBox& sourceBox) noexcept {
-    auto pSampleCallback = std::make_unique<SampleCallback>();
+    auto pSampleCallback = std::make_unique<TSampleCallback>();
 
     auto readerBoxRes = ReaderBox::createAsync(sourceBox, pSampleCallback.get());
     if (!readerBoxRes) return std::unexpected{std::move(readerBoxRes.error())};
@@ -30,6 +30,6 @@ std::expected<void, Error> ReaderAsyncBox::setMediaType(const MediaTypeBox& medi
     return pSampleCallback_->getReaderBox().setMediaType(mediaTypeBox);
 }
 
-SampleAwaitable_<SampleCallback> ReaderAsyncBox::sample() noexcept { return SampleAwaitable_{pSampleCallback_.get()}; }
+SampleAwaitable ReaderAsyncBox::sample() noexcept { return SampleAwaitable{pSampleCallback_.get()}; }
 
 }  // namespace tcap::mf
