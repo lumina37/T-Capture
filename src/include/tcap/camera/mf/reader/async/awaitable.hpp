@@ -12,7 +12,7 @@ namespace tcap::mf {
 
 class SampleCallback;
 
-template <typename TSampleCallback_>
+template <CSampleCallback TSampleCallback_>
 class SampleAwaitable_ {
 public:
     using TSampleCallback = TSampleCallback_;
@@ -51,24 +51,22 @@ private:
     std::expected<SampleBox, Error> sampleBoxRes_;
 };
 
-template <typename TSampleCallback>
+template <CSampleCallback TSampleCallback>
 void SampleAwaitable_<TSampleCallback>::await_suspend(std::coroutine_handle<> handle) noexcept {
     handle_ = handle;
 
-    HRESULT hr;
-    {
-        auto lock = pCallback_->autoLock();
-        pCallback_->setCurrentAwaitable(this);
-        hr = pCallback_->getPReader()->ReadSample((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, nullptr,
-                                                  nullptr, nullptr);
-    }
-    if (FAILED(hr)) {
+    pCallback_->lock();
+    pCallback_->setCurrentAwaitable(this);
+    auto sampleRes = pCallback_->getReaderBox().sampleAsync();
+    pCallback_->unlock();
+
+    if (!sampleRes) {
         auto lock = autoLock();
-        setSampleBoxRes(std::unexpected{Error{hr, "pReader_->ReadSample failed"}});
+        setSampleBoxRes(std::unexpected{std::move(sampleRes.error())});
     }
 }
 
-template <typename TSampleCallback>
+template <CSampleCallback TSampleCallback>
 std::expected<SampleBox, Error> SampleAwaitable_<TSampleCallback>::await_resume() noexcept {
     auto lock = autoLock();
     if (!sampleBoxRes_.has_value()) {

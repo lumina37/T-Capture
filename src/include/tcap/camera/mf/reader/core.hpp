@@ -6,7 +6,6 @@
 #include <mfreadwrite.h>
 
 #include "tcap/camera/mf/media_type.hpp"
-#include "tcap/camera/mf/reader/async/callback.hpp"
 #include "tcap/camera/mf/sample.hpp"
 #include "tcap/camera/mf/source.hpp"
 #include "tcap/common/defines.h"
@@ -18,6 +17,7 @@ class ReaderBox {
     ReaderBox(IMFSourceReader* pReader) noexcept;
 
 public:
+    TCAP_API ReaderBox() = default;
     ReaderBox(const ReaderBox&) = delete;
     ReaderBox& operator=(const ReaderBox&) = delete;
     TCAP_API ReaderBox(ReaderBox&& rhs) noexcept;
@@ -26,7 +26,7 @@ public:
 
     [[nodiscard]] TCAP_API static std::expected<ReaderBox, Error> createSync(const SourceBox& sourceBox) noexcept;
     [[nodiscard]] TCAP_API static std::expected<ReaderBox, Error> createAsync(
-        const SourceBox& sourceBox, SampleCallbackBase* pSampleCallback) noexcept;
+        const SourceBox& sourceBox, IMFSourceReaderCallback* pCallback) noexcept;
 
     [[nodiscard]] TCAP_API IMFSourceReader* getPReader() const noexcept { return pReader_; }
 

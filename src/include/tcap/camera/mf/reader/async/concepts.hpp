@@ -9,9 +9,6 @@
 namespace tcap::mf {
 
 template <typename Self>
-concept CSampleCallback = requires(Self self, IMFSourceReader* pReader) {
-    { self.setPReader(pReader) };
-    { self.autoLock() } -> std::same_as<std::unique_lock<std::mutex>>;
-};
+concept CSampleCallback = true;
 
 }  // namespace tcap::mf

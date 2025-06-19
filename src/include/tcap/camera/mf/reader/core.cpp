@@ -40,12 +40,12 @@ std::expected<ReaderBox, Error> ReaderBox::createSync(const SourceBox& sourceBox
 }
 
 std::expected<ReaderBox, Error> ReaderBox::createAsync(const SourceBox& sourceBox,
-                                                       SampleCallbackBase* pSampleCallback) noexcept {
+                                                       IMFSourceReaderCallback* pCallback) noexcept {
     auto attrsBoxRes = AttributesBox::create(1);
     if (!attrsBoxRes) return std::unexpected{std::move(attrsBoxRes.error())};
     auto& attrsBox = attrsBoxRes.value();
 
-    auto setRes = attrsBox.setUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, pSampleCallback);
+    auto setRes = attrsBox.setUnknown(MF_SOURCE_READER_ASYNC_CALLBACK, pCallback);
     if (!setRes) return std::unexpected{std::move(setRes.error())};
 
     IMFSourceReader* pReader;

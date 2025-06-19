@@ -17,14 +17,14 @@ TEST_CASE("Camera capture", "mf::camera::sync") {
     }
 
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
-    auto readerBox = tcap::mf::ReaderSyncBox::create(sourceBox) | unwrap;
+    auto reader = tcap::mf::ReaderSync::create(sourceBox) | unwrap;
 
-    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
+    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(reader.getReaderBox()) | unwrap;
     const auto& oldMediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
     std::println("width={}, height={}", oldMediaTypeBox.getWidth(), oldMediaTypeBox.getHeight());
 
     const auto& mediaTypeBox = readerTypeBox.getNativeMediaTypeBoxes().back();
-    readerBox.setMediaType(mediaTypeBox) | unwrap;
+    reader.setMediaType(mediaTypeBox) | unwrap;
     std::println("After switching");
     std::println("subType={}", mediaTypeBox.getSubTypeFourCC().strView());
     std::println("width={}, height={}", mediaTypeBox.getWidth(), mediaTypeBox.getHeight());
@@ -33,7 +33,7 @@ TEST_CASE("Camera capture", "mf::camera::sync") {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-        auto sampleBoxRes = readerBox.sample();
+        auto sampleBoxRes = reader.sample();
         if (!sampleBoxRes) continue;
 
         auto sampleBox = std::move(sampleBoxRes.value());

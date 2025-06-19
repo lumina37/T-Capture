@@ -7,7 +7,8 @@
 #include <shlwapi.h>
 
 #include "tcap/camera/mf/reader/async/awaitable.hpp"
-#include "tcap/camera/mf/reader/async/concepts.hpp"
+#include "tcap/camera/mf/reader/async/callback.hpp"
+#include "tcap/camera/mf/reader/core.hpp"
 
 namespace tcap::mf {
 
@@ -18,7 +19,7 @@ public:
     /* IUnknown impl (Don't need to care) */
     STDMETHODIMP QueryInterface(REFIID iid, void** ppv) override {
         static const QITAB qit[] = {
-            QITABENT(SampleCallback, IMFSourceReaderCallback),
+            QITABENT(SampleCallbackBase, IMFSourceReaderCallback),
             {nullptr},
         };
         return QISearch(this, qit, iid, ppv);
@@ -30,18 +31,21 @@ public:
 
 class SampleCallback : public SampleCallbackBase {
 public:
-    SampleCallback() noexcept;
+    SampleCallback() noexcept = default;
     SampleCallback(const SampleCallback&) = delete;
     SampleCallback& operator=(const SampleCallback&) = delete;
-    SampleCallback(SampleCallback&& rhs) noexcept;
-    SampleCallback& operator=(SampleCallback&& rhs) noexcept;
+    SampleCallback(SampleCallback&& rhs) noexcept = delete;
+    SampleCallback& operator=(SampleCallback&& rhs) noexcept = delete;
     ~SampleCallback() noexcept override = default;
 
-    void setPReader(IMFSourceReader* pReader) noexcept { pReader_ = pReader; }
+    void adoptReaderBox(ReaderBox&& readerBox) noexcept { readerBox_ = std::move(readerBox); }
     void setCurrentAwaitable(SampleAwaitable_<SampleCallback>* awaitable) noexcept { currentAwaitable_ = awaitable; }
+    void lock() noexcept { mutex_.lock(); }
+    void unlock() noexcept { mutex_.unlock(); }
     auto autoLock() noexcept { return std::lock_guard{mutex_}; }
 
-    [[nodiscard]] IMFSourceReader* getPReader() const noexcept { return pReader_; }
+    [[nodiscard]] const ReaderBox& getReaderBox() const noexcept { return readerBox_; }
+    [[nodiscard]] ReaderBox& getReaderBox() noexcept { return readerBox_; }
 
     /* IMFSourceReaderCallback impl */
     // !!! Main logic of the reader callback !!!
@@ -55,10 +59,9 @@ public:
     /* IMFSourceReaderCallback impl */
 
     friend class SampleAwaitable;
-    void sampleNonBlock() noexcept;
 
 private:
-    IMFSourceReader* pReader_;
+    ReaderBox readerBox_;
     SampleAwaitable_<SampleCallback>* currentAwaitable_;
     std::mutex mutex_;
 };

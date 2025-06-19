@@ -48,9 +48,9 @@ TEST_CASE("Camera capture", "mf::camera::async") {
     }
 
     auto sourceBox = tcap::mf::SourceBox::create(deviceBoxes.getPDeviceBox(0)) | unwrap;
-    auto readerBox = tcap::mf::ReaderAsyncBox::create(sourceBox) | unwrap;
+    auto reader = tcap::mf::ReaderAsyncBox::create(sourceBox) | unwrap;
 
-    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(readerBox) | unwrap;
+    auto readerTypeBox = tcap::mf::ReaderTypeBox::create(reader.getReaderBox()) | unwrap;
     const auto& mediaTypeBox = readerTypeBox.getCurrentMediaTypeBox();
     std::println("subType={}", mediaTypeBox.getSubTypeFourCC().strView());
     std::println("fps={}", mediaTypeBox.getApproxFps());
@@ -58,7 +58,7 @@ TEST_CASE("Camera capture", "mf::camera::async") {
 
     std::vector<std::byte> frameData(mediaTypeBox.getWidth() * mediaTypeBox.getHeight() / 2 * 3);
 
-    sampleOneFrame(readerBox, frameData);
+    sampleOneFrame(reader, frameData);
     std::this_thread::sleep_for(std::chrono::seconds(3));  // Wait until the coroutine is done
 
     tcap::mf::globalDestroy();
