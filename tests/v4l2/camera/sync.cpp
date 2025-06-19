@@ -14,9 +14,9 @@ TEST_CASE("Camera capture", "v4l2::camera::sync") {
     auto deviceBox = tcap::v4l2::DeviceBox::create(devicePaths.getPath(0)) | unwrap;
 
     // Native formats
-    const auto& nativeFormatBoxes = tcap::v4l2::NativeFormatBox::createBoxes(deviceBox) | unwrap;
-    for (const auto& nativeFormatBox : nativeFormatBoxes) {
-        const uint32_t nativeFormat = nativeFormatBox.getFormat();
+    const auto& formatNativeBoxes = tcap::v4l2::FormatNativeBox::createBoxes(deviceBox) | unwrap;
+    for (const auto& formatNativeBox : formatNativeBoxes) {
+        const uint32_t nativeFormat = formatNativeBox.getFormat();
         const auto& resolutionBoxes = tcap::v4l2::ResolutionBox::createBoxes(deviceBox, nativeFormat) | unwrap;
         for (const auto& resolutionBox : resolutionBoxes) {
             const uint32_t width = resolutionBox.getWidth();
@@ -30,18 +30,11 @@ TEST_CASE("Camera capture", "v4l2::camera::sync") {
     }
 
     // Active format
-    tcap::v4l2::ActiveFormatBox activeFormatBox = tcap::v4l2::ActiveFormatBox::create(deviceBox) | unwrap;
-    std::println("default: format={}, size={}x{}", tcap::FourCC(activeFormatBox.getFormat()).strView(),
-                 activeFormatBox.getWidth(), activeFormatBox.getHeight());
+    tcap::v4l2::FormatActiveBox formatActiveBox = tcap::v4l2::FormatActiveBox::create(deviceBox) | unwrap;
+    std::println("default: format={}, size={}x{}", tcap::FourCC(formatActiveBox.getFormat()).strView(),
+                 formatActiveBox.getWidth(), formatActiveBox.getHeight());
 
-    activeFormatBox.setWidth(640);
-    activeFormatBox.setHeight(480);
-
-    activeFormatBox.apply(deviceBox) | unwrap;
-
-    activeFormatBox = tcap::v4l2::ActiveFormatBox::create(deviceBox) | unwrap;
-    std::println("new: format={}, size={}x{}", tcap::FourCC(activeFormatBox.getFormat()).strView(),
-                 activeFormatBox.getWidth(), activeFormatBox.getHeight());
+    formatActiveBox.apply(deviceBox) | unwrap;
 
     // Queue
     tcap::v4l2::QueueCaps bufferCapsBox = tcap::v4l2::QueueCaps::create(deviceBox) | unwrap;
@@ -50,7 +43,7 @@ TEST_CASE("Camera capture", "v4l2::camera::sync") {
     tcap::v4l2::QueueMMapBox queueBox = tcap::v4l2::QueueMMapBox::create(std::move(deviceBox)) | unwrap;
     queueBox.turnOnStream() | unwrap;
 
-    std::vector<std::byte> frameData(activeFormatBox.getWidth() * activeFormatBox.getHeight() * 2);
+    std::vector<std::byte> frameData(formatActiveBox.getWidth() * formatActiveBox.getHeight() * 2);
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         auto sampleRes = queueBox.popBuffer();

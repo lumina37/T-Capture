@@ -10,13 +10,13 @@
 
 namespace tcap::v4l2 {
 
-class ActiveFormatBox {
-    constexpr ActiveFormatBox(const v4l2_format& format) noexcept;
+class FormatActiveBox {
+    constexpr FormatActiveBox(const v4l2_format& format) noexcept;
 
 public:
-    TCAP_API constexpr ActiveFormatBox() noexcept;
+    TCAP_API constexpr FormatActiveBox() noexcept;
 
-    [[nodiscard]] TCAP_API static std::expected<ActiveFormatBox, Error> create(const DeviceBox& deviceBox) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<FormatActiveBox, Error> create(const DeviceBox& deviceBox) noexcept;
 
     [[nodiscard]] TCAP_API constexpr int getWidth() const noexcept { return (int)format_.fmt.pix.width; }
     [[nodiscard]] TCAP_API constexpr int getHeight() const noexcept { return (int)format_.fmt.pix.height; }

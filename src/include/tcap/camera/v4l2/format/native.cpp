@@ -13,16 +13,16 @@
 
 namespace tcap::v4l2 {
 
-constexpr NativeFormatBox::NativeFormatBox(const uint32_t format) noexcept : format_(format) {}
+constexpr FormatNativeBox::FormatNativeBox(const uint32_t format) noexcept : format_(format) {}
 
-std::expected<std::vector<NativeFormatBox>, Error> NativeFormatBox::createBoxes(const DeviceBox& deviceBox) noexcept {
+std::expected<std::vector<FormatNativeBox>, Error> FormatNativeBox::createBoxes(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_fmtdesc fmtDesc{};
     fmtDesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     fmtDesc.index = 0;
 
-    std::vector<NativeFormatBox> formatBoxes;
+    std::vector<FormatNativeBox> formatBoxes;
     for (; ioctl(fd, VIDIOC_ENUM_FMT, &fmtDesc) == 0; fmtDesc.index++) {
         formatBoxes.emplace_back(fmtDesc.pixelformat);
     }

@@ -12,13 +12,13 @@
 
 namespace tcap::v4l2 {
 
-constexpr ActiveFormatBox::ActiveFormatBox(const v4l2_format& format) noexcept : format_(format) {
+constexpr FormatActiveBox::FormatActiveBox(const v4l2_format& format) noexcept : format_(format) {
     format_.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 }
 
-constexpr ActiveFormatBox::ActiveFormatBox() noexcept : format_() {}
+constexpr FormatActiveBox::FormatActiveBox() noexcept : format_() {}
 
-std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& deviceBox) noexcept {
+std::expected<FormatActiveBox, Error> FormatActiveBox::create(const DeviceBox& deviceBox) noexcept {
     const int fd = deviceBox.getFd();
 
     v4l2_format format{};
@@ -29,10 +29,10 @@ std::expected<ActiveFormatBox, Error> ActiveFormatBox::create(const DeviceBox& d
         return std::unexpected{Error{ECate::eV4L2, errno}};
     }
 
-    return ActiveFormatBox{format};
+    return FormatActiveBox{format};
 }
 
-std::expected<void, Error> ActiveFormatBox::apply(DeviceBox& deviceBox) const noexcept {
+std::expected<void, Error> FormatActiveBox::apply(DeviceBox& deviceBox) const noexcept {
     const int fd = deviceBox.getFd();
 
     const int ret = ioctl(fd, VIDIOC_S_FMT, &format_);
