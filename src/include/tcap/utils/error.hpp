@@ -7,13 +7,13 @@ namespace tcap {
 
 enum class ECode {
     eUnknown = 0,
-    eUnexValue = 1,        // Unexpected Value
-    eNoSupport = 2,        // Feature Not Supported
-    eNoImpl = 3,           // Not Implemented
+    eUnexValue = 1,   // Unexpected Value
+    eNoSupport = 2,   // Feature Not Supported
+    eNoImpl = 3,      // Not Implemented
     eResInvalid = 3,  // Resource is Invalid
 };
 
-enum class ECate { eUnknown = 0, eMisc, eTCap, eSys, eMF, eV4L2 };
+enum class ECate { eUnknown = 0, eMisc, eTCap, eSys, eMF, eV4L2, eX11 };
 
 constexpr std::string_view errCateToStr(const ECate cate) noexcept {
     switch (cate) {
@@ -29,6 +29,8 @@ constexpr std::string_view errCateToStr(const ECate cate) noexcept {
             return "MF";
         case ECate::eV4L2:
             return "V4L2";
+        case ECate::eX11:
+            return "X11";
         default:
             return "Unknown";
     }

@@ -23,6 +23,13 @@ function(tcap_common_lib_setting lib)
         )
     endif ()
 
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        target_link_libraries(${lib} ${__PUB_DEP_SCOPE}
+                X11::X11
+                X11::Xext
+        )
+    endif ()
+
     if (TCAP_VERBOSE_WARNING)
         if (MSVC)
             target_compile_options(${lib} ${__PUB_DEP_SCOPE} /W4)

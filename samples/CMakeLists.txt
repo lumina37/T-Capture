@@ -9,10 +9,12 @@ function(vkc_add_sample name src)
 endfunction()
 
 if (WIN32)
-    vkc_add_sample(tcap-mf-camera-async mf/camera/async.cpp)
-    vkc_add_sample(tcap-mf-camera-sync mf/camera/sync.cpp)
+    vkc_add_sample(tcap-camera-mf-async camera/mf/async.cpp)
+    vkc_add_sample(tcap-camera-mf-sync camera/mf/sync.cpp)
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    vkc_add_sample(tcap-v4l2-camera-sync v4l2/camera/sync.cpp)
+    vkc_add_sample(tcap-camera-v4l2-async camera/v4l2/async.cpp)
+
+    vkc_add_sample(tcap-screen-x11-async screen/x11/async.cpp)
 endif ()

@@ -24,6 +24,10 @@ if (WIN32)
     find_package(MediaFoundation)
 endif ()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(X11)
+endif ()
+
 include(FetchContent)
 
 if (TCAP_ENABLE_TESTS)

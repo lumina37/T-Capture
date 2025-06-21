@@ -14,17 +14,17 @@ function(tcap_add_test bin lib srcs)
 endfunction()
 
 if (WIN32)
-    tcap_add_test(test-mf-camera-async tcap::lib::static "mf/camera/async.cpp")
-    tcap_add_test(test-mf-camera-sync tcap::lib::static "mf/camera/sync.cpp")
+    tcap_add_test(test-mf-camera-async tcap::lib::static "camera/mf/async.cpp")
+    tcap_add_test(test-mf-camera-sync tcap::lib::static "camera/mf/sync.cpp")
 
-    tcap_add_test(test_mf_camera_async_header_only_lib tcap::lib::header-only "mf/camera/async.cpp")
-    tcap_add_test(test-mf-camera-sync-header_only_lib tcap::lib::header-only "mf/camera/sync.cpp")
+    tcap_add_test(test_mf_camera_async_header_only_lib tcap::lib::header-only "camera/mf/async.cpp")
+    tcap_add_test(test-mf-camera-sync-header_only_lib tcap::lib::header-only "camera/mf/sync.cpp")
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    tcap_add_test(test-v4l2-camera-sync tcap::lib::static "v4l2/camera/sync.cpp")
+    tcap_add_test(test-v4l2-camera-async tcap::lib::static "camera/v4l2/async.cpp")
 
-    tcap_add_test(test-v4l2-camera-sync-header_only_lib tcap::lib::header-only "v4l2/camera/sync.cpp")
+    tcap_add_test(test-v4l2-camera-async-header_only_lib tcap::lib::header-only "camera/v4l2/async.cpp")
 endif ()
 
 add_custom_target(tcap-tests DEPENDS ${_TCAP_TEST_TARGETS})
