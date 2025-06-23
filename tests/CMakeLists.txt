@@ -22,9 +22,9 @@ if (WIN32)
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    tcap_add_test(test-v4l2-camera-async tcap::lib::static "camera/v4l2/async.cpp")
+    tcap_add_test(test-v4l2-camera-mmap tcap::lib::static "camera/v4l2/mmap.cpp")
 
-    tcap_add_test(test-v4l2-camera-async-header_only_lib tcap::lib::header-only "camera/v4l2/async.cpp")
+    tcap_add_test(test-v4l2-camera-mmap-header_only_lib tcap::lib::header-only "camera/v4l2/mmap.cpp")
 endif ()
 
 add_custom_target(tcap-tests DEPENDS ${_TCAP_TEST_TARGETS})

@@ -14,7 +14,7 @@ if (WIN32)
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    vkc_add_sample(tcap-camera-v4l2-async camera/v4l2/async.cpp)
+    vkc_add_sample(tcap-camera-v4l2-mmap camera/v4l2/mmap.cpp)
 
     vkc_add_sample(tcap-screen-x11-async screen/x11/async.cpp)
 endif ()
