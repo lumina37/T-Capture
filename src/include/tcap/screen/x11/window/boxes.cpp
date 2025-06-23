@@ -1,8 +1,10 @@
 #include <expected>
 #include <utility>
+#include <vector>
 
 #include <X11/Xlib.h>
 
+#include "tcap/screen/x11/display.hpp"
 #include "tcap/screen/x11/screen.hpp"
 #include "tcap/utils/error.hpp"
 
@@ -12,44 +14,33 @@
 
 namespace tcap::x11 {
 
-WindowBoxes::WindowBoxes(Window rootWindow, Window* topWindows, int topWindowsCount) noexcept
-    : rootWindow_(rootWindow), topWindows_(topWindows), topWindowsCount_(topWindowsCount) {}
+TopWindowBoxes::TopWindowBoxes(std::vector<WindowBox>&& windowBoxes) noexcept : windowBoxes_(std::move(windowBoxes)) {}
 
-WindowBoxes::WindowBoxes(WindowBoxes&& rhs) noexcept
-    : rootWindow_(rhs.rootWindow_),
-      topWindows_(std::exchange(rhs.topWindows_, nullptr)),
-      topWindowsCount_(rhs.topWindowsCount_) {}
-
-WindowBoxes& WindowBoxes::operator=(WindowBoxes&& rhs) noexcept {
-    rootWindow_ = rhs.rootWindow_;
-    topWindows_ = std::exchange(rhs.topWindows_, nullptr);
-    topWindowsCount_ = rhs.topWindowsCount_;
-    return *this;
-}
-
-WindowBoxes::~WindowBoxes() noexcept {
-    if (topWindows_ == nullptr) return;
-    XFree(topWindows_);
-    topWindows_ = nullptr;
-}
-
-std::expected<WindowBoxes, Error> WindowBoxes::create(const DisplayBox& displayBox,
-                                                      const ScreenBox& screenBox) noexcept {
+std::expected<TopWindowBoxes, Error> TopWindowBoxes::create(const DisplayBox& displayBox,
+                                                            const ScreenBox& screenBox) noexcept {
     Display* display = displayBox.getDisplay();
     Screen* screen = screenBox.getScreen();
-
     Window rootWindow = RootWindowOfScreen(screen);
 
     Window rootRet, parentRet;
     Window* children;
     unsigned int childrenCount;
 
-    Status status = XQueryTree(display, rootWindow, &rootRet, &parentRet, &children, &childrenCount);
+    const Status status = XQueryTree(display, rootWindow, &rootRet, &parentRet, &children, &childrenCount);
     if (status == 0) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }
 
-    return WindowBoxes{rootWindow, children, (int)childrenCount};
+    std::vector<WindowBox> windowBoxes;
+    windowBoxes.reserve(childrenCount);
+    for (int childrenIndex = 0; childrenIndex < childrenCount; childrenIndex++) {
+        Window window = *(children + childrenIndex);
+        auto windowBoxRes = WindowBox::create(displayBox, window);
+        if (!windowBoxRes) return std::unexpected{std::move(windowBoxRes.error())};
+        windowBoxes.push_back(std::move(windowBoxRes.value()));
+    }
+
+    return TopWindowBoxes{std::move(windowBoxes)};
 }
 
 }  // namespace tcap::x11

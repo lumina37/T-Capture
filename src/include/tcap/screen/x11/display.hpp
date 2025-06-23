@@ -5,6 +5,7 @@
 #include <X11/Xlib.h>
 
 #include "tcap/common/defines.h"
+#include "tcap/screen/x11/display.hpp"
 #include "tcap/utils/error.hpp"
 
 namespace tcap::x11 {
