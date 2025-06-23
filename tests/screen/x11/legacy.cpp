@@ -3,11 +3,12 @@
 #include <thread>
 #include <vector>
 
+#include <catch2/catch_test_macros.hpp>
+
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
-#include "tcap/screen/x11/image.hpp"
 
-int main() {
+TEST_CASE("Camera capture", "v4l2::camera::sync") {
     tcap::x11::DisplayBox displayBox = tcap::x11::DisplayBox::create() | unwrap;
     auto screenBoxes = tcap::x11::ScreenBox::createBoxes(displayBox) | unwrap;
     auto& screenBox = screenBoxes[0];

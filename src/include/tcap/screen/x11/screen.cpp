@@ -27,7 +27,7 @@ std::expected<std::vector<ScreenBox>, Error> ScreenBox::createBoxes(const Displa
         screenBoxes.emplace_back(screen);
     }
 
-    return std::move(screenBoxes);
+    return screenBoxes;
 }
 
 }  // namespace tcap::x11

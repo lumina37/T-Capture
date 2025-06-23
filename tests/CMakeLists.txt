@@ -23,8 +23,10 @@ endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     tcap_add_test(test-v4l2-camera-mmap tcap::lib::static "camera/v4l2/mmap.cpp")
+    tcap_add_test(test-x11-screen-legacy tcap::lib::static "screen/x11/legacy.cpp")
 
     tcap_add_test(test-v4l2-camera-mmap-header_only_lib tcap::lib::header-only "camera/v4l2/mmap.cpp")
+    tcap_add_test(test-x11-screen-legacy-header_only_lib tcap::lib::header-only "screen/x11/legacy.cpp")
 endif ()
 
 add_custom_target(tcap-tests DEPENDS ${_TCAP_TEST_TARGETS})

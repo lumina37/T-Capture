@@ -33,11 +33,11 @@ std::expected<TopWindowBoxes, Error> TopWindowBoxes::create(const DisplayBox& di
 
     std::vector<WindowBox> windowBoxes;
     windowBoxes.reserve(childrenCount);
-    for (int childrenIndex = 0; childrenIndex < childrenCount; childrenIndex++) {
+    for (int childrenIndex = 0; childrenIndex < (int)childrenCount; childrenIndex++) {
         Window window = *(children + childrenIndex);
         auto windowBoxRes = WindowBox::create(displayBox, window);
         if (!windowBoxRes) return std::unexpected{std::move(windowBoxRes.error())};
-        windowBoxes.push_back(std::move(windowBoxRes.value()));
+        windowBoxes.push_back(windowBoxRes.value());
     }
 
     return TopWindowBoxes{std::move(windowBoxes)};

@@ -1,4 +1,6 @@
+#include <cstdlib>
 #include <expected>
+#include <format>
 #include <utility>
 
 #include <X11/Xlib.h>
@@ -29,7 +31,12 @@ DisplayBox::~DisplayBox() noexcept {
 std::expected<DisplayBox, Error> DisplayBox::create() noexcept {
     Display* display = XOpenDisplay(nullptr);
     if (display == nullptr) {
-        return std::unexpected{Error{ECate::eX11, 0}};
+        const char* displayName = std::getenv("DISPLAY");
+        if (displayName == nullptr) {
+            return std::unexpected{Error{ECate::eX11, 0, "env DISPLAY is null"}};
+        }
+        auto errMsg = std::format("cannot open DISPLAY={}", displayName);
+        return std::unexpected{Error{ECate::eX11, 0, std::move(errMsg)}};
     }
 
     return DisplayBox{display};
