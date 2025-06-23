@@ -3,6 +3,7 @@
 #include <utility>
 
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 #include "tcap/screen/x11/display.hpp"
 #include "tcap/screen/x11/window/box.hpp"
@@ -25,6 +26,7 @@ ImageBox& ImageBox::operator=(ImageBox&& rhs) noexcept {
 
 ImageBox::~ImageBox() noexcept {
     if (image_ == nullptr) return;
+    XDestroyImage(image_);
     image_ = nullptr;
 }
 
