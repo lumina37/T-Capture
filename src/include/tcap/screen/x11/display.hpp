@@ -1,7 +1,6 @@
 #pragma once
 
 #include <expected>
-#include <filesystem>
 
 #include <X11/Xlib.h>
 
@@ -9,8 +8,6 @@
 #include "tcap/utils/error.hpp"
 
 namespace tcap::x11 {
-
-namespace fs = std::filesystem;
 
 class DisplayBox {
     DisplayBox(Display* display) noexcept;
