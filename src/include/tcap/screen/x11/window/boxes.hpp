@@ -3,8 +3,8 @@
 #include <expected>
 #include <vector>
 
+#include "tcap/screen/x11/display/box.hpp"
 #include "tcap/common/defines.h"
-#include "tcap/screen/x11/display.hpp"
 #include "tcap/screen/x11/screen.hpp"
 #include "tcap/screen/x11/window/box.hpp"
 #include "tcap/utils/error.hpp"

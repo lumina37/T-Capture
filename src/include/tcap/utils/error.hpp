@@ -7,10 +7,10 @@ namespace tcap {
 
 enum class ECode {
     eUnknown = 0,
-    eUnexValue = 1,   // Unexpected Value
-    eNoSupport = 2,   // Feature Not Supported
-    eNoImpl = 3,      // Not Implemented
-    eResInvalid = 3,  // Resource is Invalid
+    eUnexValue = 1,        // Unexpected Value
+    eNoSupport = 2,        // Feature Not Supported
+    eNoImpl = 3,           // Not Implemented
+    eResourceInvalid = 3,  // Resource is Invalid
 };
 
 enum class ECate { eUnknown = 0, eMisc, eTCap, eSys, eMF, eV4L2, eX11 };

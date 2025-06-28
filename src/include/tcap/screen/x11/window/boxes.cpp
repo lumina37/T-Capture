@@ -4,7 +4,7 @@
 
 #include <X11/Xlib.h>
 
-#include "tcap/screen/x11/display.hpp"
+#include "tcap/screen/x11/display/box.hpp"
 #include "tcap/screen/x11/screen.hpp"
 #include "tcap/utils/error.hpp"
 

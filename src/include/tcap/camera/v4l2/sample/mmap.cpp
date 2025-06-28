@@ -19,7 +19,7 @@ std::expected<void, Error> SampleMMap::copyTo(std::byte* pData) const noexcept {
     auto pBufferView = pBufferView_.lock();
     if (pBufferView == nullptr) {
         return std::unexpected{
-            Error{ECate::eTCap, ECode::eResInvalid, "pBufferView_ is taken or queue is deconstructed"}};
+            Error{ECate::eTCap, ECode::eResourceInvalid, "pBufferView_ is taken or queue is deconstructed"}};
     }
 
     pBufferView->copyTo(pData);

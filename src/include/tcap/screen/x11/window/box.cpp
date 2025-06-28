@@ -2,7 +2,7 @@
 
 #include <X11/Xlib.h>
 
-#include "tcap/screen/x11/display.hpp"
+#include "tcap/screen/x11/display/box.hpp"
 #include "tcap/screen/x11/screen.hpp"
 #include "tcap/utils/error.hpp"
 
@@ -12,15 +12,14 @@
 
 namespace tcap::x11 {
 
-WindowBox::WindowBox(const Window window, const int width, const int height, const int planes) noexcept
-    : window_(window), width_(width), height_(height), planes_(planes) {}
+WindowBox::WindowBox(const Window window, const XWindowAttributes &attrs) noexcept : window_(window), attrs_(attrs) {}
 
 std::expected<WindowBox, Error> WindowBox::create(const DisplayBox &displayBox, Window window) noexcept {
     Display *display = displayBox.getDisplay();
-    XWindowAttributes attr;
-    XGetWindowAttributes(display, window, &attr);
+    XWindowAttributes attrs;
+    XGetWindowAttributes(display, window, &attrs);
 
-    return WindowBox{window, attr.width, attr.height, attr.depth};
+    return WindowBox{window, attrs};
 }
 
 std::expected<WindowBox, Error> WindowBox::createRoot(const DisplayBox &displayBox,

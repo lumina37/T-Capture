@@ -5,12 +5,12 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include "tcap/screen/x11/display.hpp"
+#include "tcap/screen/x11/display/box.hpp"
 #include "tcap/screen/x11/window/box.hpp"
 #include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/x11/image.hpp"
+#    include "tcap/screen/x11/image/legacy.hpp"
 #endif
 
 namespace tcap::x11 {
