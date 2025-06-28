@@ -36,7 +36,7 @@ std::expected<ImageBox, Error> ImageBox::create(DisplayBox& displayBox, WindowBo
     const int width = windowBox.getWidth();
     const int height = windowBox.getHeight();
 
-    XImage* image = XGetImage(display, window, 0, 0, width, height, windowBox.getPlanes(), ZPixmap);
+    XImage* image = XGetImage(display, window, 0, 0, width, height, AllPlanes, ZPixmap);
     if (image == nullptr) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }

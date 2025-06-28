@@ -8,13 +8,15 @@
 
 #include "tcap/common/defines.h"
 #include "tcap/screen/x11/display/box.hpp"
+#include "tcap/screen/x11/screen.hpp"
 #include "tcap/screen/x11/window/box.hpp"
 #include "tcap/utils/error.hpp"
 
 namespace tcap::x11 {
 
 class ImageShmBox {
-    ImageShmBox(std::shared_ptr<DisplayBox>&& pDisplayBox, XImage* image, const XShmSegmentInfo& shmInfo) noexcept;
+    ImageShmBox(std::shared_ptr<DisplayBox>&& pDisplayBox, XImage* image,
+                std::unique_ptr<XShmSegmentInfo>&& shmInfo) noexcept;
 
 public:
     ImageShmBox& operator=(const ImageShmBox&) = delete;
@@ -39,7 +41,7 @@ public:
 private:
     std::shared_ptr<DisplayBox> pDisplayBox_;
     XImage* image_;
-    XShmSegmentInfo shmInfo_;
+    std::unique_ptr<XShmSegmentInfo> shmInfo_;
 };
 
 }  // namespace tcap::x11

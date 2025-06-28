@@ -19,69 +19,79 @@
 namespace tcap::x11 {
 
 ImageShmBox::ImageShmBox(std::shared_ptr<DisplayBox>&& pDisplayBox, XImage* image,
-                         const XShmSegmentInfo& shmInfo) noexcept
-    : pDisplayBox_(std::move(pDisplayBox)), image_(image), shmInfo_(shmInfo) {}
+                         std::unique_ptr<XShmSegmentInfo>&& shmInfo) noexcept
+    : pDisplayBox_(std::move(pDisplayBox)), image_(image), shmInfo_(std::move(shmInfo)) {}
 
 ImageShmBox::ImageShmBox(ImageShmBox&& rhs) noexcept
-    : pDisplayBox_(std::move(rhs.pDisplayBox_)), image_(std::exchange(rhs.image_, nullptr)), shmInfo_(rhs.shmInfo_) {}
+    : pDisplayBox_(std::move(rhs.pDisplayBox_)),
+      image_(std::exchange(rhs.image_, nullptr)),
+      shmInfo_(std::move(rhs.shmInfo_)) {}
 
 ImageShmBox& ImageShmBox::operator=(ImageShmBox&& rhs) noexcept {
     pDisplayBox_ = std::move(rhs.pDisplayBox_);
     image_ = std::exchange(rhs.image_, nullptr);
-    shmInfo_ = rhs.shmInfo_;
+    shmInfo_ = std::move(rhs.shmInfo_);
     return *this;
 }
 
 ImageShmBox::~ImageShmBox() noexcept {
     if (image_ == nullptr) return;
     Display* display = pDisplayBox_->getDisplay();
-    XShmDetach(display, &shmInfo_);
+    XShmDetach(display, shmInfo_.get());
     XDestroyImage(image_);
-    shmdt(shmInfo_.shmaddr);
-    shmctl(shmInfo_.shmid, IPC_RMID, nullptr);
+    shmdt(shmInfo_->shmaddr);
+    shmctl(shmInfo_->shmid, IPC_RMID, nullptr);
     image_ = nullptr;
 }
 
 std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox> pDisplayBox,
                                                       WindowBox& windowBox) noexcept {
     Display* display = pDisplayBox->getDisplay();
+    Window window = windowBox.getWindow();
     const int width = windowBox.getWidth();
     const int height = windowBox.getHeight();
 
-    XShmSegmentInfo shmInfo;
-    shmInfo.shmid = -1;
-    XImage* image = XShmCreateImage(display, windowBox.getVisual(), windowBox.getPlanes(), ZPixmap, nullptr, &shmInfo,
-                                    width, height);
+    auto shmInfo = std::make_unique<XShmSegmentInfo>();
+    XImage* image =
+        XShmCreateImage(display, nullptr, windowBox.getPlanes(), ZPixmap, nullptr, shmInfo.get(), width, height);
     if (image == nullptr) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }
 
-    shmInfo.shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT | 0777);
-    if (shmInfo.shmid == -1) {
+    shmInfo->shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT | 0777);
+    if (shmInfo->shmid == -1) {
         return std::unexpected{Error{ECate::eSys, errno}};
     }
 
-    void* pData = shmat(shmInfo.shmid, nullptr, 0);
+    void* pData = shmat(shmInfo->shmid, nullptr, 0);
     if (pData == (void*)-1) {
         return std::unexpected{Error{ECate::eSys, errno}};
     }
     image->data = (char*)pData;
-    shmInfo.shmaddr = image->data;
-    shmInfo.readOnly = False;
+    shmInfo->shmaddr = image->data;
+    shmInfo->readOnly = False;
 
-    const Status status = XShmAttach(display, &shmInfo);
+    Status status = XShmAttach(display, shmInfo.get());
     if (status == 0) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }
-    XSync(display, False);
 
-    return ImageShmBox{std::move(pDisplayBox), image, shmInfo};
+    status = XShmGetImage(display, window, image, 0, 0, AllPlanes);
+    if (status == 0) {
+        return std::unexpected{Error{ECate::eX11, 0}};
+    }
+
+    auto anotherShmInfo = std::move(shmInfo);
+    // auto anotherShmInfo = std::make_unique<XShmSegmentInfo>(*shmInfo);
+
+    return ImageShmBox{std::move(pDisplayBox), image, std::move(anotherShmInfo)};
 }
 
 std::expected<void, Error> ImageShmBox::fetch(WindowBox& windowBox) noexcept {
     Display* display = pDisplayBox_->getDisplay();
     Window window = windowBox.getWindow();
-    const Status status = XShmGetImage(display, window, image_, 0, 0, windowBox.getPlanes());
+
+    Status status = XShmGetImage(display, window, image_, 0, 0, AllPlanes);
     if (status == 0) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }
