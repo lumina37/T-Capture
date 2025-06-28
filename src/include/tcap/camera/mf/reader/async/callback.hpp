@@ -80,13 +80,8 @@ STDMETHODIMP SampleCallback_<TAwaitable>::OnReadSample(HRESULT hr, [[maybe_unuse
 
     {
         auto lock = std::lock_guard{currentAwaitable_->getMutex()};
-        if (pSample == nullptr) {
-            currentAwaitable_->setSampleBoxRes(
-                std::unexpected{Error{ECate::eTCap, ECode::eUnexValue, "pSample is nullptr"}});
-        } else {
-            SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
-            currentAwaitable_->setSampleBoxRes(std::move(sampleBox));
-        }
+        SampleBox sampleBox = SampleBox::create(pSample, streamFlags, timestamp).value();
+        currentAwaitable_->setSampleBoxRes(std::move(sampleBox));
     }
 
     currentAwaitable_->resume();  // goto `SampleAwaitable::await_resume`
