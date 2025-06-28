@@ -17,4 +17,5 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     vkc_add_sample(tcap-camera-v4l2-mmap camera/v4l2/mmap.cpp)
 
     vkc_add_sample(tcap-screen-x11-legacy screen/x11/legacy.cpp)
+    vkc_add_sample(tcap-screen-x11-shared screen/x11/shared.cpp)
 endif ()

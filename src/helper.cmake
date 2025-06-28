@@ -26,6 +26,7 @@ function(tcap_common_lib_setting lib)
     if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
         target_link_libraries(${lib} ${__PUB_DEP_SCOPE}
                 X11::X11
+                X11::Xext
         )
     endif ()
 

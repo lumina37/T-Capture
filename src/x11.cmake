@@ -1,5 +1,6 @@
 set(_TCAP_X11_SRCS
         include/tcap/screen/x11/display/box.cpp
+        include/tcap/screen/x11/display/caps.cpp
         include/tcap/screen/x11/image/legacy.cpp
         include/tcap/screen/x11/image/shared.cpp
         include/tcap/screen/x11/screen.cpp

@@ -23,11 +23,12 @@ ImageShmBox::ImageShmBox(std::shared_ptr<DisplayBox>&& pDisplayBox, XImage* imag
     : pDisplayBox_(std::move(pDisplayBox)), image_(image), shmInfo_(shmInfo) {}
 
 ImageShmBox::ImageShmBox(ImageShmBox&& rhs) noexcept
-    : pDisplayBox_(std::move(rhs.pDisplayBox_)), image_(std::exchange(rhs.image_, nullptr)) {}
+    : pDisplayBox_(std::move(rhs.pDisplayBox_)), image_(std::exchange(rhs.image_, nullptr)), shmInfo_(rhs.shmInfo_) {}
 
 ImageShmBox& ImageShmBox::operator=(ImageShmBox&& rhs) noexcept {
     pDisplayBox_ = std::move(rhs.pDisplayBox_);
     image_ = std::exchange(rhs.image_, nullptr);
+    shmInfo_ = rhs.shmInfo_;
     return *this;
 }
 
@@ -48,6 +49,7 @@ std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox
     const int height = windowBox.getHeight();
 
     XShmSegmentInfo shmInfo;
+    shmInfo.shmid = -1;
     XImage* image = XShmCreateImage(display, windowBox.getVisual(), windowBox.getPlanes(), ZPixmap, nullptr, &shmInfo,
                                     width, height);
     if (image == nullptr) {
@@ -55,7 +57,15 @@ std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox
     }
 
     shmInfo.shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT | 0777);
-    image->data = (char*)shmat(shmInfo.shmid, nullptr, 0);
+    if (shmInfo.shmid == -1) {
+        return std::unexpected{Error{ECate::eSys, errno}};
+    }
+
+    void* pData = shmat(shmInfo.shmid, nullptr, 0);
+    if (pData == (void*)-1) {
+        return std::unexpected{Error{ECate::eSys, errno}};
+    }
+    image->data = (char*)pData;
     shmInfo.shmaddr = image->data;
     shmInfo.readOnly = False;
 
@@ -63,6 +73,7 @@ std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox
     if (status == 0) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }
+    XSync(display, False);
 
     return ImageShmBox{std::move(pDisplayBox), image, shmInfo};
 }
@@ -70,7 +81,7 @@ std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox
 std::expected<void, Error> ImageShmBox::fetch(WindowBox& windowBox) noexcept {
     Display* display = pDisplayBox_->getDisplay();
     Window window = windowBox.getWindow();
-    const Status status = XShmGetImage(display, window, image_, 0, 0, AllPlanes);
+    const Status status = XShmGetImage(display, window, image_, 0, 0, windowBox.getPlanes());
     if (status == 0) {
         return std::unexpected{Error{ECate::eX11, 0}};
     }
