@@ -1,6 +1,5 @@
 #include <fstream>
 #include <print>
-#include <thread>
 #include <vector>
 
 #include "../../sample_helper.hpp"

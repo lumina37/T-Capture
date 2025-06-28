@@ -47,7 +47,6 @@ ImageShmBox::~ImageShmBox() noexcept {
 std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox> pDisplayBox,
                                                       WindowBox& windowBox) noexcept {
     Display* display = pDisplayBox->getDisplay();
-    Window window = windowBox.getWindow();
     const int width = windowBox.getWidth();
     const int height = windowBox.getHeight();
 
@@ -76,15 +75,7 @@ std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox
         return std::unexpected{Error{ECate::eX11, 0}};
     }
 
-    status = XShmGetImage(display, window, image, 0, 0, AllPlanes);
-    if (status == 0) {
-        return std::unexpected{Error{ECate::eX11, 0}};
-    }
-
-    auto anotherShmInfo = std::move(shmInfo);
-    // auto anotherShmInfo = std::make_unique<XShmSegmentInfo>(*shmInfo);
-
-    return ImageShmBox{std::move(pDisplayBox), image, std::move(anotherShmInfo)};
+    return ImageShmBox{std::move(pDisplayBox), image, std::move(shmInfo)};
 }
 
 std::expected<void, Error> ImageShmBox::fetch(WindowBox& windowBox) noexcept {

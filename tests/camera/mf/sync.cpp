@@ -6,7 +6,7 @@
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
 
-TEST_CASE("Camera capture", "mf::camera::sync") {
+TEST_CASE("Camera capture", "camera::mf::sync") {
     tcap::mf::globalInit() | unwrap;
 
     tcap::mf::DeviceBoxes deviceBoxes = tcap::mf::DeviceBoxes::create() | unwrap;

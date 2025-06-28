@@ -36,7 +36,7 @@ Future sampleOneFrame(tcap::mf::ReaderAsyncBox& readerBox, std::vector<std::byte
     outFStream.close();
 }
 
-TEST_CASE("Camera capture", "mf::camera::async") {
+TEST_CASE("Camera capture", "camera::mf::async") {
     tcap::mf::globalInit() | unwrap;
 
     tcap::mf::DeviceBoxes deviceBoxes = tcap::mf::DeviceBoxes::create() | unwrap;

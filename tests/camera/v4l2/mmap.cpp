@@ -7,7 +7,7 @@
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
 
-TEST_CASE("Camera capture", "v4l2::camera::sync") {
+TEST_CASE("Camera capture", "camera::v4l2::mmap") {
     tcap::v4l2::DevicePaths devicePaths = tcap::v4l2::DevicePaths::create() | unwrap;
     if (devicePaths.empty()) return;
 

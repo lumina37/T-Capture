@@ -1,16 +1,19 @@
 #include <fstream>
 #include <print>
+#include <thread>
 #include <vector>
+
+#include <catch2/catch_test_macros.hpp>
 
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
 
-int main() {
+TEST_CASE("Camera capture", "screen::x11::shared") {
     auto pDisplayBox = std::make_shared<tcap::x11::DisplayBox>(tcap::x11::DisplayBox::create() | unwrap);
     tcap::x11::DisplayCaps displayCaps = tcap::x11::DisplayCaps::create(*pDisplayBox) | unwrap;
     if (!displayCaps.supportImageShm()) {
         std::println("do not support ImageShm");
-        return -1;
+        return;
     }
 
     auto screenBoxes = tcap::x11::ScreenBox::createBoxes(*pDisplayBox) | unwrap;

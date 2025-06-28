@@ -8,7 +8,7 @@
 #include "../../sample_helper.hpp"
 #include "tcap.hpp"
 
-TEST_CASE("Camera capture", "v4l2::camera::sync") {
+TEST_CASE("Camera capture", "screen::x11::legacy") {
     tcap::x11::DisplayBox displayBox = tcap::x11::DisplayBox::create() | unwrap;
     auto screenBoxes = tcap::x11::ScreenBox::createBoxes(displayBox) | unwrap;
     auto& screenBox = screenBoxes[0];
