@@ -14,7 +14,9 @@ SampleBox::SampleBox(IMFSample* pSample, const DWORD streamFlags, const LONGLONG
 
 std::expected<SampleBox, Error> SampleBox::create(IMFSample* pSample, const DWORD streamFlags,
                                                   const LONGLONG timestamp) noexcept {
-    pSample->AddRef();
+    if (pSample != nullptr) {
+        pSample->AddRef();
+    }
     return SampleBox{pSample, streamFlags, timestamp};
 }
 
