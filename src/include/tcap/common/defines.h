@@ -31,7 +31,9 @@
 #ifdef __linux__
 #    define TCAP_ENABLE_V4L2 1
 #    define TCAP_ENABLE_X11 1
+#    define TCAP_ENABLE_PW 1
 #else
 #    define TCAP_ENABLE_V4L2 0
 #    define TCAP_ENABLE_X11 0
+#    define TCAP_ENABLE_PW 0
 #endif

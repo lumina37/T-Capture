@@ -27,6 +27,7 @@ function(tcap_common_lib_setting lib)
         target_link_libraries(${lib} ${__PUB_DEP_SCOPE}
                 X11::X11
                 X11::Xext
+                PipeWire::PipeWire
         )
     endif ()
 
