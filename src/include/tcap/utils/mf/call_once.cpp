@@ -6,7 +6,7 @@
 #include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/call_once/mf/detail.hpp"
+#    include "tcap/utils/mf/call_once.hpp"
 #endif
 
 namespace tcap::mf {

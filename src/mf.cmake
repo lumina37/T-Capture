@@ -13,7 +13,7 @@ set(_TCAP_MF_SRCS
 
         include/tcap/helper/mf/attributes.cpp
 
-        include/tcap/utils/call_once/mf/detail.cpp
+        include/tcap/utils/mf/call_once.cpp
         include/tcap/utils/mf/wstring.cpp
 )
 list(APPEND _TCAP_SRCS ${_TCAP_MF_SRCS})
