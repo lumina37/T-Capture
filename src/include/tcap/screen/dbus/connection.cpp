@@ -3,6 +3,7 @@
 #include <dbus/dbus.h>
 
 #include "tcap/screen/dbus/error.hpp"
+#include "tcap/screen/dbus/message/create_session.hpp"
 #include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
@@ -38,6 +39,19 @@ std::expected<ConnectionBox, Error> ConnectionBox::create() noexcept {
     }
 
     return ConnectionBox{pConn};
+}
+
+std::expected<ResCreateSessionBox, Error> ConnectionBox::createSession(ReqCreateSessionBox&& request) noexcept {
+    ErrorBox errorBox;
+
+    DBusMessage* pRes = dbus_connection_send_with_reply_and_block(pConn_, request.getPMessage(),
+                                                                  DBUS_TIMEOUT_USE_DEFAULT, errorBox.getPError());
+    if (errorBox.hasError()) return std::unexpected{errorBox.toError()};
+
+    auto responseRes = ResCreateSessionBox::create(pRes);
+    ResCreateSessionBox& response = responseRes.value();
+
+    return std::move(response);
 }
 
 }  // namespace tcap::dbus
