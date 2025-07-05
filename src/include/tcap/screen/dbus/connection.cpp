@@ -2,8 +2,8 @@
 
 #include <dbus/dbus.h>
 
+#include "tcap/screen/dbus/api/create_session.hpp"
 #include "tcap/screen/dbus/error.hpp"
-#include "tcap/screen/dbus/message/create_session.hpp"
 #include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY

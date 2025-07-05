@@ -2,10 +2,11 @@
 
 #include <dbus/dbus.h>
 
+#include "tcap/screen/dbus/arg.hpp"
 #include "tcap/utils/error.hpp"
 
 #ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/dbus/message/create_session/response.hpp"
+#    include "tcap/screen/dbus/api/create_session/response.hpp"
 #endif
 
 namespace tcap::dbus {
@@ -29,14 +30,9 @@ ResCreateSessionBox::~ResCreateSessionBox() noexcept {
 }
 
 std::expected<ResCreateSessionBox, Error> ResCreateSessionBox::create(DBusMessage* pMessage) noexcept {
-    DBusMessageIter itRoot;
-    dbus_message_iter_init(pMessage, &itRoot);
-
-    const char* pSessionHandle;
-    dbus_message_iter_get_basic(&itRoot, &pSessionHandle);
-    std::string_view sessionHandle{pSessionHandle};
-
-    return ResCreateSessionBox{pMessage, sessionHandle};
+    _i::MsgArgRootGetter argRoot{pMessage};
+    const _i::MsgArgStrGetter argString{argRoot};
+    return ResCreateSessionBox{pMessage, argString.get()};
 }
 
 }  // namespace tcap::dbus

@@ -5,7 +5,7 @@
 #include <dbus/dbus.h>
 
 #include "tcap/common/defines.h"
-#include "tcap/screen/dbus/message/create_session.hpp"
+#include "tcap/screen/dbus/api/create_session.hpp"
 #include "tcap/utils/error.hpp"
 
 namespace tcap::dbus {
@@ -24,7 +24,8 @@ public:
 
     [[nodiscard]] TCAP_API DBusConnection* getPConnection() const noexcept { return pConn_; }
 
-    [[nodiscard]] TCAP_API std::expected<ResCreateSessionBox, Error> createSession(ReqCreateSessionBox&& request) noexcept;
+    [[nodiscard]] TCAP_API std::expected<ResCreateSessionBox, Error> createSession(
+        ReqCreateSessionBox&& request) noexcept;
 
 private:
     DBusConnection* pConn_;

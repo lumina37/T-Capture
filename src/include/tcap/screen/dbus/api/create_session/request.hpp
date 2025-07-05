@@ -19,7 +19,8 @@ public:
     TCAP_API ReqCreateSessionBox& operator=(ReqCreateSessionBox&& rhs) noexcept;
     TCAP_API ~ReqCreateSessionBox() noexcept;
 
-    [[nodiscard]] TCAP_API static std::expected<ReqCreateSessionBox, Error> create(std::string_view sessionHandleToken) noexcept;
+    [[nodiscard]] TCAP_API static std::expected<ReqCreateSessionBox, Error> create(
+        std::string_view sessionHandleToken) noexcept;
 
     [[nodiscard]] TCAP_API DBusMessage* getPMessage() noexcept { return pMessage_; }
 
