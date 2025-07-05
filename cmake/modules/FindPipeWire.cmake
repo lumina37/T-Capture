@@ -16,7 +16,6 @@
 # ``PipeWire::PipeWire``
 #     The PipeWire library
 
-
 find_package(PkgConfig QUIET)
 
 pkg_search_module(PKG_PipeWire QUIET libpipewire-0.3)

@@ -15,38 +15,38 @@
 
 namespace tcap::x11 {
 
-ImageBox::ImageBox(XImage* image) noexcept : image_(image) {}
+ImageBox::ImageBox(XImage* pImage) noexcept : pImage_(pImage) {}
 
-ImageBox::ImageBox(ImageBox&& rhs) noexcept : image_(std::exchange(rhs.image_, nullptr)) {}
+ImageBox::ImageBox(ImageBox&& rhs) noexcept : pImage_(std::exchange(rhs.pImage_, nullptr)) {}
 
 ImageBox& ImageBox::operator=(ImageBox&& rhs) noexcept {
-    image_ = std::exchange(rhs.image_, nullptr);
+    pImage_ = std::exchange(rhs.pImage_, nullptr);
     return *this;
 }
 
 ImageBox::~ImageBox() noexcept {
-    if (image_ == nullptr) return;
-    XDestroyImage(image_);
-    image_ = nullptr;
+    if (pImage_ == nullptr) return;
+    XDestroyImage(pImage_);
+    pImage_ = nullptr;
 }
 
 std::expected<ImageBox, Error> ImageBox::create(DisplayBox& displayBox, WindowBox& windowBox) noexcept {
-    Display* display = displayBox.getDisplay();
+    Display* pDisplay = displayBox.getPDisplay();
     Window window = windowBox.getWindow();
     const int width = windowBox.getWidth();
     const int height = windowBox.getHeight();
 
-    XImage* image = XGetImage(display, window, 0, 0, width, height, AllPlanes, ZPixmap);
-    if (image == nullptr) {
-        return std::unexpected{Error{ECate::eX11, 0}};
+    XImage* pImage = XGetImage(pDisplay, window, 0, 0, width, height, AllPlanes, ZPixmap);
+    if (pImage == nullptr) {
+        return std::unexpected{Error{ECate::eX11, 0, "XGetImage failed"}};
     }
 
-    return ImageBox{image};
+    return ImageBox{pImage};
 }
 
 void ImageBox::copyTo(std::byte* pData) const noexcept {
-    const int bufferSize = image_->width * image_->height * (image_->bits_per_pixel / 8);
-    std::memcpy(pData, image_->data, bufferSize);
+    const int bufferSize = pImage_->width * pImage_->height * (pImage_->bits_per_pixel / 8);
+    std::memcpy(pData, pImage_->data, bufferSize);
 }
 
 }  // namespace tcap::x11

@@ -8,6 +8,8 @@
 
 namespace tcap {
 
+Error::Error() noexcept : cate(ECate::eSuccess), code(0) {}
+
 Error::Error(const ECate cate, const int code, const std::source_location& source) noexcept
     : cate(cate), code(code), source(source) {}
 

@@ -14,8 +14,8 @@ namespace tcap::x11 {
 DisplayCaps::DisplayCaps(bool supportImageShm) noexcept : supportImageShm_(supportImageShm) {}
 
 std::expected<DisplayCaps, Error> DisplayCaps::create(const DisplayBox& displayBox) noexcept {
-    Display* display = displayBox.getDisplay();
-    bool supportImageShm = XShmQueryExtension(display);
+    Display* pDisplay = displayBox.getPDisplay();
+    bool supportImageShm = XShmQueryExtension(pDisplay);
     return DisplayCaps{supportImageShm};
 }
 

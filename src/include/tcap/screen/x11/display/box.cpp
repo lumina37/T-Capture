@@ -13,24 +13,24 @@
 
 namespace tcap::x11 {
 
-DisplayBox::DisplayBox(Display* display) noexcept : display_(display) {}
+DisplayBox::DisplayBox(Display* pDisplay) noexcept : pDisplay_(pDisplay) {}
 
-DisplayBox::DisplayBox(DisplayBox&& rhs) noexcept : display_(std::exchange(rhs.display_, nullptr)) {}
+DisplayBox::DisplayBox(DisplayBox&& rhs) noexcept : pDisplay_(std::exchange(rhs.pDisplay_, nullptr)) {}
 
 DisplayBox& DisplayBox::operator=(DisplayBox&& rhs) noexcept {
-    display_ = std::exchange(rhs.display_, nullptr);
+    pDisplay_ = std::exchange(rhs.pDisplay_, nullptr);
     return *this;
 }
 
 DisplayBox::~DisplayBox() noexcept {
-    if (display_ == nullptr) return;
-    XCloseDisplay(display_);
-    display_ = nullptr;
+    if (pDisplay_ == nullptr) return;
+    XCloseDisplay(pDisplay_);
+    pDisplay_ = nullptr;
 }
 
 std::expected<DisplayBox, Error> DisplayBox::create() noexcept {
-    Display* display = XOpenDisplay(nullptr);
-    if (display == nullptr) {
+    Display* pDisplay = XOpenDisplay(nullptr);
+    if (pDisplay == nullptr) {
         const char* displayName = std::getenv("DISPLAY");
         if (displayName == nullptr) {
             return std::unexpected{Error{ECate::eX11, 0, "env DISPLAY is null"}};
@@ -39,7 +39,7 @@ std::expected<DisplayBox, Error> DisplayBox::create() noexcept {
         return std::unexpected{Error{ECate::eX11, 0, std::move(errMsg)}};
     }
 
-    return DisplayBox{display};
+    return DisplayBox{pDisplay};
 }
 
 }  // namespace tcap::x11

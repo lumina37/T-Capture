@@ -11,7 +11,7 @@
 namespace tcap::x11 {
 
 class DisplayBox {
-    DisplayBox(Display* display) noexcept;
+    DisplayBox(Display* pDisplay) noexcept;
 
 public:
     DisplayBox& operator=(const DisplayBox&) = delete;
@@ -22,10 +22,10 @@ public:
 
     [[nodiscard]] TCAP_API static std::expected<DisplayBox, Error> create() noexcept;
 
-    [[nodiscard]] TCAP_API Display* getDisplay() const noexcept { return display_; }
+    [[nodiscard]] TCAP_API Display* getPDisplay() const noexcept { return pDisplay_; }
 
 private:
-    Display* display_;
+    Display* pDisplay_;
 };
 
 }  // namespace tcap::x11

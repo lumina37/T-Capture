@@ -18,46 +18,46 @@
 
 namespace tcap::x11 {
 
-ImageShmBox::ImageShmBox(std::shared_ptr<DisplayBox>&& pDisplayBox, XImage* image,
+ImageShmBox::ImageShmBox(std::shared_ptr<DisplayBox>&& pDisplayBox, XImage* pImage,
                          std::unique_ptr<XShmSegmentInfo>&& shmInfo) noexcept
-    : pDisplayBox_(std::move(pDisplayBox)), image_(image), shmInfo_(std::move(shmInfo)) {}
+    : pDisplayBox_(std::move(pDisplayBox)), pImage_(pImage), shmInfo_(std::move(shmInfo)) {}
 
 ImageShmBox::ImageShmBox(ImageShmBox&& rhs) noexcept
     : pDisplayBox_(std::move(rhs.pDisplayBox_)),
-      image_(std::exchange(rhs.image_, nullptr)),
+      pImage_(std::exchange(rhs.pImage_, nullptr)),
       shmInfo_(std::move(rhs.shmInfo_)) {}
 
 ImageShmBox& ImageShmBox::operator=(ImageShmBox&& rhs) noexcept {
     pDisplayBox_ = std::move(rhs.pDisplayBox_);
-    image_ = std::exchange(rhs.image_, nullptr);
+    pImage_ = std::exchange(rhs.pImage_, nullptr);
     shmInfo_ = std::move(rhs.shmInfo_);
     return *this;
 }
 
 ImageShmBox::~ImageShmBox() noexcept {
-    if (image_ == nullptr) return;
-    Display* display = pDisplayBox_->getDisplay();
-    XShmDetach(display, shmInfo_.get());
-    XDestroyImage(image_);
+    if (pImage_ == nullptr) return;
+    Display* pDisplay = pDisplayBox_->getPDisplay();
+    XShmDetach(pDisplay, shmInfo_.get());
+    XDestroyImage(pImage_);
     shmdt(shmInfo_->shmaddr);
     shmctl(shmInfo_->shmid, IPC_RMID, nullptr);
-    image_ = nullptr;
+    pImage_ = nullptr;
 }
 
 std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox> pDisplayBox,
                                                       WindowBox& windowBox) noexcept {
-    Display* display = pDisplayBox->getDisplay();
+    Display* pDisplay = pDisplayBox->getPDisplay();
     const int width = windowBox.getWidth();
     const int height = windowBox.getHeight();
 
     auto shmInfo = std::make_unique<XShmSegmentInfo>();
-    XImage* image =
-        XShmCreateImage(display, nullptr, windowBox.getPlanes(), ZPixmap, nullptr, shmInfo.get(), width, height);
-    if (image == nullptr) {
-        return std::unexpected{Error{ECate::eX11, 0}};
+    XImage* pImage =
+        XShmCreateImage(pDisplay, nullptr, windowBox.getPlanes(), ZPixmap, nullptr, shmInfo.get(), width, height);
+    if (pImage == nullptr) {
+        return std::unexpected{Error{ECate::eX11, 0, "XShmCreateImage failed"}};
     }
 
-    shmInfo->shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT | 0777);
+    shmInfo->shmid = shmget(IPC_PRIVATE, pImage->bytes_per_line * pImage->height, IPC_CREAT | 0777);
     if (shmInfo->shmid == -1) {
         return std::unexpected{Error{ECate::eSys, errno}};
     }
@@ -66,32 +66,32 @@ std::expected<ImageShmBox, Error> ImageShmBox::create(std::shared_ptr<DisplayBox
     if (pData == (void*)-1) {
         return std::unexpected{Error{ECate::eSys, errno}};
     }
-    image->data = (char*)pData;
-    shmInfo->shmaddr = image->data;
+    pImage->data = (char*)pData;
+    shmInfo->shmaddr = pImage->data;
     shmInfo->readOnly = False;
 
-    Status status = XShmAttach(display, shmInfo.get());
+    Status status = XShmAttach(pDisplay, shmInfo.get());
     if (status == 0) {
-        return std::unexpected{Error{ECate::eX11, 0}};
+        return std::unexpected{Error{ECate::eX11, 0, "XShmAttach failed"}};
     }
 
-    return ImageShmBox{std::move(pDisplayBox), image, std::move(shmInfo)};
+    return ImageShmBox{std::move(pDisplayBox), pImage, std::move(shmInfo)};
 }
 
 std::expected<void, Error> ImageShmBox::fetch(WindowBox& windowBox) noexcept {
-    Display* display = pDisplayBox_->getDisplay();
+    Display* pDisplay = pDisplayBox_->getPDisplay();
     Window window = windowBox.getWindow();
 
-    Status status = XShmGetImage(display, window, image_, 0, 0, AllPlanes);
+    Status status = XShmGetImage(pDisplay, window, pImage_, 0, 0, AllPlanes);
     if (status == 0) {
-        return std::unexpected{Error{ECate::eX11, 0}};
+        return std::unexpected{Error{ECate::eX11, -1}};
     }
     return {};
 }
 
 void ImageShmBox::copyTo(std::byte* pData) const noexcept {
-    const int bufferSize = image_->width * image_->height * (image_->bits_per_pixel / 8);
-    std::memcpy(pData, image_->data, bufferSize);
+    const int bufferSize = pImage_->width * pImage_->height * (pImage_->bits_per_pixel / 8);
+    std::memcpy(pData, pImage_->data, bufferSize);
 }
 
 }  // namespace tcap::x11

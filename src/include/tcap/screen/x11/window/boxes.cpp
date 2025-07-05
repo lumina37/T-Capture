@@ -18,17 +18,17 @@ TopWindowBoxes::TopWindowBoxes(std::vector<WindowBox>&& windowBoxes) noexcept : 
 
 std::expected<TopWindowBoxes, Error> TopWindowBoxes::create(const DisplayBox& displayBox,
                                                             const ScreenBox& screenBox) noexcept {
-    Display* display = displayBox.getDisplay();
-    Screen* screen = screenBox.getScreen();
-    Window rootWindow = RootWindowOfScreen(screen);
+    Display* pDisplay = displayBox.getPDisplay();
+    Screen* pScreen = screenBox.getPScreen();
+    Window rootWindow = RootWindowOfScreen(pScreen);
 
     Window rootRet, parentRet;
     Window* children;
     unsigned int childrenCount;
 
-    const Status status = XQueryTree(display, rootWindow, &rootRet, &parentRet, &children, &childrenCount);
+    const Status status = XQueryTree(pDisplay, rootWindow, &rootRet, &parentRet, &children, &childrenCount);
     if (status == 0) {
-        return std::unexpected{Error{ECate::eX11, 0}};
+        return std::unexpected{Error{ECate::eX11, 0, "XQueryTree failed"}};
     }
 
     std::vector<WindowBox> windowBoxes;

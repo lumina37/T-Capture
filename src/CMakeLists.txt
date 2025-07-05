@@ -13,6 +13,7 @@ endif ()
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include(v4l2.cmake)
     include(x11.cmake)
+    include(dbus.cmake)
     include(pw.cmake)
 endif ()
 

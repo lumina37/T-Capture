@@ -15,7 +15,7 @@ namespace tcap::x11 {
 WindowBox::WindowBox(const Window window, const XWindowAttributes &attrs) noexcept : window_(window), attrs_(attrs) {}
 
 std::expected<WindowBox, Error> WindowBox::create(const DisplayBox &displayBox, Window window) noexcept {
-    Display *display = displayBox.getDisplay();
+    Display *display = displayBox.getPDisplay();
     XWindowAttributes attrs;
     XGetWindowAttributes(display, window, &attrs);
 
@@ -24,8 +24,8 @@ std::expected<WindowBox, Error> WindowBox::create(const DisplayBox &displayBox, 
 
 std::expected<WindowBox, Error> WindowBox::createRoot(const DisplayBox &displayBox,
                                                       const ScreenBox &screenBox) noexcept {
-    Screen *screen = screenBox.getScreen();
-    Window rootWindow = RootWindowOfScreen(screen);
+    Screen *pScreen = screenBox.getPScreen();
+    Window rootWindow = RootWindowOfScreen(pScreen);
     return create(displayBox, rootWindow);
 }
 

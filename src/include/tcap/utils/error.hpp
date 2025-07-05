@@ -13,10 +13,23 @@ enum class ECode {
     eResourceInvalid = 3,  // Resource is Invalid
 };
 
-enum class ECate { eUnknown = 0, eMisc, eTCap, eSys, eMF, eV4L2, eX11 };
+enum class ECate {
+    eSuccess = 0,
+    eUnknown,
+    eMisc,
+    eTCap,
+    eSys,
+    eMF,
+    eV4L2,
+    eX11,
+    eDBus,
+    ePW,
+};
 
 constexpr std::string_view errCateToStr(const ECate cate) noexcept {
     switch (cate) {
+        case ECate::eSuccess:
+            return "Success";
         case ECate::eUnknown:
             return "Unknown";
         case ECate::eMisc:
@@ -29,6 +42,10 @@ constexpr std::string_view errCateToStr(const ECate cate) noexcept {
             return "MF";
         case ECate::eV4L2:
             return "V4L2";
+        case ECate::eDBus:
+            return "DBus";
+        case ECate::ePW:
+            return "PW";
         case ECate::eX11:
             return "X11";
         default:
@@ -43,7 +60,7 @@ public:
     std::source_location source;
     std::string msg;
 
-    Error() = default;
+    Error() noexcept;
     Error(ECate cate, int code, const std::source_location& source = std::source_location::current()) noexcept;
     Error(ECate cate, int code, std::string&& msg,
           const std::source_location& source = std::source_location::current()) noexcept;

@@ -13,18 +13,18 @@
 
 namespace tcap::x11 {
 
-ScreenBox::ScreenBox(Screen* screen) noexcept : screen_(screen) {}
+ScreenBox::ScreenBox(Screen* pScreen) noexcept : pScreen_(pScreen) {}
 
 std::expected<std::vector<ScreenBox>, Error> ScreenBox::createBoxes(const DisplayBox& displayBox) noexcept {
-    Display* display = displayBox.getDisplay();
+    Display* pDisplay = displayBox.getPDisplay();
 
-    const int screenCount = XScreenCount(display);
+    const int screenCount = XScreenCount(pDisplay);
 
     std::vector<ScreenBox> screenBoxes;
     screenBoxes.reserve(screenCount);
     for (int screenIndex = 0; screenIndex < screenCount; screenIndex++) {
-        Screen* screen = ScreenOfDisplay(display, screenIndex);
-        screenBoxes.emplace_back(screen);
+        Screen* pScreen = ScreenOfDisplay(pDisplay, screenIndex);
+        screenBoxes.emplace_back(pScreen);
     }
 
     return screenBoxes;

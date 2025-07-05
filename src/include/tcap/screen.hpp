@@ -7,3 +7,8 @@
 #if TCAP_ENABLE_X11
 #    include "tcap/screen/x11.hpp"
 #endif
+
+#if TCAP_ENABLE_PW
+#    include "tcap/screen/dbus.hpp"
+#    include "tcap/screen/pw.hpp"
+#endif

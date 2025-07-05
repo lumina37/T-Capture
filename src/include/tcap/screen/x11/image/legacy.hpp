@@ -12,7 +12,7 @@
 namespace tcap::x11 {
 
 class ImageBox {
-    ImageBox(XImage* image) noexcept;
+    ImageBox(XImage* pImage) noexcept;
 
 public:
     ImageBox& operator=(const ImageBox&) = delete;
@@ -24,16 +24,16 @@ public:
     [[nodiscard]] TCAP_API static std::expected<ImageBox, Error> create(DisplayBox& displayBox,
                                                                         WindowBox& windowBox) noexcept;
 
-    [[nodiscard]] TCAP_API XImage* getImage() const noexcept { return image_; }
-    [[nodiscard]] TCAP_API int getWidth() const noexcept { return image_->width; }
-    [[nodiscard]] TCAP_API int getHeight() const noexcept { return image_->height; }
-    [[nodiscard]] TCAP_API int getBitPerPixel() const noexcept { return image_->bits_per_pixel; }
-    [[nodiscard]] TCAP_API int getBytePerLine() const noexcept { return image_->bytes_per_line; }
+    [[nodiscard]] TCAP_API XImage* getImage() const noexcept { return pImage_; }
+    [[nodiscard]] TCAP_API int getWidth() const noexcept { return pImage_->width; }
+    [[nodiscard]] TCAP_API int getHeight() const noexcept { return pImage_->height; }
+    [[nodiscard]] TCAP_API int getBitPerPixel() const noexcept { return pImage_->bits_per_pixel; }
+    [[nodiscard]] TCAP_API int getBytePerLine() const noexcept { return pImage_->bytes_per_line; }
 
     TCAP_API void copyTo(std::byte* pData) const noexcept;
 
 private:
-    XImage* image_;
+    XImage* pImage_;
 };
 
 }  // namespace tcap::x11
