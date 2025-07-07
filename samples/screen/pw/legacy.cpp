@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../../sample_helper.hpp"
-#include "tcap.hpp"
+#include "tcap/tcap.hpp"
 
 int main() {
     tcap::dbus::ConnectionBox connBox = tcap::dbus::ConnectionBox::create() | unwrap;

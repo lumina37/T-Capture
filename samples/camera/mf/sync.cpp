@@ -5,7 +5,7 @@
 #include <mfapi.h>
 
 #include "../../sample_helper.hpp"
-#include "tcap.hpp"
+#include "tcap/tcap.hpp"
 
 int main() {
     tcap::mf::globalInit() | unwrap;

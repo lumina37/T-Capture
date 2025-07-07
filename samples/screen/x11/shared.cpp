@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../../sample_helper.hpp"
-#include "tcap.hpp"
+#include "tcap/tcap.hpp"
 
 int main() {
     auto pDisplayBox = std::make_shared<tcap::x11::DisplayBox>(tcap::x11::DisplayBox::create() | unwrap);

@@ -13,7 +13,7 @@ function(tcap_common_lib_setting lib)
     target_compile_features(${lib} ${__PUB_DEP_SCOPE} cxx_std_23)
 
     target_include_directories(${lib} ${__PUB_DEP_SCOPE}
-            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/include>
+            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/tcap>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     )
 

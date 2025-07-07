@@ -4,7 +4,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../../sample_helper.hpp"
-#include "tcap.hpp"
+#include "tcap/tcap.hpp"
 
 TEST_CASE("Camera capture", "camera::mf::sync") {
     tcap::mf::globalInit() | unwrap;
