@@ -24,11 +24,12 @@ if (NOT WIN32)
     return()
 endif ()
 
-set(MediaFoundation_LIBRARIES mf.lib
-        mfplat.lib
-        mfreadwrite.lib
-        mfuuid.lib
-        shlwapi.lib
+set(MediaFoundation_LIBRARIES
+        mf
+        mfplat
+        mfreadwrite
+        mfuuid
+        shlwapi
 )
 
 include(FindPackageHandleStandardArgs)
