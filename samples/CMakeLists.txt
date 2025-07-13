@@ -18,7 +18,4 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
     vkc_add_sample(tcap-screen-x11-legacy screen/x11/legacy.cpp)
     vkc_add_sample(tcap-screen-x11-shared screen/x11/shared.cpp)
-
-    vkc_add_sample(tcap-screen-pw-legacy screen/pw/legacy.cpp)
-    vkc_add_sample(tcap-screen-pw-dbus screen/pw/dbus.cpp)
 endif ()

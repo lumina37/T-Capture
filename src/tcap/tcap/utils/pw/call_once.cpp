@@ -12,7 +12,6 @@ namespace tcap::pw {
 
 std::expected<void, Error> globalInit() noexcept {
     pw_init(nullptr, nullptr);
-
     return {};
 }
 

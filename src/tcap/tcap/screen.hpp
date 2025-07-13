@@ -10,5 +10,4 @@
 
 #if TCAP_ENABLE_PW
 #    include "tcap/screen/dbus.hpp"
-#    include "tcap/screen/pw.hpp"
 #endif

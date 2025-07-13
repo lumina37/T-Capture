@@ -65,7 +65,7 @@ private:
     std::mutex mutex_;
 };
 
-template <typename TAwaitable>
+template <typename  TAwaitable>
 STDMETHODIMP SampleCallback_<TAwaitable>::OnReadSample(HRESULT hr, [[maybe_unused]] DWORD streamIndex,
                                                        DWORD streamFlags, LONGLONG timestamp,
                                                        IMFSample* pSample) noexcept {

@@ -3,7 +3,7 @@
 #include <concepts>
 #include <mutex>
 
-#include "tcap/camera/mf/reader/core.hpp"
+#include "tcap/camera/mf/sample.hpp"
 
 namespace tcap::mf {
 

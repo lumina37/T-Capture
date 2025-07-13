@@ -7,11 +7,11 @@
 
 struct Future {
     struct promise_type {
-        Future get_return_object() { return {}; }
-        std::suspend_never initial_suspend() noexcept { return {}; }
-        std::suspend_always final_suspend() noexcept { return {}; }
-        void return_void() noexcept {}
-        void unhandled_exception() {}
+        static constexpr Future get_return_object() { return {}; }
+        static constexpr std::suspend_never initial_suspend() noexcept { return {}; }
+        static constexpr std::suspend_always final_suspend() noexcept { return {}; }
+        static constexpr void return_void() noexcept {}
+        static constexpr void unhandled_exception() {}
     };
 };
 
@@ -31,7 +31,7 @@ Future sampleOneFrame(tcap::mf::ReaderAsyncBox& readerBox, std::vector<std::byte
     }
 
     std::ofstream outFStream{"async.yuv"};
-    outFStream.write((char*)frameData.data(), frameData.size());
+    outFStream.write((char*)frameData.data(), (std::streamsize)frameData.size());
     outFStream.close();
 }
 
