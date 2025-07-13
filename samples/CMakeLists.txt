@@ -2,6 +2,7 @@ function(vkc_add_sample name src)
     add_executable(${name} ${src})
 
     target_link_libraries(${name} PRIVATE
+            tloop::lib::static
             tcap::lib::static
     )
 

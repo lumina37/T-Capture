@@ -17,13 +17,9 @@ enum class ECate {
     eSuccess = 0,
     eUnknown,
     eMisc,
-    eTCap,
+    eTLoop,
     eSys,
-    eMF,
-    eV4L2,
-    eX11,
-    eDBus,
-    ePW,
+    eIOCP,
 };
 
 constexpr std::string_view errCateToStr(const ECate cate) noexcept {
@@ -34,20 +30,12 @@ constexpr std::string_view errCateToStr(const ECate cate) noexcept {
             return "Unknown";
         case ECate::eMisc:
             return "Misc";
-        case ECate::eTCap:
-            return "TCap";
+        case ECate::eTLoop:
+            return "TLoop";
         case ECate::eSys:
             return "System";
-        case ECate::eMF:
-            return "MF";
-        case ECate::eV4L2:
-            return "V4L2";
-        case ECate::eDBus:
-            return "DBus";
-        case ECate::ePW:
-            return "PW";
-        case ECate::eX11:
-            return "X11";
+        case ECate::eIOCP:
+            return "IOCP";
         default:
             return "Unknown";
     }
@@ -73,8 +61,8 @@ public:
     Error(Error&& rhs) noexcept = default;
 };
 
-}  // namespace tcap
+}  // namespace tlp
 
 #ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/error.cpp"
+#    include "tloop/utils/error.cpp"
 #endif

@@ -3,7 +3,6 @@ include(cmake/helper.cmake)
 # Sources
 set(_TCAP_SRCS
         tcap/helper/charset.cpp
-        tcap/utils/error.cpp
 )
 
 if (WIN32)

@@ -1,2 +1,2 @@
-add_subdirectory(tcap)
 add_subdirectory(tloop)
+add_subdirectory(tcap)

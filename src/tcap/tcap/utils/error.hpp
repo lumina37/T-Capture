@@ -2,6 +2,7 @@
 
 #include <source_location>
 #include <string>
+#include <utility>
 
 namespace tcap {
 
@@ -60,13 +61,17 @@ public:
     std::source_location source;
     std::string msg;
 
-    Error() noexcept;
-    Error(ECate cate, int code, const std::source_location& source = std::source_location::current()) noexcept;
-    Error(ECate cate, int code, std::string&& msg,
-          const std::source_location& source = std::source_location::current()) noexcept;
-    Error(ECate cate, ECode code, const std::source_location& source = std::source_location::current()) noexcept;
-    Error(ECate cate, ECode code, std::string&& msg,
-          const std::source_location& source = std::source_location::current()) noexcept;
+    Error() noexcept : cate(ECate::eSuccess), code(0) {}
+
+    template <typename T>
+    Error(const ECate cate, T code, const std::source_location& source = std::source_location::current()) noexcept
+        : cate(cate), code((int)code), source(source) {}
+
+    template <typename T>
+    Error(const ECate cate, T code, std::string&& msg,
+          const std::source_location& source = std::source_location::current()) noexcept
+        : cate(cate), code((int)code), source(source), msg(std::move(msg)) {}
+
     Error& operator=(const Error& rhs) = default;
     Error(const Error& rhs) = default;
     Error& operator=(Error&& rhs) = default;
@@ -74,7 +79,3 @@ public:
 };
 
 }  // namespace tcap
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/error.cpp"
-#endif
