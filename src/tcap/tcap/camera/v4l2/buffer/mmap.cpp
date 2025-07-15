@@ -5,12 +5,9 @@
 #include <linux/videodev2.h>
 #include <sys/mman.h>
 
+#include "tcap/camera/v4l2/buffer/mmap.hpp"
 #include "tcap/camera/v4l2/device/box.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/v4l2/buffer/mmap.hpp"
-#endif
 
 namespace tcap::v4l2 {
 

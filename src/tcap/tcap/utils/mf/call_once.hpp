@@ -12,7 +12,3 @@ namespace tcap::mf {
 TCAP_API void globalDestroy() noexcept;
 
 }  // namespace tcap::mf
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/mf/call_once.cpp"
-#endif

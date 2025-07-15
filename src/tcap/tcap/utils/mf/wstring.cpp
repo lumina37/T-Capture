@@ -2,9 +2,7 @@
 
 #include <mfobjects.h>
 
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/mf/wstring.hpp"
-#endif
+#include "tcap/utils/mf/wstring.hpp"
 
 namespace tcap::mf {
 

@@ -6,10 +6,7 @@
 #include <mfreadwrite.h>
 
 #include "tcap/camera/mf/media_type.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/reader_type.hpp"
-#endif
+#include "tcap/camera/mf/reader_type.hpp"
 
 namespace tcap::mf {
 

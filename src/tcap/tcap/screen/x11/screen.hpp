@@ -28,7 +28,3 @@ private:
 };
 
 }  // namespace tcap::x11
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/x11/screen.cpp"
-#endif

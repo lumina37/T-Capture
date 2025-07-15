@@ -21,8 +21,3 @@ set_target_properties(tloop-lib-dynamic PROPERTIES
 )
 target_compile_definitions(tloop-lib-dynamic PUBLIC "_TLOOP_LIB_DYNAMIC")
 add_library(tloop::lib::dynamic ALIAS tloop-lib-dynamic)
-
-add_library(tloop-lib-header-only INTERFACE)
-tloop_common_lib_setting(tloop-lib-header-only)
-target_compile_definitions(tloop-lib-header-only INTERFACE "_TLOOP_LIB_HEADER_ONLY")
-add_library(tloop::lib::header-only ALIAS tloop-lib-header-only)

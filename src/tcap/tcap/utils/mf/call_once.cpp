@@ -4,10 +4,7 @@
 #include <mfidl.h>
 
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/mf/call_once.hpp"
-#endif
+#include "tcap/utils/mf/call_once.hpp"
 
 namespace tcap::mf {
 

@@ -12,7 +12,3 @@ namespace tcap::pw {
 TCAP_API void globalDestroy() noexcept;
 
 }  // namespace tcap::pw
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/pw/call_once.cpp"
-#endif

@@ -1,11 +1,8 @@
 ﻿#include <mfidl.h>
 #include <mfobjects.h>
 
+#include "tcap/camera/mf/sample.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/sample.hpp"
-#endif
 
 namespace tcap::mf {
 

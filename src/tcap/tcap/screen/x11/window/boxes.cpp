@@ -6,11 +6,8 @@
 
 #include "tcap/screen/x11/display/box.hpp"
 #include "tcap/screen/x11/screen.hpp"
+#include "tcap/screen/x11/window/boxes.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/x11/window/boxes.hpp"
-#endif
 
 namespace tcap::x11 {
 

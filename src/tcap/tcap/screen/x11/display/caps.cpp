@@ -3,11 +3,8 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XShm.h>
 
+#include "tcap/screen/x11/display/caps.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/x11/display/caps.hpp"
-#endif
 
 namespace tcap::x11 {
 

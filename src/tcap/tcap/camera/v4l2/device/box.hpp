@@ -29,7 +29,3 @@ private:
 };
 
 }  // namespace tcap::v4l2
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/v4l2/device/box.cpp"
-#endif

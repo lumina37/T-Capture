@@ -3,11 +3,8 @@
 
 #include <glob.h>
 
+#include "tcap/camera/v4l2/device/path.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/v4l2/device/path.hpp"
-#endif
 
 namespace tcap::v4l2 {
 

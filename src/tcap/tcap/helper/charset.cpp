@@ -1,11 +1,8 @@
 #include <expected>
 #include <string>
 
+#include "tcap/helper/charset.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/charset.hpp"
-#endif
 
 namespace tcap::_i {
 

@@ -31,7 +31,3 @@ private:
 };
 
 }  // namespace tcap::mf::_i
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/mf/attributes.cpp"
-#endif

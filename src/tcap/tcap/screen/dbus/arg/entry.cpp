@@ -3,10 +3,7 @@
 #include <dbus/dbus.h>
 
 #include "tcap/screen/dbus/arg/array.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/dbus/arg/entry.hpp"
-#endif
+#include "tcap/screen/dbus/arg/entry.hpp"
 
 namespace tcap::dbus::_i {
 

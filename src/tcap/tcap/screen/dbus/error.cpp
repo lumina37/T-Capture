@@ -2,11 +2,8 @@
 
 #include <dbus/dbus.h>
 
+#include "tcap/screen/dbus/error.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/dbus/error.hpp"
-#endif
 
 namespace tcap::dbus {
 

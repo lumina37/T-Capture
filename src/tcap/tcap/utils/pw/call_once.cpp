@@ -3,10 +3,7 @@
 #include <pipewire/pipewire.h>
 
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/utils/pw/call_once.hpp"
-#endif
+#include "tcap/utils/pw/call_once.hpp"
 
 namespace tcap::pw {
 

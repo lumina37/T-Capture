@@ -62,7 +62,3 @@ public:
 };
 
 }  // namespace tlp
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tloop/utils/error.cpp"
-#endif

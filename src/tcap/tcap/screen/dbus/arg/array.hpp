@@ -19,7 +19,3 @@ private:
 };
 
 }  // namespace tcap::dbus::_i
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/dbus/arg/array.cpp"
-#endif

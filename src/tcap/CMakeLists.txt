@@ -30,8 +30,3 @@ set_target_properties(tcap-lib-dynamic PROPERTIES
 )
 target_compile_definitions(tcap-lib-dynamic PUBLIC "_TCAP_LIB_DYNAMIC")
 add_library(tcap::lib::dynamic ALIAS tcap-lib-dynamic)
-
-add_library(tcap-lib-header-only INTERFACE)
-tcap_common_lib_setting(tcap-lib-header-only)
-target_compile_definitions(tcap-lib-header-only INTERFACE "_TCAP_LIB_HEADER_ONLY")
-add_library(tcap::lib::header-only ALIAS tcap-lib-header-only)

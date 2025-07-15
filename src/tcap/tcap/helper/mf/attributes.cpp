@@ -3,11 +3,8 @@
 #include <mfapi.h>
 #include <mfobjects.h>
 
+#include "tcap/helper/mf/attributes.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/helper/mf/attributes.hpp"
-#endif
 
 namespace tcap::mf::_i {
 

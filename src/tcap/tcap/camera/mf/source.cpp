@@ -4,11 +4,8 @@
 #include <mfobjects.h>
 
 #include "tcap/camera/mf/device/box.hpp"
+#include "tcap/camera/mf/source.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/source.hpp"
-#endif
 
 namespace tcap::mf {
 

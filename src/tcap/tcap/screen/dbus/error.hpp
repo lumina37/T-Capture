@@ -31,7 +31,3 @@ private:
 };
 
 }  // namespace tcap::dbus
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/dbus/error.cpp"
-#endif

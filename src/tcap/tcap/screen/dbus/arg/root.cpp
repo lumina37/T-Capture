@@ -1,8 +1,6 @@
 #include <dbus/dbus.h>
 
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/dbus/arg/root.hpp"
-#endif
+#include "tcap/screen/dbus/arg/root.hpp"
 
 namespace tcap::dbus::_i {
 

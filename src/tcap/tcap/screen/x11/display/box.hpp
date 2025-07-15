@@ -4,8 +4,8 @@
 
 #include <X11/Xlib.h>
 
-#include "tcap/screen/x11/display/box.hpp"
 #include "tcap/common/defines.h"
+#include "tcap/screen/x11/display/box.hpp"
 #include "tcap/utils/error.hpp"
 
 namespace tcap::x11 {
@@ -29,7 +29,3 @@ private:
 };
 
 }  // namespace tcap::x11
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/screen/x11/display/box.cpp"
-#endif

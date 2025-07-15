@@ -4,11 +4,8 @@
 #include <sys/ioctl.h>
 
 #include "tcap/camera/v4l2/device/box.hpp"
+#include "tcap/camera/v4l2/format/active.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/v4l2/format/active.hpp"
-#endif
 
 namespace tcap::v4l2 {
 

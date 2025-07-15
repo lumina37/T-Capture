@@ -1,10 +1,7 @@
 ﻿#include <mfobjects.h>
 
+#include "tcap/camera/mf/buffer.hpp"
 #include "tcap/utils/error.hpp"
-
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/buffer.hpp"
-#endif
 
 namespace tcap::mf {
 

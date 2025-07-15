@@ -38,7 +38,3 @@ private:
 };
 
 }  // namespace tcap::mf
-
-#ifdef _TCAP_LIB_HEADER_ONLY
-#    include "tcap/camera/mf/device/box.cpp"
-#endif

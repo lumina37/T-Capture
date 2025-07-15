@@ -1,25 +1,21 @@
 #pragma once
 
-#ifdef _TLOOP_LIB_HEADER_ONLY
-#    define TLOOP_API
-#else
-#    ifdef _TLOOP_LIB_DYNAMIC
-#        ifdef _MSC_VER
-#            ifdef tcap_lib_dynamic_EXPORTS
-#                define TLOOP_API __declspec(dllexport)
-#            else
-#                define TLOOP_API __declspec(dllimport)
-#            endif
+#ifdef _TLOOP_LIB_DYNAMIC
+#    ifdef _MSC_VER
+#        ifdef tcap_lib_dynamic_EXPORTS
+#            define TLOOP_API __declspec(dllexport)
 #        else
-#            ifdef tcap_lib_dynamic_EXPORTS
-#                define TLOOP_API __attribute__((visibility("default")))
-#            else
-#                define TLOOP_API
-#            endif
+#            define TLOOP_API __declspec(dllimport)
 #        endif
 #    else
-#        define TLOOP_API
+#        ifdef tcap_lib_dynamic_EXPORTS
+#            define TLOOP_API __attribute__((visibility("default")))
+#        else
+#            define TLOOP_API
+#        endif
 #    endif
+#else
+#    define TLOOP_API
 #endif
 
 #ifdef _WIN32

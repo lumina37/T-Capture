@@ -2,9 +2,7 @@
 #include <string>
 #include <utility>
 
-#ifndef _TCAP_LIB_HEADER_ONLY
-#    include "tloop/utils/error.hpp"
-#endif
+#include "tloop/utils/error.hpp"
 
 namespace tlp {
 
@@ -22,4 +20,4 @@ Error::Error(const ECate cate, const ECode code, const std::source_location& sou
 Error::Error(const ECate cate, const ECode code, std::string&& msg, const std::source_location& source) noexcept
     : cate(cate), code((int)code), source(source), msg(std::move(msg)) {}
 
-}  // namespace tcap
+}  // namespace tlp
